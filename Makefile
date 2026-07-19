@@ -40,7 +40,8 @@ format: format-prettier format-tf
 
 format-prettier:
 	@command -v npx >/dev/null || { echo "need node/npm (run: make install)"; exit 1; }
-	npx prettier --write .
+	# Use .prettierignore only — root .gitignore excludes nested labs on purpose
+	npx prettier --write . --ignore-path .prettierignore
 
 format-tf:
 	@command -v terraform >/dev/null || { echo "skip format-tf (terraform not installed)"; exit 0; }
@@ -59,7 +60,7 @@ lint: lint-prettier lint-yaml lint-sh lint-tf
 
 lint-prettier:
 	@command -v npx >/dev/null || { echo "need node/npm (run: make install)"; exit 1; }
-	npx prettier --check .
+	npx prettier --check . --ignore-path .prettierignore
 
 lint-yaml:
 	@command -v yamllint >/dev/null || { echo "need yamllint (brew install yamllint)"; exit 1; }

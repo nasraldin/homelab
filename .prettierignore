@@ -1,5 +1,7 @@
 # Dependencies / caches
 node_modules/
+**/.git/
+**/node_modules/
 
 # Terraform
 **/.terraform/
@@ -13,6 +15,7 @@ node_modules/
 **/proxmox/secrets.env
 **/proxmox/answer.toml
 **/proxmox/first-boot.sh
+**/files/authorized_keys
 **/*.secret
 **/.env
 **/.env.local
@@ -27,11 +30,16 @@ node_modules/
 **/dist/
 **/build/
 **/.DS_Store
+**/site/
+**/.venv-docs/
+**/coverage/
 
 # Camunda UI lock / generated (format via that package)
 camunda-lab/internal/ui/web/package-lock.json
 camunda-lab/internal/ui/web/dist/
+camunda-lab/internal/ui/web/node_modules/
 
 # Lockfiles and binary-ish
 **/*.min.js
 **/*.min.css
+**/package-lock.json

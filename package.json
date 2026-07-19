@@ -3,9 +3,9 @@
   "private": true,
   "description": "Root tooling to format/lint all sibling lab repos under ~/homelab",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint:prettier": "prettier --check ."
+    "format": "prettier --write . --ignore-path .prettierignore",
+    "format:check": "prettier --check . --ignore-path .prettierignore",
+    "lint:prettier": "prettier --check . --ignore-path .prettierignore"
   },
   "devDependencies": {
     "prettier": "^3.6.2"
