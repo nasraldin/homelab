@@ -34,10 +34,9 @@ node_modules/
 **/.venv-docs/
 **/coverage/
 
-# Camunda UI lock / generated (format via that package)
-camunda-lab/internal/ui/web/package-lock.json
-camunda-lab/internal/ui/web/dist/
-camunda-lab/internal/ui/web/node_modules/
+# Camunda UI — own npm package / own formatters; root Prettier must not
+# reformat src without regenerating committed embed (CI: make ui-check)
+camunda-lab/internal/ui/web/
 
 # Lockfiles and binary-ish
 **/*.min.js
