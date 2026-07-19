@@ -19,6 +19,19 @@ All of the directories above are **gitignored by this root repo** the same way s
 Local clones still live as siblings under `~/homelab/` so relative paths and
 `make format` / `make lint` work across labs.
 
+## Clone all labs (fresh machine)
+
+```bash
+git clone git@github.com:nasraldin/homelab.git ~/homelab
+cd ~/homelab
+./clone-labs.sh              # clone everything in repos.conf
+./clone-labs.sh --pull       # also fast-forward update existing clones
+./clone-labs.sh --protocol https
+```
+
+Add a future lab: one line in [`repos.conf`](repos.conf) (`path` + tab + `owner/repo`),
+then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are supported.
+
 ## Format & lint everything
 
 ```bash

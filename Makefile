@@ -8,7 +8,7 @@
 # Requires (brew): yamllint shellcheck
 # Requires (optional): terraform  →  make format-tf / lint-tf
 
-.PHONY: help install format lint \
+.PHONY: help install format lint clone clone-pull \
 	format-prettier format-tf format-sh \
 	lint-prettier lint-yaml lint-sh lint-tf
 
@@ -23,6 +23,8 @@ SH_FILES := $(shell find $(LABS) -type f \( -name '*.sh' \) \
 help:
 	@echo "Homelab workspace format/lint"
 	@echo ""
+	@echo "  make clone           Clone all labs from repos.conf (missing only)"
+	@echo "  make clone-pull      Clone missing + ff-only pull existing"
 	@echo "  make install         npm install (Prettier)"
 	@echo "  make format          Prettier write + terraform fmt"
 	@echo "  make lint            Prettier check + yamllint + shellcheck (+ tf fmt check)"
@@ -31,6 +33,12 @@ help:
 	@echo "  make lint-yaml       yamllint (uses .yamllint.yaml)"
 	@echo "  make lint-sh         shellcheck (uses .shellcheckrc)"
 	@echo "  make lint-tf         terraform fmt -check -recursive"
+
+clone:
+	./clone-labs.sh
+
+clone-pull:
+	./clone-labs.sh --pull
 
 install:
 	npm install
