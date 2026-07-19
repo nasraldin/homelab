@@ -12,9 +12,9 @@ own repository (ignored here) with its own remote.
 | Cloudflare Tunnel + Access | https://github.com/nasraldin/cloudflare-tunnel |
 | Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab |
 | Camunda 8 local CLI | https://github.com/nasraldin/camunda-lab |
-| Homebrew taps (nested tap repos) | local `taps/` only — not a single git repo |
+| Homebrew taps (nested tap repos) | local `homebrew/` only — not a single git repo |
 
-All of the directories above are **gitignored by this root repo** the same way so they do not nest inside `nasraldin/homelab`. Each lab (except `taps/`) keeps its own `.git` and remote.
+All of the directories above are **gitignored by this root repo** the same way so they do not nest inside `nasraldin/homelab`. Each lab (except `homebrew/`) keeps its own `.git` and remote.
 
 Local clones still live as siblings under `~/homelab/` so relative paths and
 `make format` / `make lint` work across labs.

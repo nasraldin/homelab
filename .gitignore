@@ -5,7 +5,7 @@ cloudflare-tunnel/
 docker-lab/
 homelab-docs/
 proxmox-bootstrap/
-taps/
+homebrew/
 terraform-lab/
 
 # Agent / local scratch at workspace root
