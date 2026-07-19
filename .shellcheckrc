@@ -1,0 +1,8 @@
+# Shared ShellCheck defaults for all labs under ~/homelab
+# Run: make lint-sh
+
+# Allow `source` of relative kit libs without SC1091 noise when path is dynamic
+external-sources=true
+
+# Optional disables used across bootstrap kits (keep list short)
+disable=SC1090,SC1091

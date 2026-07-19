@@ -1,0 +1,13 @@
+{
+  "name": "homelab-workspace",
+  "private": true,
+  "description": "Root tooling to format/lint all sibling lab repos under ~/homelab",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:prettier": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}

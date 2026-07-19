@@ -1,0 +1,52 @@
+# Homelab workspace — shared style for all sibling repos under this directory.
+# Editors that honor EditorConfig pick this up automatically.
+# See Makefile for format / lint targets.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{md,markdown}]
+indent_size = 2
+# Keep intentional hard wraps in docs; Prettier proseWrap=preserve
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{json,jsonc}]
+indent_size = 2
+
+[*.{toml,tftpl}]
+indent_size = 2
+
+[*.{tf,tfvars,hcl}]
+indent_size = 2
+
+[*.{sh,bash}]
+indent_size = 2
+
+[*.{j2,jinja2}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.go]
+indent_style = tab
+indent_size = 4
+
+[Dockerfile*]
+indent_size = 2
+
+[*.{py}]
+indent_size = 4
+
+# Do not trim Markdown hard line breaks that are intentional
+[*.md]
+trim_trailing_whitespace = false

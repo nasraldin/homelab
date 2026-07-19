@@ -1,0 +1,37 @@
+# Dependencies / caches
+node_modules/
+
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/crash.log
+
+# Secrets / local overlays (never format-push these via tooling noise)
+**/credentials.auto.tfvars
+**/config.env
+**/proxmox/secrets.env
+**/proxmox/answer.toml
+**/proxmox/first-boot.sh
+**/*.secret
+**/.env
+**/.env.local
+
+# Generated / bulky
+**/iso/
+**/pxe/tftp/
+**/pxe/http/
+**/pxe/runtime/
+**/*.iso
+**/vendor/
+**/dist/
+**/build/
+**/.DS_Store
+
+# Camunda UI lock / generated (format via that package)
+camunda-lab/internal/ui/web/package-lock.json
+camunda-lab/internal/ui/web/dist/
+
+# Lockfiles and binary-ish
+**/*.min.js
+**/*.min.css

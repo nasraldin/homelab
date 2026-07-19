@@ -1,0 +1,38 @@
+# Shared yamllint for all labs under ~/homelab
+# Run: make lint-yaml   (from homelab root)
+
+extends: default
+
+ignore: |
+  **/.git/
+  **/.terraform/
+  **/node_modules/
+  **/vendor/
+  **/iso/
+  **/pxe/tftp/
+  **/pxe/http/
+  **/pxe/runtime/
+  **/*.tfstate
+  camunda-lab/internal/ui/web/
+
+rules:
+  line-length:
+    max: 200
+    allow-non-breakable-inline-mappings: true
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: enable
+  document-start: disable
+  document-end: disable
+  truthy:
+    # Ansible / Compose often use yes/no/on/off
+    allowed-values: ["true", "false", "on", "off", "yes", "no"]
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  octal-values:
+    forbid-implicit-octal: true
