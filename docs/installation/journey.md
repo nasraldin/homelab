@@ -168,19 +168,22 @@ Root `@pam` ticket auth verified separately (wrong password was the only failure
 
 ## 9. Where we are now
 
-**Overall: 🔄 Setup in progress** — [current-state.md](../current-state.md)
+**Overall: Phase 0 ✅ closed** (`aux01` ⏸️) — [current-state.md](../current-state.md)
 
 ```text
 ✅ Proxmox 9.2.4 installed (Samsung rpool only)
 ✅ Network, FQDN, local DNS on node + Mac
-✅ SSH key auth from Mac
+✅ SSH key auth from Mac + admin user
 ✅ APT repos correct (no-subscription)
 ✅ Terraform API user + token working
-✅ FURY 4 TB + OEM 2 TB installed (pools via Terraform)
-🟡 proxmox-bootstrap — apply on node
-🟡 cloudflare-tunnel — apply from Mac
-🟡 terraform-lab apply (data01, aux01, backups)
-⏳ Kubernetes (kubeadm) — after Phase 0
+✅ proxmox-bootstrap applied (ZFS, ARC, packages, IOMMU, mail)
+✅ update-check timer enabled
+✅ data01 (FURY) + Stage 1 local-backup
+✅ cloudflare-tunnel active
+✅ host firewall enabled
+✅ restore drill (first proof) + drift check clean
+⏸️ aux01 — OEM NVMe not installed in Slot 3
+⏳ Phase 2–3 (GitLab + DNS) → kubeadm
 ```
 
 → [verified-state.md](verified-state.md) · [next-steps.md](next-steps.md) · [build-story.md](../build-story.md)

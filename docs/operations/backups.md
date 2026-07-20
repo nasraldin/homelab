@@ -8,16 +8,17 @@ For the Veeam-style OSS map (PBS, Velero, MinIO), see [backup-platform.md](backu
 
 - Stage 1–3 storage targets and status
 - `daily-all` vzdump job settings (terraform-lab)
+- How to run vzdump **manually** and confirm archives landed
 - Weekly restore drill cadence
 - Migration steps to aux 4 TB storage
 
 ## Stages
 
-| Stage       | Hardware                 | Proxmox storage ID | Status                      |
-| ----------- | ------------------------ | ------------------ | --------------------------- |
-| **1 (now)** | 990 PRO `local-backup`   | `local-backup`     | 🟡 `terraform apply`        |
-| **2**       | +4 TB aux NVMe (`aux01`) | `aux-backup`       | 🔮 IaC + rsync script ready |
-| **3**       | Dell server              | PBS datastore      | 🔮 design only              |
+| Stage       | Hardware                   | Proxmox storage ID | Status                                  |
+| ----------- | -------------------------- | ------------------ | --------------------------------------- |
+| **1 (now)** | 990 PRO `local-backup`     | `local-backup`     | ✅ applied (`daily-all`)                |
+| **2**       | +OEM 2 TB Slot 3 (`aux01`) | `aux-backup`       | ⏸️ hold — NVMe not installed; IaC ready |
+| **3**       | Dell server                | PBS datastore      | 🔮 design only                          |
 
 Layout: [hardware-and-storage.md](../architecture/hardware-and-storage.md).
 
@@ -42,11 +43,47 @@ cd ~/homelab/terraform-lab && terraform apply
 
 ---
 
+## Run vzdump manually (do not wait for 02:00)
+
+Full runbook: [terraform-lab: manual-vzdump.md](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/manual-vzdump.md)
+
+You need at least one VM/CT. Storage target is always **`local-backup`**.
+
+### UI
+
+Datacenter → Backup → **`daily-all`** → **Run now**  
+(or guest → Backup now → storage `local-backup`, snapshot, zstd)
+
+### CLI
+
+```bash
+# One VM
+ssh pve01 'vzdump 101 --mode snapshot --compress zstd --storage local-backup'
+
+# All guests (same idea as the scheduled job)
+ssh pve01 'vzdump --all --mode snapshot --compress zstd --storage local-backup'
+```
+
+### Confirm archives landed
+
+```bash
+ssh pve01 'ls -lth /var/lib/vz/backups/dump | head'
+ssh pve01 'du -sh /var/lib/vz/backups/dump'
+ssh pve01 'pvesm status | grep local-backup'
+```
+
+Expect recent `vzdump-qemu-<VMID>-*.vma.zst` (VM) or `vzdump-lxc-<VMID>-*.tar.zst`
+(CT), non-zero size, and `local-backup` **active**. Also visible in the UI under
+Storage → **local-backup** → Content.
+
+---
+
 ## Operations
 
 | Cadence    | Action                                       |
 | ---------- | -------------------------------------------- |
-| Daily      | Automatic vzdump (after apply)               |
+| On demand  | Manual vzdump (above) after first guests     |
+| Daily      | Automatic `daily-all` at 02:00               |
 | Weekly     | **Restore drill** — VMID 999, verify, delete |
 | On failure | Email via `NOTIFY_EMAIL`                     |
 
@@ -81,5 +118,6 @@ If you never restore, you do not have backups — only archives.
 
 ## References
 
+- [terraform-lab: manual vzdump](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/manual-vzdump.md)
 - [terraform-lab: backup design](https://github.com/nasraldin/terraform-lab/blob/main/docs/design/2026-07-20-proxmox-backup-strategy-design.md)
 - [proxmox-bootstrap: operations guide](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/13-complete-operations-guide.md)

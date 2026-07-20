@@ -10,7 +10,7 @@ Statuses: `resolved` | `workaround` | `open` | `wont-fix`.
 - Disk / ZFS mistakes that forced reinstalls
 - DNS and Mac connectivity traps (Cloudflare wildcard, ping, SSH)
 - API / shell quirks (token auth, zsh `!`, Ghostty `TERM`)
-- Open items still waiting on bootstrap (for example ZFS autotrim)
+- Open items from install (most bootstrap items now resolved)
 
 ---
 
@@ -29,7 +29,7 @@ Statuses: `resolved` | `workaround` | `open` | `wont-fix`.
 | [INST-009](#inst-009-root-api-authentication-failure)              | root API authentication failure        | resolved   |
 | [INST-010](#inst-010-zsh-bangs-in-api-token-header)                | zsh `!` in API token header            | resolved   |
 | [INST-011](#inst-011-grep-deb-on-proxmox-9-sources)                | `grep ^deb` on Proxmox 9 sources       | resolved   |
-| [INST-012](#inst-012-zfs-autotrim-off)                             | ZFS autotrim off                       | open       |
+| [INST-012](#inst-012-zfs-autotrim-off)                             | ZFS autotrim off                       | resolved   |
 | [INST-013](#inst-013-community-post-pve-install-script)            | Community post-pve-install script      | resolved   |
 
 ---
@@ -172,13 +172,13 @@ Statuses: `resolved` | `workaround` | `open` | `wont-fix`.
 
 ## INST-012: ZFS autotrim off
 
-| Field          | Detail                                                                  |
-| -------------- | ----------------------------------------------------------------------- |
-| **Status**     | open                                                                    |
-| **Symptom**    | `zpool get autotrim rpool` → `off`                                      |
-| **Root cause** | Installer default                                                       |
-| **Fix**        | `zpool set autotrim=on rpool` — applied by `proxmox-bootstrap` when run |
-| **Verify**     | `zpool get autotrim rpool` → `on`                                       |
+| Field          | Detail                                                         |
+| -------------- | -------------------------------------------------------------- |
+| **Status**     | resolved                                                       |
+| **Symptom**    | `zpool get autotrim rpool` → `off`                             |
+| **Root cause** | Installer default                                              |
+| **Fix**        | `zpool set autotrim=on rpool` — applied by `proxmox-bootstrap` |
+| **Verify**     | `zpool get autotrim rpool` → `on` (also `data01`)              |
 
 ---
 

@@ -312,12 +312,12 @@ Estimated effort after Phase 7: **2–3 focused sessions**.
 
 ## Next actions (today)
 
-You are still on **Phase 0–1** (setup). Security stack comes **after** kubeadm + Argo CD:
+You are past **Phase 0** (`aux01` ⏸️ until Slot 3 NVMe). Security stack still comes **after** kubeadm + Argo CD:
 
-1. Finish `proxmox-bootstrap` + `terraform apply` (data01, aux01)
+1. Phase 2–3 (GitLab, DNS); install `aux01` when Slot 3 disk is available
 2. Bootstrap Argo CD
 3. Deploy Harbor
 4. Add one CI pipeline with Cosign
 5. Install Kyverno audit → enforce
 
-See [foundation-sequence.md](../roadmap/foundation-sequence.md).
+See [foundation-sequence.md](../roadmap/foundation-sequence.md) · [current-state.md](../current-state.md).

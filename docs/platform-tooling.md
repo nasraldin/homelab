@@ -83,6 +83,8 @@ That pattern does not scale and is not how platform teams operate day-2.
 | Add a VM / disk / kubeadm node   | Terraform (`terraform.tfvars` + apply)                                                       |
 | Change a Deployment / Helm value | Git commit → Argo CD sync                                                                    |
 | Install packages on a GitLab VM  | Ansible                                                                                      |
+| Install qemu-guest-agent in a VM | cloud-init (new) or Ansible (existing) — [guest-os](guest-os/#qemu-guest-agent)              |
+| Attach Radeon 890M to an AI VM   | Terraform `hostpci` after host IOMMU — [gpu-passthrough](architecture/gpu-passthrough.md)    |
 | Expose a service publicly        | Cloudflare Tunnel + Access (GitOps for apps later); Proxmox UI only at `homelab.example.com` |
 | Browse the live cluster          | `kubectl` / **k9s** (UI only — not provisioning)                                             |
 
@@ -91,18 +93,20 @@ provisioning and does not replace Terraform or Argo CD.
 
 ## Decision table (“where do I put this?”)
 
-| I want to…                                     | Put it in…                                              |
-| ---------------------------------------------- | ------------------------------------------------------- |
-| Create / wipe ZFS `data01`, resource pools     | `terraform-lab/`                                        |
-| Create an Ubuntu VM or LXC                     | `terraform-lab/terraform.tfvars` (`vms` / `containers`) |
-| Create a kubeadm cluster (legacy: k3s module)  | `terraform-lab` VM module + kubeadm docs                |
-| Upload a local `.iso` with no public URL       | `proxmox-bootstrap/mac/upload-isos.sh`                  |
-| Download Ubuntu cloud image from the internet  | `terraform-lab/` (`cloud_images`)                       |
-| Harden Proxmox host / SSH / APT                | `proxmox-bootstrap/`                                    |
-| Configure AdGuard / GitLab _VM_ packages       | Ansible                                                 |
-| Install cert-manager, ingress, Grafana, Harbor | **Argo CD** (Git) — **NGINX Ingress**, not Traefik      |
-| Deploy my application                          | **Argo CD** (Git)                                       |
-| One-off debug on a pod                         | `kubectl` / k9s (then fix it in Git)                    |
+| I want to…                                     | Put it in…                                                     |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| Create / wipe ZFS `data01`, resource pools     | `terraform-lab/`                                               |
+| Create an Ubuntu VM or LXC                     | `terraform-lab/terraform.tfvars` (`vms` / `containers`)        |
+| Create a kubeadm cluster (legacy: k3s module)  | `terraform-lab` VM module + kubeadm docs                       |
+| Upload a local `.iso` with no public URL       | `proxmox-bootstrap/mac/upload-isos.sh`                         |
+| Download Ubuntu cloud image from the internet  | `terraform-lab/` (`cloud_images`)                              |
+| Harden Proxmox host / SSH / APT                | `proxmox-bootstrap/`                                           |
+| Configure AdGuard / GitLab _VM_ packages       | Ansible                                                        |
+| Install qemu-guest-agent in guests             | cloud-init / Ansible — **not** a Proxmox VMID script           |
+| Pass GPU into one AI VM                        | Terraform + [gpu-passthrough](architecture/gpu-passthrough.md) |
+| Install cert-manager, ingress, Grafana, Harbor | **Argo CD** (Git) — **NGINX Ingress**, not Traefik             |
+| Deploy my application                          | **Argo CD** (Git)                                              |
+| One-off debug on a pod                         | `kubectl` / k9s (then fix it in Git)                           |
 
 ## Anti-patterns (do not do)
 
@@ -114,6 +118,9 @@ provisioning and does not replace Terraform or Argo CD.
 | Manual `kubectl apply` for anything permanent    | Snowflakes                                     | Commit to Git                                                  |
 | Expose Proxmox `:8006` on the WAN without Access | Attack surface                                 | Use `cloudflare-tunnel/` → `homelab.example.com` + Access only |
 | Store API tokens / kubeconfigs in Git            | Credential leak                                | gitignored tfvars, password manager, sealed secrets            |
+| Host script `install-guest-agent --vmid N`       | Chicken-and-egg; wrong layer                   | cloud-init / Ansible — [guest-os](guest-os/#qemu-guest-agent)  |
+| Manual `apt` guest packages with no Git          | Snowflakes                                     | Ansible role                                                   |
+| Snowflake `qm set … hostpci` never in Terraform  | Lost on rebuild                                | Encode GPU VM in `terraform-lab`                               |
 
 ## What exists in this repo today
 

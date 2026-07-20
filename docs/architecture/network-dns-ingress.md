@@ -21,7 +21,7 @@ Today the lab is a single Proxmox node on a flat LAN — no VLANs yet, remote UI
 | ---------------------- | ------------------ | ---------------------------------------- | ------ |
 | Filtering              | **AdGuard Home**   | Ads, trackers, per-client rules, DoH/DoT | ⏳     |
 | Authoritative internal | **Technitium DNS** | `*.lab.example.com` zones, split DNS     | ⏳     |
-| Public                 | **Cloudflare**     | `*.example.com`, Tunnel                  | 🟡     |
+| Public                 | **Cloudflare**     | `*.example.com`, Tunnel                  | ✅     |
 | In-cluster             | **ExternalDNS**    | K8s → DNS records                        | ⏳     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.

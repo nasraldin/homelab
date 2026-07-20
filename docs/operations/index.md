@@ -22,6 +22,8 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | proxmox-bootstrap | [13-complete-operations-guide](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/13-complete-operations-guide.md) |
 | proxmox-bootstrap | [06-runbook](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/06-runbook.md)                                     |
+| terraform-lab     | [manual-vzdump](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/manual-vzdump.md)                          |
+| terraform-lab     | [backup-restore-drill](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md)            |
 | terraform-lab     | [scripts-reference](https://github.com/nasraldin/terraform-lab/blob/main/docs/scripts-reference.md)                           |
 
 ## Future: homelab operations agent

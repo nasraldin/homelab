@@ -27,12 +27,12 @@ Layer 4 — Homelab agent (future)
   Unified ops agent — see [operations README](index.md)
 ```
 
-| Approach                    | Role                                           | Status                            |
-| --------------------------- | ---------------------------------------------- | --------------------------------- |
-| **systemd timer + shell**   | Check + notify on host                         | 🟡 `install-update-automation.sh` |
-| **apply-updates.sh**        | Manual maintenance-window upgrade              | 🟡 in Git                         |
-| **n8n**                     | Notification orchestration, approvals, tickets | ⏸️ optional — not primary         |
-| **Unattended apt on timer** | —                                              | ❌ rejected                       |
+| Approach                    | Role                                           | Status                              |
+| --------------------------- | ---------------------------------------------- | ----------------------------------- |
+| **systemd timer + shell**   | Check + notify on host                         | ✅ `pve-update-check.timer` enabled |
+| **apply-updates.sh**        | Manual maintenance-window upgrade              | ✅ in Git (run manually)            |
+| **n8n**                     | Notification orchestration, approvals, tickets | ⏸️ optional — not primary           |
+| **Unattended apt on timer** | —                                              | ❌ rejected                         |
 
 ### Why not n8n as the primary mechanism?
 

@@ -8,6 +8,13 @@ proxmox-bootstrap/
 homebrew/
 terraform-lab/
 
+# Local installers / large blobs (never commit)
+homelab-binaries/
+*.exe
+*.iso
+*.img
+*.qcow2
+
 # Agent / local scratch at workspace root
 .superpowers/
 

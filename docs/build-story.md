@@ -8,8 +8,8 @@ Read this first if you’re new. Then use [current state](current-state.md) for 
 
 - Why the lab exists and the principles locked early
 - Hardware / storage design and install lessons
-- Phase 0a–0b: manual install done, automation in Git waiting to apply
-- What comes next once Phase 0 is closed (DNS, GitLab, kubeadm, GitOps)
+- Phase 0a–0b: install + host automation applied (`aux01` deferred — no Slot 3 disk)
+- What comes next (Phase 2–3 DNS + GitLab, then kubeadm / GitOps)
 
 ---
 
@@ -72,19 +72,22 @@ FURY via Terraform.
 
 ---
 
-## Chapter 4 — Automation written (Phase 0b) 🟡 ← **you are here**
+## Chapter 4 — Automation applied (Phase 0b) ✅
 
-Repos created and pushed; **not yet applied** on `pve01`:
+Repos created, pushed, and **applied** on `pve01` (July 2026):
 
-| Layer | Repo                | What it does                                        |
-| ----- | ------------------- | --------------------------------------------------- |
-| 0     | `proxmox-bootstrap` | Repos, ZFS tune, ARC cap, admin user, update checks |
-| 1     | `terraform-lab`     | `data01`, `aux01`, vzdump jobs, VMs when defined    |
-| Edge  | `cloudflare-tunnel` | `homelab.example.com` → PVE UI                      |
-| Docs  | `homelab-docs`      | This story, roadmap, architecture                   |
+| Layer | Repo                | Status  | What it does                                       |
+| ----- | ------------------- | ------- | -------------------------------------------------- |
+| 0     | `proxmox-bootstrap` | ✅      | Repos, ZFS, ARC, admin, updates, firewall, IOMMU   |
+| 1     | `terraform-lab`     | ✅ / ⏸️ | `data01` + Stage 1 vzdump ✅; `aux01` ⏸️ (no disk) |
+| Edge  | `cloudflare-tunnel` | ✅      | Public UI via Tunnel + Access                      |
+| Docs  | `homelab-docs`      | ✅      | This story, roadmap, architecture                  |
 
-**Next:** Run bootstrap → Terraform apply → tunnel → prove restore drill.
+**Hold:** Slot 3 OEM NVMe not installed → `aux01` / Stage 2 backup migrate deferred.
 
+**Next:** Phase 2–3 (GitLab + DNS) → kubeadm.
+
+→ [current-state.md](current-state.md)  
 → [installation/next-steps.md](installation/next-steps.md)  
 → [roadmap/foundation-sequence.md](roadmap/foundation-sequence.md)
 
@@ -163,16 +166,16 @@ Elasticsearch.
 
 ## How chapters map to phases
 
-| Chapter | Roadmap phases |
-| ------- | -------------- |
-| 1–2     | Planning (all) |
-| 3       | Phase 0a ✅    |
-| 4       | Phase 0b–1 🔄  |
-| 5       | Phase 2–3      |
-| 6       | Phase 6        |
-| 7       | Phase 7–8      |
-| 8       | Phase 9–11     |
-| 9       | Phase 10–11    |
+| Chapter | Roadmap phases           |
+| ------- | ------------------------ |
+| 1–2     | Planning (all)           |
+| 3       | Phase 0a ✅              |
+| 4       | Phase 0b ✅ (`aux01` ⏸️) |
+| 5       | Phase 2–3                |
+| 6       | Phase 6                  |
+| 7       | Phase 7–8                |
+| 8       | Phase 9–11               |
+| 9       | Phase 10–11              |
 
 Task tables: [roadmap/phases.md](roadmap/phases.md)
 

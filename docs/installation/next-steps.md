@@ -1,20 +1,37 @@
 # Close Phase 0: Commands Right After a Fresh Install
 
-Command block to close Phase 0 after a verified fresh install. Manual install should already be ✅; everything below is still 🔄 until you run it on the node. Check [current state](../current-state.md) first, then come back here in order.
+Command block used to close Phase 0 after a verified fresh install. **Host close-out on `pve01` is ✅** (July 2026) except `aux01` ⏸️. Check [current state](../current-state.md) first; use this page as the historical runbook + remaining steps.
 
-Read this after [verified state](verified-state.md). The same sequence is summarized in [foundation sequence](../roadmap/foundation-sequence.md) steps 2–8.
+Read this after [verified state](verified-state.md). The same sequence is summarized in [foundation sequence](../roadmap/foundation-sequence.md).
 
 ## What this page covers
 
-- Host bootstrap (`proxmox-bootstrap`)
-- Daily update-check automation
-- Terraform storage pools and backup jobs
-- Cloudflare Tunnel for the public UI
-- Optional host firewall and backup restore proof
+- Host bootstrap (`proxmox-bootstrap`) — ✅ applied
+- Daily update-check automation — ✅ applied
+- Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
+- Cloudflare Tunnel — ✅ applied
+- Host firewall — ✅ applied
+- Remaining: Phase 2+ (GitLab, DNS); `aux01` when Slot 3 disk arrives
 
 ---
 
-## 1. Host bootstrap (idempotent)
+## Status snapshot
+
+| Step | Item                              | Status                |
+| ---- | --------------------------------- | --------------------- |
+| 1    | Host bootstrap                    | ✅                    |
+| 2    | Update automation                 | ✅                    |
+| 3    | `data01` + Stage 1 `local-backup` | ✅                    |
+| 4    | Cloudflare Tunnel                 | ✅                    |
+| 5    | Host firewall                     | ✅                    |
+| 6    | Restore drill (first proof)       | ✅                    |
+| 7    | Drift check                       | ✅                    |
+| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
+| —    | DNS / GitLab VMs                  | ⏳ Phase 2–3 **next** |
+
+---
+
+## 1. Host bootstrap (idempotent) ✅
 
 ```bash
 cd ~/homelab/proxmox-bootstrap
@@ -25,11 +42,13 @@ ssh-add ~/.ssh/pve01
 ./mac/bootstrap.sh --remote --yes
 ```
 
-Fixes: repos, ZFS autotrim, ARC cap, packages, admin user, notifications.
+Fixes: repos, ZFS autotrim, ARC cap, packages, admin user, notifications,
+IOMMU/`iommu=pt` for future GPU passthrough ([gpu-passthrough.md](../architecture/gpu-passthrough.md)).
+Reboot if the report notes kernel/ARC/IOMMU changes.
 
 ---
 
-## 2. Update automation
+## 2. Update automation ✅
 
 ```bash
 ./mac/install-update-automation.sh --yes
@@ -39,11 +58,11 @@ Daily **check** + notify; manual `./mac/apply-updates.sh` for upgrades.
 
 ---
 
-## 3. Infrastructure as Code (storage + backups)
+## 3. Infrastructure as Code (storage + backups) ✅ / ⏸️
 
 ```bash
 cd ~/homelab/terraform-lab
-# terraform.tfvars: ssh_public_key, zfs_pools data01 + aux01, backup jobs
+# terraform.tfvars: ssh_public_key, zfs_pools data01 (+ aux01 when disk present), backup jobs
 terraform init
 terraform plan
 terraform apply
@@ -51,16 +70,16 @@ terraform apply
 
 Creates:
 
-- **`data01`** — FURY 4 TB (all VM disks)
-- **`aux01`** — OEM 2 TB Slot 3 (backups, ISO)
-- **`local-backup`** — vzdump Stage 1 on rpool (migrate to aux later)
-- Resource pools, backup job
+- **`data01`** — FURY 4 TB (all VM disks) — ✅ live
+- **`aux01`** — OEM 2 TB Slot 3 (backups, ISO) — ⏸️ **hold until NVMe installed**
+- **`local-backup`** — vzdump Stage 1 on rpool (migrate to aux later) — ✅ live
+- Backup job — ✅ Stage 1
 
 Set Datacenter → Storage → **default for VM disks = `data01`**.
 
 ---
 
-## 4. Remote access (from home LAN)
+## 4. Remote access (from home LAN) ✅
 
 ```bash
 cd ~/homelab/cloudflare-tunnel
@@ -68,28 +87,39 @@ cp config.env.example config.env
 ./mac/bootstrap.sh --yes
 ```
 
-Result: `https://homelab.example.com` → Access → Proxmox UI.
+Result: public hostname → Access → Proxmox UI.
 
-LAN Terraform/SSH stay on `pve01.lab.example.com`.
+LAN Terraform/SSH stay on `pve01.lab.nasraldin.com`.
 
 ---
 
-## 5. Optional host firewall
+## 5. Host firewall ✅
 
 ```bash
 cd ~/homelab/proxmox-bootstrap
 ./mac/enable-firewall.sh --yes
 ```
 
----
-
-## 6. Prove backups
-
-Weekly [restore drill](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md).
+Datacenter `policy_in=DROP`; node `enable=1` + LAN/loopback management rules.
 
 ---
 
-## 7. Later phases (do not skip ahead)
+## 6. Prove backups ✅
+
+First restore proof done. Keep weekly [restore drill](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md) cadence.
+
+---
+
+## 7. When Slot 3 OEM disk arrives (⏸️ → apply)
+
+1. Physically install OEM NVMe in Slot 3
+2. Enable `aux01` in `terraform-lab` tfvars
+3. `terraform apply`
+4. Migrate Stage 1 backups → `aux-backup` per [backups.md](../operations/backups.md)
+
+---
+
+## 8. Later phases (do not skip ahead)
 
 | Order | Phase                         | Doc                                                              |
 | ----- | ----------------------------- | ---------------------------------------------------------------- |

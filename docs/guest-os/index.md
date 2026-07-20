@@ -8,6 +8,7 @@ Do not put CoreOS or Talos everywhere “because immutable sounds modern.” Mat
 
 - Target mix of Debian, Talos, CoreOS, and Fedora Server
 - When to use each OS (and when not to)
+- **QEMU Guest Agent** — how we install it (not a Proxmox VMID script)
 - Provisioning notes for CoreOS and Talos
 - Link to kubeadm / k8s docs for node choice
 
@@ -22,6 +23,56 @@ Do not put CoreOS or Talos everywhere “because immutable sounds modern.” Mat
 | **Fedora Server**       | As needed        | RHEL ecosystem / `dnf` practice                                     |
 
 Do **not** replace Debian/kubeadm with CoreOS everywhere — each OS has a role.
+
+---
+
+## QEMU Guest Agent
+
+Install **`qemu-guest-agent` inside the guest** so Proxmox gets IP address,
+graceful shutdown/reboot, and better console integration. Enable the agent on
+the VM hardware (`agent: 1` / “QEMU Guest Agent”) in Terraform as well.
+
+### Do this (lab standard)
+
+| When                                | Tool                               | What                                                                       |
+| ----------------------------------- | ---------------------------------- | -------------------------------------------------------------------------- |
+| New cloud-image VM                  | **cloud-init** via `terraform-lab` | Install + enable `qemu-guest-agent` on first boot; set Proxmox `agent = 1` |
+| Existing / non–cloud-init Debian VM | **`ansible-lab`** guest role       | Ensure package installed, `qemu-guest-agent` service enabled and running   |
+| Proxmox **host** packages           | `proxmox-bootstrap`                | Host tools only — **not** guest VMs                                        |
+
+```text
+Terraform creates VM (agent enabled)
+        │
+        ▼
+cloud-init or Ansible installs qemu-guest-agent in the guest
+        │
+        ▼
+Proxmox UI shows guest IP / clean shutdown works
+```
+
+### Do **not** do this
+
+| Anti-pattern                                                  | Why                                                                                          |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Manual `apt install` on each new VM and forget Git            | Drift; next rebuild has no agent                                                             |
+| Host script `./install-guest-agent.sh --vmid 101`             | `qm guest exec` needs the agent **already**; VMID alone cannot install into the guest        |
+| Put guest package install in `proxmox-bootstrap`              | Bootstrap owns the **hypervisor**, not guest OS ([platform-tooling](../platform-tooling.md)) |
+| Install agent only in the guest but leave Proxmox `agent` off | Package runs but Proxmox will not talk to it                                                 |
+
+Break-glass (once, then fold into Ansible/cloud-init): SSH into the guest by IP
+and `apt install -y qemu-guest-agent && systemctl enable --now qemu-guest-agent` —
+never as the documented happy path.
+
+### Verify
+
+```bash
+# On Proxmox — agent responding (after guest is up)
+ssh pve01 'qm agent VMID ping'          # replace VMID
+ssh pve01 'qm guest cmd VMID network-get-interfaces'
+
+# Inside guest
+systemctl is-active qemu-guest-agent
+```
 
 ---
 
@@ -109,5 +160,7 @@ CoreOS ships **qcow2/raw** images (not a traditional ISO) — import via Proxmox
 ## Related
 
 - [target-topology.md](../architecture/target-topology.md)
+- [gpu-passthrough.md](../architecture/gpu-passthrough.md) — IOMMU + attach GPU to a VM
+- [platform-tooling.md](../platform-tooling.md) — who owns guest packages
 - [phases.md §6](../roadmap/phases.md#phase-6--kubernetes)
 - [decisions/log.md](../decisions/log.md)

@@ -33,11 +33,11 @@ cat /etc/network/interfaces
 # vmbr0 static, gateway 192.168.1.1, bridge-ports nic0
 ```
 
-| Check                     | Expected                              |
-| ------------------------- | ------------------------------------- |
-| `ping -c1 192.168.1.1`    | OK                                    |
-| `systemctl is-active ssh` | active                                |
-| `pve-firewall status`     | disabled (until `enable-firewall.sh`) |
+| Check                     | Expected                                         |
+| ------------------------- | ------------------------------------------------ |
+| `ping -c1 192.168.1.1`    | OK                                               |
+| `systemctl is-active ssh` | active                                           |
+| `pve-firewall status`     | **enabled/running** (after `enable-firewall.sh`) |
 
 ---
 
@@ -72,17 +72,16 @@ ping -c1 pve01.lab.example.com
 
 ```bash
 zpool status
-# pool: rpool, state: ONLINE, ONE nvme member
+# pools: rpool + data01 — both ONLINE
 
-zpool list rpool
-# ~1.8T (Samsung 990 PRO)
+zpool list
+# rpool  ~1.8T (Samsung 990 PRO)
+# data01 ~3.6T (Kingston FURY)
 
 lsblk -o NAME,SIZE,MODEL
-# nvme1n1  1.8T  Samsung SSD 990 PRO  → rpool
-# nvme0n1  3.6T  KINGSTON ...         → unused (for data01)
-
-zpool get ashift,autotrim,autoexpand rpool
-# ashift 12, autotrim off (fix via bootstrap), autoexpand off
+# Samsung SSD 990 PRO  → rpool
+# KINGSTON FURY …      → data01
+# (OEM Slot 3)         → not installed — aux01 deferred
 ```
 
 ```bash
@@ -123,7 +122,7 @@ curl -sk \
 
 ```bash
 pveum user list
-# root@pam, terraform@pve — both enabled
+# root@pam, terraform@pve, nasr@pam — enabled
 ```
 
 ---
@@ -140,13 +139,16 @@ ssh pve01 hostname
 
 ---
 
-## Not yet applied (expected 🟡)
+## Phase 0 apply status (live)
 
-| Item                      | Repo / script                |
-| ------------------------- | ---------------------------- |
-| ZFS autotrim + ARC limit  | `proxmox-bootstrap`          |
-| `data01` pool on Kingston | `terraform-lab`              |
-| Backup job `local-backup` | `terraform-lab`              |
-| Update check timer        | `proxmox-bootstrap`          |
-| Cloudflare Tunnel         | `cloudflare-tunnel`          |
-| Host firewall             | `proxmox-bootstrap` optional |
+| Item                      | Status | Repo / script                  |
+| ------------------------- | ------ | ------------------------------ |
+| ZFS autotrim + ARC limit  | ✅     | `proxmox-bootstrap`            |
+| `data01` pool on Kingston | ✅     | `terraform-lab`                |
+| Backup job `local-backup` | ✅     | `terraform-lab` (Stage 1)      |
+| Update check timer        | ✅     | `proxmox-bootstrap`            |
+| Cloudflare Tunnel         | ✅     | `cloudflare-tunnel`            |
+| Host firewall             | ✅     | `proxmox-bootstrap`            |
+| Restore drill             | ✅     | first proof done               |
+| Drift check               | ✅     | bootstrap + firewall `--check` |
+| `aux01` (OEM Slot 3)      | ⏸️     | disk not installed             |

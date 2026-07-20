@@ -211,13 +211,15 @@ Terraform for `data01`.
 
 ## Where you are now
 
-| Step                                       | Status                   |
-| ------------------------------------------ | ------------------------ |
-| USB install Proxmox                        | ✅ done                  |
-| SSH, DNS, API token                        | ✅ done                  |
-| `proxmox-bootstrap` on node                | 🟡 run from Mac          |
-| `cloudflare-tunnel`                        | 🟡 run from Mac (on LAN) |
-| `terraform apply` (data01, aux01, backups) | 🟡                       |
-| kubeadm + Argo CD                          | ⏳ Phase 6–7             |
+| Step                                         | Status                       |
+| -------------------------------------------- | ---------------------------- |
+| USB install Proxmox                          | ✅ done                      |
+| SSH, DNS, API token                          | ✅ done                      |
+| `proxmox-bootstrap` on node                  | ✅ done                      |
+| `cloudflare-tunnel`                          | ✅ done                      |
+| `terraform apply` (`data01`, Stage 1 backup) | ✅ done                      |
+| `aux01` (OEM Slot 3)                         | ⏸️ hold — NVMe not installed |
+| Host firewall                                | ✅ done                      |
+| kubeadm + Argo CD                            | ⏳ Phase 6–7                 |
 
-Next: [current-state.md](../current-state.md) · [installation/next-steps.md](../installation/next-steps.md)
+Next: [current-state.md](../current-state.md) · Phase 2–3 (GitLab + DNS)

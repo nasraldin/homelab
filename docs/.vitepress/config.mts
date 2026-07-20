@@ -99,6 +99,7 @@ export default defineConfig({
           items: [
             { text: 'Drives & slots', link: '/architecture/hardware-and-storage' },
             { text: 'Proxmox storage', link: '/architecture/proxmox-storage-layout' },
+            { text: 'GPU / IOMMU passthrough', link: '/architecture/gpu-passthrough' },
             { text: 'VM vs k8s vs Docker', link: '/architecture/service-placement' },
             { text: 'Full topology map', link: '/architecture/target-topology' },
             { text: 'Network & DNS', link: '/architecture/network-dns-ingress' },
@@ -148,6 +149,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { text: 'Guest OS choices', link: '/guest-os/' },
+            { text: 'QEMU Guest Agent', link: '/guest-os/#qemu-guest-agent' },
             { text: 'Decision log', link: '/decisions/log' },
             { text: 'Status symbols', link: '/conventions/status-legend' },
             { text: 'Old plan (moved)', link: '/homelab-plan' },

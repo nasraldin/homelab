@@ -27,69 +27,69 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 
 ## Master placement table
 
-| Service                                   | Place                         | Phase    | Notes                                                                                          |
-| ----------------------------------------- | ----------------------------- | -------- | ---------------------------------------------------------------------------------------------- |
-| **Proxmox VE**                            | Host                          | 0        | Only hypervisor                                                                                |
-| **Terraform**                             | Mac + Git                     | 1        | Not a server — IaC in repos                                                                    |
-| **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`) | 2        | Source of truth; **not** inside k8s                                                            |
-| **GitLab Runner**                         | ☸ k8s (preferred)             | 8        | Scales with cluster; VM runner optional for outage builds                                      |
-| **GitHub Runner**                         | ☸ k8s                         | 11       | `actions-runner-controller` when needed                                                        |
-| **HAProxy**                               | 🖥 VM                          | 6        | API VIP `:6443` for kubeadm HA                                                                 |
-| **PBS**                                   | 🖥 Dedicated VM                | backup   | Stage 3 — Dell or separate disk                                                                |
-| **AdGuard / Technitium**                  | 🖥 LXC or VM                   | 3        | DNS — outside k8s                                                                              |
-| **kubeadm cluster**                       | 🖥 3–5 VMs                     | 6        | CP + workers on `data01`                                                                       |
-| **k3s**                                   | 🧪 Skip / legacy              | —        | Replaced by kubeadm for CKA                                                                    |
-| **Talos**                                 | 🧪 Optional 2nd cluster       | later    | Learning only                                                                                  |
-| **Cilium**                                | ☸ k8s                         | 6b       | First addon after kubeadm                                                                      |
-| **Longhorn**                              | ☸ k8s                         | 6b/9     | PVCs — **extra vdisk per worker** on `data01`                                                  |
-| **cert-manager**                          | ☸ k8s                         | 6b       | TLS                                                                                            |
-| **NGINX Ingress**                         | ☸ k8s                         | 6b       | **Not Traefik** (lab standard)                                                                 |
-| **metrics-server**                        | ☸ k8s                         | 6b       | `kubectl top`                                                                                  |
-| **KEDA**                                  | ☸ k8s                         | 6b       | Autoscaling                                                                                    |
-| **Argo CD**                               | ☸ k8s                         | 7        | **Bootstrap once** — then Git owns cluster                                                     |
-| **Helm**                                  | 📦 via Argo CD                | 7        | Not manual `helm install` after bootstrap                                                      |
-| **Harbor**                                | ☸ k8s                         | 8        | Registry — [harbor-registry.md](../platform/harbor-registry.md)                                |
-| **Zot**                                   | 🧪 Lab VM or skip             | —        | Pick Harbor **or** Zot — not both long-term                                                    |
-| **Prometheus**                            | ☸ k8s                         | 9        |                                                                                                |
-| **Grafana**                               | ☸ k8s                         | 9        |                                                                                                |
-| **Loki**                                  | ☸ k8s                         | 9        | App logs                                                                                       |
-| **Alertmanager**                          | ☸ k8s                         | 9        |                                                                                                |
-| **node-exporter**                         | ☸ k8s DaemonSet               | 9        |                                                                                                |
-| **kube-state-metrics**                    | ☸ k8s                         | 9        |                                                                                                |
-| **Elasticsearch / Kibana**                | ☸ k8s (optional)              | 10+      | Prefer Loki first; ES if you want ELK practice                                                 |
-| **Redis**                                 | ☸ k8s                         | 8        | Operator or Helm                                                                               |
-| **PostgreSQL**                            | ☸ k8s                         | 8        | CloudNativePG for lab                                                                          |
-| **MySQL / MariaDB**                       | ☸ k8s                         | app      | Per-app or operator                                                                            |
-| **MongoDB / CouchDB / etc.**              | ☸ k8s                         | app      | When an app needs it                                                                           |
-| **RabbitMQ**                              | ☸ k8s                         | 8        |                                                                                                |
-| **Keycloak**                              | ☸ k8s                         | 8        |                                                                                                |
-| **Vault**                                 | ☸ k8s                         | 9        | ESO for secrets                                                                                |
-| **Infisical**                             | ☸ k8s                         | alt      | Pick Vault **or** Infisical                                                                    |
-| **MinIO / AIStor**                        | ☸ k8s                         | 8        | Object storage                                                                                 |
-| **ExternalDNS**                           | ☸ k8s                         | 9        | When AdGuard API stable                                                                        |
-| **Kyverno**                               | ☸ k8s                         | 9        | Policy                                                                                         |
-| **Velero**                                | ☸ k8s                         | 9        | K8s backup → MinIO                                                                             |
-| **Falco**                                 | ☸ k8s                         | 9        | Runtime security                                                                               |
-| **Wazuh**                                 | 🖥 VM                          | 11+      | SIEM — not in k8s                                                                              |
-| **n8n**                                   | ☸ k8s                         | 10       | **Workflow only** — not ITSM; see [itsm-and-automation.md](../platform/itsm-and-automation.md) |
-| **Zammad**                                | ☸ k8s                         | 10+      | Customer tickets when building SaaS                                                            |
-| **GLPI / iTop**                           | 🖥 VM or lab                   | optional | Internal ITIL / ServiceNow-style practice                                                      |
-| **Ollama**                                | ☸ k8s                         | 10       | GPU passthrough later if needed                                                                |
-| **Open WebUI**                            | ☸ k8s                         | 10       |                                                                                                |
-| **SonarQube**                             | ☸ k8s                         | 11       |                                                                                                |
-| **Uptime Kuma**                           | 🖥 **Docker VM** or ☸          | 5        | **VM preferred** — alerts when k8s is down                                                     |
-| **Vaultwarden**                           | 🖥 Docker VM                   | optional | Small, personal                                                                                |
-| **Mealie**                                | ☸ k8s or Docker VM            | app      | Low priority                                                                                   |
-| **Portainer**                             | 🖥 Docker VM                   | lab      | Manages Docker, not k8s                                                                        |
-| **Docker Engine**                         | 🖥 Utility VM                  | lab      | Compose experiments                                                                            |
-| **Podman**                                | 🖥 Utility VM                  | lab      | RHEL-style practice                                                                            |
-| **Docker Swarm**                          | 🖥 Separate lab VM             | 🧪       | Do not mix with kubeadm                                                                        |
-| **Dokku / Coolify / Easypanel / Dokploy** | 🖥 Separate lab VM             | 🧪       | PaaS experiments — one at a time                                                               |
-| **Ceph**                                  | ⛔ Skip                       | —        | Needs 3+ **physical** nodes                                                                    |
-| **Istio**                                 | ☸ optional                    | later    | After NGINX + Cilium solid                                                                     |
-| **API Gateway** (Kong/APISIX)             | ☸ k8s                         | 8+       | After ingress basics                                                                           |
-| **Jenkins**                               | 🖥 VM or ☸                     | optional | GitLab CI is primary                                                                           |
-| **Cachet**                                | ☸ k8s                         | app      | Status page                                                                                    |
+| Service                                   | Place                         | Phase    | Notes                                                                                                                |
+| ----------------------------------------- | ----------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Proxmox VE**                            | Host                          | 0        | Only hypervisor                                                                                                      |
+| **Terraform**                             | Mac + Git                     | 1        | Not a server — IaC in repos                                                                                          |
+| **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`) | 2        | Source of truth; **not** inside k8s                                                                                  |
+| **GitLab Runner**                         | ☸ k8s (preferred)             | 8        | Scales with cluster; VM runner optional for outage builds                                                            |
+| **GitHub Runner**                         | ☸ k8s                         | 11       | `actions-runner-controller` when needed                                                                              |
+| **HAProxy**                               | 🖥 VM                          | 6        | API VIP `:6443` for kubeadm HA                                                                                       |
+| **PBS**                                   | 🖥 Dedicated VM                | backup   | Stage 3 — Dell or separate disk                                                                                      |
+| **AdGuard / Technitium**                  | 🖥 LXC or VM                   | 3        | DNS — outside k8s                                                                                                    |
+| **kubeadm cluster**                       | 🖥 3–5 VMs                     | 6        | CP + workers on `data01`                                                                                             |
+| **k3s**                                   | 🧪 Skip / legacy              | —        | Replaced by kubeadm for CKA                                                                                          |
+| **Talos**                                 | 🧪 Optional 2nd cluster       | later    | Learning only                                                                                                        |
+| **Cilium**                                | ☸ k8s                         | 6b       | First addon after kubeadm                                                                                            |
+| **Longhorn**                              | ☸ k8s                         | 6b/9     | PVCs — **extra vdisk per worker** on `data01`                                                                        |
+| **cert-manager**                          | ☸ k8s                         | 6b       | TLS                                                                                                                  |
+| **NGINX Ingress**                         | ☸ k8s                         | 6b       | **Not Traefik** (lab standard)                                                                                       |
+| **metrics-server**                        | ☸ k8s                         | 6b       | `kubectl top`                                                                                                        |
+| **KEDA**                                  | ☸ k8s                         | 6b       | Autoscaling                                                                                                          |
+| **Argo CD**                               | ☸ k8s                         | 7        | **Bootstrap once** — then Git owns cluster                                                                           |
+| **Helm**                                  | 📦 via Argo CD                | 7        | Not manual `helm install` after bootstrap                                                                            |
+| **Harbor**                                | ☸ k8s                         | 8        | Registry — [harbor-registry.md](../platform/harbor-registry.md)                                                      |
+| **Zot**                                   | 🧪 Lab VM or skip             | —        | Pick Harbor **or** Zot — not both long-term                                                                          |
+| **Prometheus**                            | ☸ k8s                         | 9        |                                                                                                                      |
+| **Grafana**                               | ☸ k8s                         | 9        |                                                                                                                      |
+| **Loki**                                  | ☸ k8s                         | 9        | App logs                                                                                                             |
+| **Alertmanager**                          | ☸ k8s                         | 9        |                                                                                                                      |
+| **node-exporter**                         | ☸ k8s DaemonSet               | 9        |                                                                                                                      |
+| **kube-state-metrics**                    | ☸ k8s                         | 9        |                                                                                                                      |
+| **Elasticsearch / Kibana**                | ☸ k8s (optional)              | 10+      | Prefer Loki first; ES if you want ELK practice                                                                       |
+| **Redis**                                 | ☸ k8s                         | 8        | Operator or Helm                                                                                                     |
+| **PostgreSQL**                            | ☸ k8s                         | 8        | CloudNativePG for lab                                                                                                |
+| **MySQL / MariaDB**                       | ☸ k8s                         | app      | Per-app or operator                                                                                                  |
+| **MongoDB / CouchDB / etc.**              | ☸ k8s                         | app      | When an app needs it                                                                                                 |
+| **RabbitMQ**                              | ☸ k8s                         | 8        |                                                                                                                      |
+| **Keycloak**                              | ☸ k8s                         | 8        |                                                                                                                      |
+| **Vault**                                 | ☸ k8s                         | 9        | ESO for secrets                                                                                                      |
+| **Infisical**                             | ☸ k8s                         | alt      | Pick Vault **or** Infisical                                                                                          |
+| **MinIO / AIStor**                        | ☸ k8s                         | 8        | Object storage                                                                                                       |
+| **ExternalDNS**                           | ☸ k8s                         | 9        | When AdGuard API stable                                                                                              |
+| **Kyverno**                               | ☸ k8s                         | 9        | Policy                                                                                                               |
+| **Velero**                                | ☸ k8s                         | 9        | K8s backup → MinIO                                                                                                   |
+| **Falco**                                 | ☸ k8s                         | 9        | Runtime security                                                                                                     |
+| **Wazuh**                                 | 🖥 VM                          | 11+      | SIEM — not in k8s                                                                                                    |
+| **n8n**                                   | ☸ k8s                         | 10       | **Workflow only** — not ITSM; see [itsm-and-automation.md](../platform/itsm-and-automation.md)                       |
+| **Zammad**                                | ☸ k8s                         | 10+      | Customer tickets when building SaaS                                                                                  |
+| **GLPI / iTop**                           | 🖥 VM or lab                   | optional | Internal ITIL / ServiceNow-style practice                                                                            |
+| **Ollama**                                | ☸ k8s or GPU VM               | 10       | Host IOMMU/`iommu=pt` via bootstrap; VFIO + Radeon 890M passthrough later — [gpu-passthrough.md](gpu-passthrough.md) |
+| **Open WebUI**                            | ☸ k8s                         | 10       |                                                                                                                      |
+| **SonarQube**                             | ☸ k8s                         | 11       |                                                                                                                      |
+| **Uptime Kuma**                           | 🖥 **Docker VM** or ☸          | 5        | **VM preferred** — alerts when k8s is down                                                                           |
+| **Vaultwarden**                           | 🖥 Docker VM                   | optional | Small, personal                                                                                                      |
+| **Mealie**                                | ☸ k8s or Docker VM            | app      | Low priority                                                                                                         |
+| **Portainer**                             | 🖥 Docker VM                   | lab      | Manages Docker, not k8s                                                                                              |
+| **Docker Engine**                         | 🖥 Utility VM                  | lab      | Compose experiments                                                                                                  |
+| **Podman**                                | 🖥 Utility VM                  | lab      | RHEL-style practice                                                                                                  |
+| **Docker Swarm**                          | 🖥 Separate lab VM             | 🧪       | Do not mix with kubeadm                                                                                              |
+| **Dokku / Coolify / Easypanel / Dokploy** | 🖥 Separate lab VM             | 🧪       | PaaS experiments — one at a time                                                                                     |
+| **Ceph**                                  | ⛔ Skip                       | —        | Needs 3+ **physical** nodes                                                                                          |
+| **Istio**                                 | ☸ optional                    | later    | After NGINX + Cilium solid                                                                                           |
+| **API Gateway** (Kong/APISIX)             | ☸ k8s                         | 8+       | After ingress basics                                                                                                 |
+| **Jenkins**                               | 🖥 VM or ☸                     | optional | GitLab CI is primary                                                                                                 |
+| **Cachet**                                | ☸ k8s                         | app      | Status page                                                                                                          |
 
 ### Legend
 

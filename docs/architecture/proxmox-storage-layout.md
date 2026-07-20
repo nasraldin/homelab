@@ -144,7 +144,7 @@ Applied by `proxmox-bootstrap` — verify after install:
 
 Already installed by bootstrap:
 
-`curl wget vim htop iotop git tmux jq unzip lm-sensors smartmontools nvme-cli chrony qemu-guest-agent`
+`curl wget vim htop iotop git tmux jq unzip rsync net-tools lm-sensors smartmontools nvme-cli chrony`
 
 **Optional adds** (install manually if you want):
 
@@ -173,6 +173,9 @@ Do **not** install Docker on the Proxmox host — VMs only.
 | SR-IOV            | Enable (harmless until needed) |
 | Above 4G Decoding | Enable                         |
 | TPM / fTPM        | Enable                         |
+
+Kernel after install: add **`iommu=pt`** only (not `amd_iommu=on`) —
+[gpu-passthrough.md](gpu-passthrough.md).
 
 ---
 

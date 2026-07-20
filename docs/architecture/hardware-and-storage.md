@@ -26,11 +26,11 @@ The X1 Pro has three M.2 slots, and they are not equal — Slot 3 is PCIe ×1 an
 
 ### Installed / planned drives
 
-| Slot | Disk                        | Proxmox role                                    | Status                |
-| ---- | --------------------------- | ----------------------------------------------- | --------------------- |
-| 1    | Samsung 990 PRO 2 TB        | `rpool` + Stage 1 `local-backup`                | ✅                    |
-| 2    | Kingston FURY Renegade 4 TB | `data01` — **all** production VM/LXC/k8s disks  | 🟡                    |
-| 3    | Kingston OM8TAP 2 TB (OEM)  | `aux01` — ISO overflow, backup staging, archive | 🟡 use included drive |
+| Slot | Disk                        | Proxmox role                                    | Status                           |
+| ---- | --------------------------- | ----------------------------------------------- | -------------------------------- |
+| 1    | Samsung 990 PRO 2 TB        | `rpool` + Stage 1 `local-backup`                | ✅                               |
+| 2    | Kingston FURY Renegade 4 TB | `data01` — **all** production VM/LXC/k8s disks  | ✅                               |
+| 3    | Kingston OM8TAP 2 TB (OEM)  | `aux01` — ISO overflow, backup staging, archive | ⏸️ **disk not installed** — hold |
 
 ```text
 Slot 1 — 990 PRO (rpool)
@@ -176,7 +176,7 @@ If FURY is too expensive vs NM790 4 TB (~AED 290 less in your list): NM790 in Sl
 | Setting           | Recommendation                                             |
 | ----------------- | ---------------------------------------------------------- |
 | SVM (AMD-V)       | ✅ Enable                                                  |
-| IOMMU / AMD-Vi    | ✅ Enable (PCI passthrough later)                          |
+| IOMMU / AMD-Vi    | ✅ Enable (required for PCI/GPU passthrough)               |
 | SR-IOV            | ✅ Enable (no cost if unused; needed for VF NIC/GPU later) |
 | Above 4G Decoding | ✅ Enable                                                  |
 | TPM / fTPM        | ✅ Enable                                                  |
@@ -184,15 +184,22 @@ If FURY is too expensive vs NM790 4 TB (~AED 290 less in your list): NM790 in Sl
 
 SR-IOV does nothing until you attach SR-IOV-capable NICs/GPUs. Enable once, forget.
 
+### Kernel cmdline (after BIOS) — AMD
+
+Do **not** add `amd_iommu=on` (noop; removed from Proxmox docs). AMD IOMMU is
+on by default. Add **`iommu=pt`** via `proxmox-bootstrap` `check_iommu`.
+
+Full write-up (890M, boot files, verify): [gpu-passthrough.md](gpu-passthrough.md).
+
 ---
 
 ## Backup stages (updated)
 
-| Stage   | Target                         | Status                                 |
-| ------- | ------------------------------ | -------------------------------------- |
-| 1       | `local-backup` on 990 PRO      | 🟡 now                                 |
-| 2       | `aux01` on **Slot 3 OEM 2 TB** | 🔮 preferred over buying new 4 TB NVMe |
-| 3       | PBS on Dell                    | 🔮                                     |
-| Offsite | USB portable SSD               | 🔮 personal + encrypted backup copy    |
+| Stage   | Target                         | Status                              |
+| ------- | ------------------------------ | ----------------------------------- |
+| 1       | `local-backup` on 990 PRO      | ✅ applied                          |
+| 2       | `aux01` on **Slot 3 OEM 2 TB** | ⏸️ hold — disk not installed        |
+| 3       | PBS on Dell                    | 🔮                                  |
+| Offsite | USB portable SSD               | 🔮 personal + encrypted backup copy |
 
 Details: [operations/backups.md](../operations/backups.md).
