@@ -58,3 +58,5 @@ Secrets (`config.env`, `credentials.auto.tfvars`, …) are in
 ## Lab map
 
 See [homelab-docs](https://github.com/nasraldin/homelab-docs) (local: `./homelab-docs/`) for the platform ownership guide.
+
+**Docs site (searchable):** https://nasraldin.github.io/homelab-docs/
