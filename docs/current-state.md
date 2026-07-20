@@ -1,12 +1,15 @@
-# Current state — July 2026
+# See Where the Homelab Stands Right Now
 
-This is the **status board**. Read it after the [build story](build-story.md) so the checkmarks mean something.
+Live status board for the lab. Read the [build story](build-story.md) first so the checkmarks mean something; run close-out from [installation/next-steps.md](installation/next-steps.md).
 
-**Overall:** setup in progress. Proxmox is installed and checked; host automation and storage pools are ready in Git but **not applied** on the node yet.
+**Overall:** setup in progress. Proxmox is installed and checked; host automation and storage pools are ready in Git but **not applied** on the node yet. **Node (examples):** `pve01.lab.example.com` · `192.168.1.10/24` · Proxmox VE **9.2.4**.
 
-**Node (examples):** `pve01.lab.example.com` · `192.168.1.10/24` · Proxmox VE **9.2.4**
+## What this page covers
 
-**Next concrete steps:** [installation/next-steps.md](installation/next-steps.md)
+- Hardware slots and pool roles (`rpool` / `data01` / `aux01`)
+- What is already ✅ on the node
+- What is 🟡 in Git and must be applied next
+- What is still ⏳, plus decisions that won’t be redone
 
 ---
 

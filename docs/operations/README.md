@@ -1,6 +1,14 @@
-# Operations
+# Operate Proxmox Safely: Backups, Updates, and Health
 
-Host-level operations for `pve01` — backups, updates, health.
+Day-2 work on `pve01`: keep the host patched, prove backups restore, and know where health checks live. This is hypervisor and storage ops — not Kubernetes day-2 (that stays in GitOps and cluster docs).
+
+Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A single ops agent is still future work.
+
+## What this page covers
+
+- Index of updates, vzdump stages, and backup-platform docs
+- Links to repo runbooks on GitHub
+- Planned homelab-agent scope (not built yet)
 
 | Doc | Topic |
 | --- | ----- |

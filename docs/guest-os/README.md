@@ -1,7 +1,15 @@
-# Guest operating systems
+# Choose the Right Guest OS for Each Homelab Role
 
-Which OS to use for which VM — aligned with Platform Engineering learning goals
-(AKS, Azure Arc, GitOps, OpenShift-style operations).
+Pick the guest OS by role, not by habit. Most VMs stay on Debian; kubeadm nodes follow that. Talos, Fedora CoreOS, and Fedora Server exist for specific learning paths (immutable k8s, OpenShift-style Ignition, RHEL/`dnf`) — not as a blanket replacement.
+
+Do not put CoreOS or Talos everywhere “because immutable sounds modern.” Match the OS to the job and the skill you are practicing.
+
+## What this page covers
+
+- Target mix of Debian, Talos, CoreOS, and Fedora Server
+- When to use each OS (and when not to)
+- Provisioning notes for CoreOS and Talos
+- Link to kubeadm / k8s docs for node choice
 
 ## Summary mix (target)
 

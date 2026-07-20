@@ -1,8 +1,14 @@
-# Community labs
+# Use the Public Labs Alongside This Homelab
 
-I keep a few public tools next to this homelab. They’re useful on their own if you only need Docker or Camunda on a laptop — and they plug into the same MacBook workflow I use against Proxmox.
+Sibling public labs that sit next to this homelab curriculum. Useful alone if you only need Docker or Camunda on a laptop; same MacBook workflow I use against Proxmox when you’re on the full path. Each project has its own docs site so the CLI stories stay focused.
 
-Each project has its **own** docs site so the CLI stories stay focused.
+Read this after [current state](current-state.md) if you’re wiring the Mac control plane; clone sources under `~/homelab` when you want them beside these docs.
+
+## What this page covers
+
+- Docker Lab and Camunda Lab docs links
+- How to clone sibling repos with `./clone-labs.sh`
+- What stays private (bootstrap / Terraform / tunnel) vs what’s public here
 
 | Lab | Docs | What it’s for |
 | --- | ---- | ------------- |

@@ -1,14 +1,15 @@
-# Backup platform — Veeam-equivalent for this lab
+# Build a Homelab Backup Stack with PBS, Velero, and MinIO
 
-Open-source stack to practice **enterprise backup concepts** (VM DR, k8s backup,
-immutable object storage, DB PITR) without Veeam licensing.
+Enterprises often buy Veeam for VM and app backup. This lab maps the same ideas to open-source layers: vzdump/PBS for guests, Velero for Kubernetes, MinIO Object Lock for immutability, and CloudNativePG for database PITR — without a license bill.
 
-**Your enterprise:** Veeam (commercial VM + app backup)  
-**This lab:** layered OSS tools mapped to the same ideas
+Use [backups.md](backups.md) for current vzdump stages on the X1 Pro. This page is the broader platform picture and phase placement. Hardware context: [hardware-and-storage.md](../architecture/hardware-and-storage.md).
 
-Related: [backups.md](backups.md) (vzdump stages) · [hardware-and-storage.md](../architecture/hardware-and-storage.md)
+## What this page covers
 
----
+- Enterprise backup concepts → homelab tools
+- VM/LXC layer: vzdump today, PBS on Dell later
+- Kubernetes (Velero), object lock (MinIO), DB PITR
+- What to skip and how layers compose
 
 ## Enterprise concept → homelab tool
 

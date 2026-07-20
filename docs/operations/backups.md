@@ -1,8 +1,15 @@
-# Backups
+# Back Up Every VM in Stages and Drill Restores
 
-Practice production-like backup ops on **three-drive layout** (990 PRO + FURY + OEM).
+VM backups grow with the three-drive layout (990 PRO + FURY + OEM): start on `local-backup`, move to aux NVMe, then PBS on separate hardware. Schedule and retention matter less than restore drills — archives you never restore are not backups.
 
-**Enterprise mapping (Veeam-equivalent OSS):** [backup-platform.md](backup-platform.md)
+For the Veeam-style OSS map (PBS, Velero, MinIO), see [backup-platform.md](backup-platform.md).
+
+## What this page covers
+
+- Stage 1–3 storage targets and status
+- `daily-all` vzdump job settings (terraform-lab)
+- Weekly restore drill cadence
+- Migration steps to aux 4 TB storage
 
 ## Stages
 

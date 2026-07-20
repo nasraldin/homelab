@@ -1,8 +1,14 @@
-# Placeholders in these docs
+# Use Safe Placeholders Instead of Real Secrets
 
-These pages are written so students can copy commands without inheriting **my** LAN. Anything that would identify a private network or a real credential is replaced with a safe example.
+These pages use example LAN values and hostnames so you can copy commands without inheriting my network. Anything that would identify a private network or a real credential is replaced with a safe example. I’m [Nasr Aldin](https://nasraldin.com) — if you see my name in footers or credits, it links here on purpose.
 
-I’m [Nasr Aldin](https://nasraldin.com) — if you see my name in footers or credits, it links here on purpose.
+Read this before you paste install or Terraform commands from the [install journal](../installation/README.md) or [build story](../build-story.md).
+
+## What this page covers
+
+- Placeholder table (IPs, FQDNs, users, secrets, env files)
+- Rules for what never lands in Git
+- Where secrets and ownership fit next to platform tooling
 
 | Placeholder | Meaning | You should use |
 | ----------- | ------- | -------------- |

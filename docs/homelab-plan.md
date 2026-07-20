@@ -1,4 +1,4 @@
-# Homelab plan (moved)
+# Old Homelab Plan (Moved)
 
 This document has been split into topic-based docs. **Start here:**
 

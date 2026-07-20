@@ -1,8 +1,16 @@
-# Next steps after fresh install
+# Close Phase 0: Commands Right After a Fresh Install
 
-**Status:** 🔄 Setup — manual install ✅; run the steps below to close Phase 0.
+Command block to close Phase 0 after a verified fresh install. Manual install should already be ✅; everything below is still 🔄 until you run it on the node. Check [current state](../current-state.md) first, then come back here in order.
 
-Canonical status: [current-state.md](../current-state.md) · Story: [build-story.md](../build-story.md)
+Read this after [verified state](verified-state.md). The same sequence is summarized in [foundation sequence](../roadmap/foundation-sequence.md) steps 2–8.
+
+## What this page covers
+
+- Host bootstrap (`proxmox-bootstrap`)
+- Daily update-check automation
+- Terraform storage pools and backup jobs
+- Cloudflare Tunnel for the public UI
+- Optional host firewall and backup restore proof
 
 ---
 

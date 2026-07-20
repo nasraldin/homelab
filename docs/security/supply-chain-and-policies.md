@@ -1,16 +1,15 @@
-# Supply chain security & admission policies
+# Sign Images and Enforce Policy with Cosign and Kyverno
 
-How to achieve **Cosign/Sigstore signing** + **Kyverno admission** in this
-homelab — aligned with your phases, repos, and tooling choices.
+Build-time signing (Cosign/Sigstore) and deploy-time admission (Kyverno) close the loop: prove the image was not tampered with after CI, then block unsigned or non-compliant workloads before they run — including Argo CD syncs.
 
-**References (external):**
+This lab uses **Kyverno** for Kubernetes policy, not Gatekeeper, unless you specifically want Rego. Related ownership: [platform-tooling.md](../platform-tooling.md) · [automation-layers.md](../architecture/automation-layers.md). External read: [Securing Kubernetes workloads with Sigstore](https://www.donaldsebleung.com/blog/20230720-securing-your-kubernetes-workloads-with-sigstore).
 
-- [Securing Kubernetes workloads with Sigstore](https://www.donaldsebleung.com/blog/20230720-securing-your-kubernetes-workloads-with-sigstore)
-- OPA as policy layer (concept) — we use **Kyverno** instead of raw OPA for k8s
+## What this page covers
 
-**Related:** [platform-tooling.md](../platform-tooling.md) · [automation-layers.md](../architecture/automation-layers.md)
-
----
+- What Trivy, Syft, Cosign, Harbor, and Kyverno each solve
+- End-to-end architecture from CI to admission
+- Kyverno vs OPA Gatekeeper for this lab
+- Concrete policy and signing steps aligned to phases
 
 ## What problem each piece solves
 

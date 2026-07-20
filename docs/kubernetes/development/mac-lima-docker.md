@@ -1,10 +1,15 @@
-# Mac: Lima + Docker (no Docker Desktop)
+# Run Docker on Apple Silicon Without Docker Desktop
 
-Local Docker practice on Apple Silicon — **fast, terminal-native, production-like Linux underneath**.
+Use Lima plus the Docker CLI on Apple Silicon when you want container practice without Docker Desktop. The guest is a real Linux VM (`dockerd` → `containerd` → `runc`), which is closer to how servers run containers than Desktop’s app wrapper.
 
-Your Mac: **arm64**, **36 GB RAM** (adjust Lima sizing below; ignore generic “64 GB” guides).
+This Mac is **arm64** with **36 GB RAM** — size the Lima profile for that, not generic “64 GB” guides. Kubernetes stays on the X1 Pro; Lima is for images, Compose, and runtime exploration only.
 
----
+## What this page covers
+
+- Lima + Docker CLI stack on macOS
+- Homebrew paths, Compose plugin, and Desktop migration
+- Recommended Lima profile and socket wiring
+- Limits: what belongs on Mac vs Proxmox
 
 ## Stack
 

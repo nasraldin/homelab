@@ -1,10 +1,16 @@
-# Platform services
+# Deploy Shared Platform Services with Argo CD
 
-Shared infrastructure deployed **inside Kubernetes** via Argo CD (Phase 7–9).
+Platform services are the shared pieces that live **inside** the cluster after GitOps exists: registry, ticketing integrations, and similar day-2 tooling. They land via Argo CD in Phases 7–9 — not via one-off `helm install` on the laptop.
+
+Decide VM vs Kubernetes placement first ([service placement](../architecture/service-placement.md)); this section assumes the service belongs in-cluster.
+
+## What this page covers
+
+- Index of Harbor and ITSM/automation docs
+- Where platform services sit in the phase plan
+- Pointer to VM vs k8s placement decisions
 
 | Doc | Topic |
 | --- | ----- |
 | [Harbor registry](harbor-registry.md) | Proxy cache, replication, projects — Harbor vs Zot |
 | [ITSM and n8n](itsm-and-automation.md) | Zammad vs GLPI/iTop; n8n automates, does not ticket |
-
-See also [service-placement.md](../architecture/service-placement.md) for VM vs k8s decisions.

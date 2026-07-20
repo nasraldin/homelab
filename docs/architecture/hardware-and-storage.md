@@ -1,4 +1,14 @@
-# Hardware & storage
+# Pick the Right Drive and Slot for Every Homelab Disk
+
+The X1 Pro has three M.2 slots, and they are not equal — Slot 3 is PCIe ×1 and will never match a flagship drive's rated speed. Put the OS and production guests on the ×4 slots; use Slot 3 for backups, ISO, and cold capacity.
+
+## What this page covers
+
+- Slot topology, installed drives, and what belongs on each pool
+- SSD purchase guidance for Slots 1–2 (and what to skip for Slot 3)
+- Whether 2 TB or 4 TB makes sense in Slot 3
+- Workload expectations when VMs land on Slot 3
+- Five-year layout, BIOS defaults, and backup stages
 
 ## Node
 

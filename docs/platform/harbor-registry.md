@@ -1,14 +1,15 @@
-# Harbor — registry design for this homelab
+# Build a Private Container Registry with Harbor
 
-**Decision:** use **Harbor** in Kubernetes (Phase 8 via Argo CD). **Not Zot** for
-the primary registry — Zot stays a optional lab experiment on a side VM if you
-want minimal OCI practice.
+**Harbor** is the primary private registry for this lab — deployed in Kubernetes in Phase 8 via Argo CD. It gives you proxy cache, RBAC, robot accounts, replication, Trivy scanning, and audit logs that match GitLab CI and Kyverno workflows. Budget roughly **4–8 GB RAM** on the cluster.
 
-**Why Harbor here:** proxy cache, RBAC, robot accounts, replication UI, Trivy
-scanning, audit logs — matches GitLab CI + Kyverno + production-like workflows.
-Budget **~4–8 GB RAM** for Harbor on the cluster.
+Zot is optional side practice on a spare VM if you want a minimal OCI registry. Do not run both as production registries; pick one cluster URL (`harbor.lab.example.com`).
 
----
+## What this page covers
+
+- Harbor vs Zot and why Harbor is primary
+- What the Harbor UI cannot do (no “pull from Hub” button)
+- Proxy cache, replication, and push workflows
+- Wiring images into Kubernetes and CI
 
 ## Harbor vs Zot (short)
 

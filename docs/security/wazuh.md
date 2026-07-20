@@ -1,9 +1,15 @@
-# Wazuh — SIEM / XDR in this homelab
+# Add SIEM Monitoring to the Homelab with Wazuh
 
-What Wazuh is, how it differs from Prometheus/Grafana/Falco/Kyverno, and
-**when** to add it to your platform engineering lab.
+Wazuh is the SIEM/XDR layer: host agents, log correlation, FIM, vulnerability detection, and compliance reporting. It answers “did something security-relevant happen?” — not “is CPU high?” (that stays Prometheus/Grafana).
 
----
+Add it late (Phase 11+) after registry, admission, and cluster runtime tools exist. It complements Falco and Kyverno; it does not replace them.
+
+## What this page covers
+
+- What Wazuh is and the manager/indexer/dashboard path
+- Enterprise feature mapping (SIEM, FIM, compliance)
+- Where it sits vs Prometheus, Loki, Falco, Kyverno
+- When to deploy and what to collect first
 
 ## What Wazuh is
 

@@ -1,9 +1,15 @@
-# Foundation sequence (before Kubernetes)
+# Finish the Foundation Before You Touch Kubernetes
 
-Ordered steps — **corrected for X1 Pro hardware and current repos**.
-Do not start Kubernetes until steps **1–12** are ✅.
+Ordered foundation checklist, corrected for X1 Pro hardware and the current repos. Do not start Kubernetes until steps **1–12** are ✅. Read [current state](../current-state.md) for the live board; use [installation/next-steps.md](../installation/next-steps.md) for the Phase 0 command block.
 
 **Status:** 🔄 Step 1 done; steps 2–12 🟡 (automation in Git, apply pending).
+
+## What this page covers
+
+- Steps 1–12 that must be green before kubeadm
+- Later steps (kubeadm, GitOps, platform) once the foundation holds
+- Phase 0 close-out commands to run now
+- Planning corrections vs early drafts (slots, disks, kubeadm, updates)
 
 | # | Step | Status | Where |
 | - | ---- | ------ | ----- |

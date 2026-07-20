@@ -1,4 +1,13 @@
-# Network, DNS & ingress
+# Design Network, DNS, and Ingress for One Homelab Node
+
+Today the lab is a single Proxmox node on a flat LAN — no VLANs yet, remote UI only through Cloudflare Tunnel. This page records the DNS and ingress choices so Mac hosts files, public names, and in-cluster routing stay consistent as guests land.
+
+## What this page covers
+
+- Current LAN bridge layout and deferred VLANs
+- Filtering vs authoritative vs public DNS roles
+- Kubernetes ingress controller and cert-manager path
+- Internal (`*.lab.example.com`) vs public (`*.example.com`) naming
 
 ## Network (today)
 

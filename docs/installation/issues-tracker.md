@@ -1,9 +1,16 @@
-# Issues tracker — Phase 0 install
+# Debug Common Proxmox Install Problems
 
-Problems encountered during fresh Proxmox setup. Use this when debugging a
-**new node** or comparing drift on `pve01`.
+Symptom → cause → fix log from the fresh Proxmox setup. Use it when a new node hits the same traps, or when `pve01` drifts from known-good. Cross-check the timeline in [journey](journey.md); confirm recovery with [verified state](verified-state.md).
 
-**Status:** `resolved` | `workaround` | `open` | `wont-fix`
+Statuses: `resolved` | `workaround` | `open` | `wont-fix`.
+
+## What this page covers
+
+- Summary table of every tracked install issue
+- Disk / ZFS mistakes that forced reinstalls
+- DNS and Mac connectivity traps (Cloudflare wildcard, ping, SSH)
+- API / shell quirks (token auth, zsh `!`, Ghostty `TERM`)
+- Open items still waiting on bootstrap (for example ZFS autotrim)
 
 ---
 

@@ -1,8 +1,15 @@
-# kubeadm cluster architecture (CKA / Platform Engineering)
+# Build an HA Kubernetes Cluster with kubeadm on Debian
 
-Production-style Kubernetes on **Debian** VMs under Proxmox. Sized for the **X1 Pro (96 GB RAM)** while leaving room for GitLab, monitoring, and Wazuh later.
+This is the target layout for an HA kubeadm cluster on Debian VMs under Proxmox. It is sized for the X1 Pro (96 GB RAM) so you still have headroom for GitLab, monitoring, and Wazuh later.
 
----
+Read this before you create VMs or run `kubeadm init`. It settles API load-balancing, node counts, and why kubeadm — not k3s — is the primary path for CKA and on-prem practice.
+
+## What this page covers
+
+- Why kubeadm over k3s for this lab
+- HAProxy roles: API (`:6443`) vs app traffic
+- Target topology, sizing, and Phase 6b addons
+- Upgrade and ops notes that follow from the layout
 
 ## Why kubeadm (not k3s) for your goal
 

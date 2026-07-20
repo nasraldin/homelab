@@ -1,14 +1,20 @@
-# Proxmox VE 9.2 — storage layout (X1 Pro)
+# Set Up Proxmox Storage Across Three NVMe Drives
 
-Professional storage design for:
+Install Proxmox on the 990 PRO only; add the FURY and OEM pools after bootstrap. Production guest disks stay on `data01` — never on the OS pool — so backups and ISO staging can live on `aux01` without competing with the hypervisor.
+
+## What this page covers
+
+- Install-time ZFS choices for Slot 1 only
+- Which filesystem belongs where (and why VM disks stay on ZFS `data01`)
+- How to use free space on `rpool` without putting guests there
+- Post-install order: bootstrap → Terraform pools → backup jobs
+- ZFS properties, host packages, BIOS, VM defaults, and RAM budget
 
 | Slot | Disk | Role |
 | ---- | ---- | ---- |
 | 1 | Samsung 990 PRO 2 TB | `rpool` — hypervisor only |
 | 2 | Kingston FURY Renegade 4 TB | `data01` — **all production VM disks** |
 | 3 | Kingston OM8TAP 2 TB | `aux01` — backups, ISO, archive |
-
----
 
 ## Install-time choices (Slot 1 only)
 

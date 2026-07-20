@@ -1,10 +1,16 @@
-# Service placement — VM vs Kubernetes vs Docker
+# Decide What Runs on a VM, in Kubernetes, or in Docker
 
-Where each tool belongs on the X1 Pro homelab. **Rule:** put software where it naturally belongs, not where it *can* run.
+Put each service where it belongs by failure domain — not wherever it *can* run. GitLab and backups stay outside the cluster so you can still recover when Kubernetes is down; Argo CD owns what runs inside.
 
-Aligned with [platform-tooling.md](../platform-tooling.md): Terraform → VMs; kubeadm once; **Argo CD** for everything in-cluster.
+Aligned with [platform-tooling.md](../platform-tooling.md): Terraform creates VMs; kubeadm once; Argo CD for in-cluster apps.
 
----
+## What this page covers
+
+- Layer model from Proxmox host through GitOps
+- Master placement table (VM vs k8s vs lab) by phase
+- Why GitLab is a dedicated VM, not in-cluster
+- Docker utility VM sizing and Longhorn disk layout
+- What to run now vs defer as isolated lab experiments
 
 ## Layer model
 

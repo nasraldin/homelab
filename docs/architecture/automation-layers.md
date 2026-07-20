@@ -1,11 +1,16 @@
-# Automation layers — Mac, Ansible, Terraform, bootstrap
+# Automate the Homelab from Bare Metal to GitOps
 
-How to provision the **X1 Pro 470** professionally: what each tool does, what
-it cannot do, and which repo owns it.
+Nothing automates Proxmox onto empty metal by itself — you need an installer first, then code owns everything after. This page maps which repo and tool handle each layer on the X1 Pro, and where those boundaries sit.
 
-**Source of truth for boundaries:** [platform-tooling.md](../platform-tooling.md)
+Source of truth for tool boundaries: [platform-tooling.md](../platform-tooling.md).
 
----
+## What this page covers
+
+- The full stack from bare metal through GitOps, plus the Mac as control plane
+- What Ansible and Terraform can and cannot do on empty hardware
+- How `proxmox-bootstrap` and `ansible-lab` split host work
+- Storage ownership (`rpool` vs `data01`) and remote access paths
+- Rebuild workflows and what belongs in Ansible vs elsewhere
 
 ## The stack (your lab)
 

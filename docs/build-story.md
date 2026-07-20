@@ -1,10 +1,15 @@
-# Build story — from zero to platform lab
+# Tell the Homelab Story from Zero to Platform
 
-This page is the spine of the whole site. Technical depth lives in the linked docs; here you get the **order of events** and why each call was made.
+Narrative spine of the lab: order of events and why each call was made. Technical depth lives in the linked docs. I’m [Nasr Aldin](https://nasraldin.com) — Platform Engineering portfolio on real hardware, not a throwaway laptop VM.
 
-I’m [Nasr Aldin](https://nasraldin.com). I built this lab as a Platform Engineering portfolio on real hardware — not a throwaway VM on a laptop.
+Read this first if you’re new. Then use [current state](current-state.md) for the live checklist, and the [install journal](installation/README.md) / [roadmap](roadmap/README.md) when you need commands or phase status.
 
-**Where we are today:** [current-state.md](current-state.md)
+## What this page covers
+
+- Why the lab exists and the principles locked early
+- Hardware / storage design and install lessons
+- Phase 0a–0b: manual install done, automation in Git waiting to apply
+- What comes next once Phase 0 is closed (DNS, GitLab, kubeadm, GitOps)
 
 ---
 

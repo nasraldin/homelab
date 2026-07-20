@@ -1,9 +1,15 @@
-# Verified state — pve01 (post-install)
+# Verify the Proxmox Node After Install
 
-Snapshot after manual install and validation (July 2026). Re-run these
-commands after bootstrap or major changes.
+Known-good checks from after the manual install and validation (July 2026). Re-run the same commands after bootstrap or any major host change. Read [journey](journey.md) first if you need context; go to [next steps](next-steps.md) once these checks pass.
 
 **Node:** `pve01.lab.example.com` · `192.168.1.10/24`
+
+## What this page covers
+
+- Software versions and hostname / FQDN
+- Network and interim DNS on node and Mac
+- ZFS `rpool` layout and unused disks awaiting Terraform
+- SSH, API, and other post-install smoke checks
 
 ---
 

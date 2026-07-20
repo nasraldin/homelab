@@ -1,6 +1,15 @@
-# Proxmox host updates
+# Automate Update Checks and Upgrade Proxmox Safely
 
-You requested automated **update checks** on the Proxmox hypervisor — not unattended upgrades.
+Proxmox should **tell you** when packages are available — then you upgrade in a maintenance window. Unattended `apt full-upgrade` on the hypervisor is rejected: kernel, `pve-manager`, and ZFS updates can force reboots or break guests.
+
+Checks run on the host with systemd + shell. n8n is optional fan-out after a report exists, not the primary update mechanism.
+
+## What this page covers
+
+- Layered design: check → manual upgrade → optional n8n
+- Daily timer behaviour (simulate only, notify if updates)
+- Manual `apply-updates.sh` workflow and health checks
+- Why auto-upgrade and n8n-as-primary are out
 
 ## Layered design (decided)
 

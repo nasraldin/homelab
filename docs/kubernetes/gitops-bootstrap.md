@@ -1,8 +1,15 @@
-# GitOps bootstrap — Argo CD, Longhorn, Helm
+# Bootstrap GitOps so Git Owns Every Cluster App
 
-How to go from **kubeadm cluster** to **Git as source of truth** without installing everything by hand forever.
+Once the kubeadm cluster is up, stop installing apps by hand. Bootstrap the minimum (CNI, optionally storage, Argo CD), then put every permanent workload in Git and let Argo CD sync it.
 
----
+This page is the handoff from “cluster exists” to “Git owns day-2.” Follow the order; skip steps and you fight missing CRDs and empty storage classes.
+
+## What this page covers
+
+- What you install manually once vs what Argo owns
+- Git repo layout for app-of-apps
+- Cilium, Longhorn, and Argo CD bootstrap steps
+- Root Application and platform sync after Argo is live
 
 ## Bootstrap principle
 

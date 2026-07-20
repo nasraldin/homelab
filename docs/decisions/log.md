@@ -1,4 +1,15 @@
-# Decision log
+# Log Every Architecture Decision with a Clear Rationale
+
+Append-only log of architecture choices and the rationale that locked them. Skim this when a later phase tempts a rewrite; the [build story](../build-story.md) and [current state](../current-state.md) summarize the same calls in narrative and checklist form.
+
+Add a row when you make a new architectural choice — don’t rewrite history.
+
+## What this page covers
+
+- Install and storage decisions (USB, ZFS, disks, backups)
+- Naming, DNS interim, and public UI via Tunnel
+- Automation ownership (bootstrap, Terraform token, update checks)
+- Platform stack picks (kubeadm, NGINX, AdGuard/Technitium, GitOps, signing)
 
 | Date | Decision | Rationale |
 | ---- | -------- | --------- |
@@ -25,5 +36,3 @@
 | 2026-07 | Mac as control plane | `infra-01` optional later |
 | 2026-07 | Kyverno over Gatekeeper for k8s admission | Kubernetes-native; built-in Cosign verify; Rego optional later |
 | 2026-07 | Cosign keyed signing in CI (not keyless v1) | Simpler homelab; Vault/ESO for keys in Phase 9 |
-
-Add a row when you make a new architectural choice.

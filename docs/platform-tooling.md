@@ -1,8 +1,15 @@
-# Platform tooling — who owns what
+# Know Which Tool Owns Each Layer — and Stay in Bounds
 
-This is the **source of truth** for how this homelab is built and operated.
-Follow it the same way a platform team would: each tool has one job; do not
-cross those boundaries “because it’s convenient.”
+This is the ownership map for the lab. Each tool has one job. Crossing layers “because it’s convenient” creates two sources of truth and painful drift — the same failure mode platform teams hit when Terraform and Helm both claim the same chart.
+
+Read this before you add a new VM, bootstrap Kubernetes, or put an app in Git. A full rebuild should be: install → `proxmox-bootstrap` → Terraform → (Ansible for non-k8s VMs) → Argo CD sync.
+
+## What this page covers
+
+- Layer model: infra → cluster bootstrap → GitOps workloads
+- What each repo owns (and must not own)
+- How professional teams create and operate Kubernetes
+- Day-2 task → tool mapping and common anti-patterns
 
 ## The three layers (correct model)
 

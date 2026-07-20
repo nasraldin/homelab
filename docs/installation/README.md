@@ -1,10 +1,14 @@
-# Phase 0 — Fresh Proxmox install
+# Install Proxmox from Scratch — Phase 0 Journal
 
-This section is the install journal for **pve01**: what we planned, what the installer asked, what broke, and what “good” looked like when we were done.
+Phase 0 journal for `pve01`: planning choices, installer traps, fixes, and the checks that meant “done.” Read the [build story](../build-story.md) install chapters first if you want the why; use [current state](../current-state.md) for the live checklist.
 
-Read the [build story](../build-story.md) (chapters on install) first if you want the why. Use [current state](../current-state.md) for the live checklist.
+Operational runbooks live in the private **proxmox-bootstrap** repo. These pages are the historical record you can walk in order.
 
-Operational runbooks live in the private **proxmox-bootstrap** repo. What’s here is the historical record students can follow.
+## What this page covers
+
+- Reading order for the install journal (journey → issues → verified state → next steps)
+- Links into proxmox-bootstrap deep dives (installer, DNS, SSH, Terraform API)
+- Where this sits relative to hardware, network, and the foundation sequence
 
 ## Read in this order
 

@@ -1,7 +1,15 @@
-# Install journey timeline
+# Walk the Full Proxmox Install from Plan to Ready
 
-Chronological record: **Minisforum X1 Pro → Proxmox VE 9.2 → automation-ready
-host**. Dates approximate (July 2026).
+Chronological record of this lab’s install: Minisforum X1 Pro → Proxmox VE 9.2 → automation-ready host (dates approximate, July 2026). Read this after the [install section overview](README.md); pair with the [issues tracker](issues-tracker.md) when a step fails.
+
+Use [verified state](verified-state.md) when you want the “good” command outputs, and [next steps](next-steps.md) once the node is up.
+
+## What this page covers
+
+- Pre-install goals, hardware map, and locked decisions
+- USB installer choices (disk, ZFS, network)
+- First-boot failures and the fixes that stuck
+- Path from a clean host to bootstrap / Terraform / tunnel
 
 ---
 

@@ -1,9 +1,15 @@
-# ITSM, helpdesk, and n8n — what goes where
+# Keep Tickets in Zammad and Automate Work with n8n
 
-Customer-facing **tickets** need an ITSM/helpdesk product. **n8n** is a workflow
-engine — it reacts to tickets; it does not replace them.
+Tickets need a real ITSM or helpdesk system of record. **n8n** is a workflow engine: it reacts to tickets and fan-outs side effects — it does not replace the ticket itself.
 
----
+This page separates helpdesk choices (Zammad, GLPI, iTop) from automation so you do not end up treating n8n forms as your “ticketing system.”
+
+## What this page covers
+
+- ITSM vs n8n vs monitoring vs SIEM roles
+- When to pick Zammad, GLPI, iTop, or lighter tools
+- How n8n hooks tickets without owning them
+- Link to Proxmox update fan-out (n8n optional, not primary)
 
 ## Core rule
 

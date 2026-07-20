@@ -1,6 +1,15 @@
-# Kubernetes
+# Build a Kubernetes Homelab Like a Professional
 
-CKA-focused, production-style Kubernetes on the X1 Pro — **kubeadm**, not k3s.
+This section is the Kubernetes track for the lab: a CKA-aligned, production-style cluster on the X1 Pro. We use **kubeadm** on Debian VMs under Proxmox — not k3s, and not a toy cluster on the Mac.
+
+Use the Mac (Lima) only for Docker and image practice. The real control plane, workers, and GitOps live on Proxmox.
+
+## What this page covers
+
+- Index of the kubeadm, GitOps, and Mac Docker docs
+- How Mac vs X1 Pro split for learning
+- Which roadmap phases own the cluster and addons
+- Links to guest OS and foundation sequencing
 
 ## Docs
 

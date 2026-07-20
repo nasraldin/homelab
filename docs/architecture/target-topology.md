@@ -1,4 +1,13 @@
-# Target topology
+# Map the Homelab from the Internet Down to Bare Metal
+
+One picture of how traffic and workloads sit on a single X1 Pro node — from Cloudflare at the edge down through Proxmox storage pools to management VMs and kubeadm. Use it as the orientation map before diving into storage, placement, or network detail pages.
+
+## What this page covers
+
+- End-to-end topology: Internet → Tunnel → LAN → `pve01` → guests
+- How Slots 1–3 map to `rpool`, `data01`, and `aux01`
+- Where management VMs and the kubeadm cluster sit
+- Design split by tier and the recoverability rule for Git and backups
 
 ```text
 Internet

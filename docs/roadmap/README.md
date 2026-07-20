@@ -1,18 +1,15 @@
-# Roadmap overview
+# Follow the Homelab Roadmap from Foundation to Platform
 
-Last reviewed: 2026-07-20
+Forward path after Phase 0: phases, repo ownership, and what comes before Kubernetes. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) so the phases match what you already have. Status symbols: [status legend](../conventions/status-legend.md). Last reviewed: 2026-07-20.
 
-This roadmap is the **forward path** after Phase 0. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) first so the phases match what you already have.
+Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, GitOps, observability, security), automation over click-ops, clear ownership ([platform tooling](../platform-tooling.md)), safe ops (backups, notify-only update checks, manual hypervisor upgrades), and DNS that scales (AdGuard + Technitium + Cloudflare).
 
-## Goals
+## What this page covers
 
-1. A Platform Engineering portfolio you can explain: Terraform, GitOps, observability, security.
-2. Automation for VMs, storage, and cluster bootstrap — click-ops only when something is new once.
-3. Clear ownership — see [platform tooling](../platform-tooling.md).
-4. Safe operations — backups, notify-only update checks, manual hypervisor upgrades.
-5. DNS that scales — AdGuard + Technitium + Cloudflare when we get there.
-
-Status symbols: [status legend](../conventions/status-legend.md).
+- Phase overview table (0 → 11) with status and links
+- Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
+- Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
+- Where to look next for the active close-out commands
 
 ---
 
