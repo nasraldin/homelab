@@ -1,99 +1,52 @@
-# Homelab
-
-A practical **Platform Engineering** curriculum: build a real homelab from bare
-metal through Proxmox, automation, Kubernetes, and day-2 operations.
-
-Use these docs as a study guide. Replace every [placeholder](conventions/placeholders.md)
-with values from **your** network and password manager — never commit secrets.
-
+---
+layout: home
+hero:
+  name: Nasr Aldin Homelab
+  text: Platform engineering on hardware I actually run
+  tagline: I build and operate this lab the same way I’d build a small platform team stack — Proxmox underneath, Git for truth, Kubernetes when it’s earned, and day-2 ops that don’t lie to you.
+  image:
+    src: /homelab-hero.webp
+    alt: Homelab rack and network gear
+  actions:
+    - theme: brand
+      text: Where things stand
+      link: /current-state
+    - theme: alt
+      text: Read the build story
+      link: /build-story
 ---
 
-## Start here
+<div class="home-intro">
 
-| Doc | Purpose |
-| --- | ------- |
-| **[Current state](current-state.md)** | Where the reference build is now |
-| **[Build story](build-story.md)** | Narrative from planning → install → platform |
-| [Placeholders](conventions/placeholders.md) | Safe examples vs your real IPs and tokens |
-| [Next steps](installation/next-steps.md) | Ordered apply sequence after install |
-| [Platform tooling](platform-tooling.md) | Terraform vs Ansible vs Argo CD |
+This site is my working notes for a real homelab — not a marketing brochure. I’m [Nasr Aldin](https://nasraldin.com), and I use this lab to practice Platform Engineering end to end: install once, automate what repeats, keep secrets out of Git, and write down what broke so the next pass is faster.
 
----
+If you’re a student following along, read **in order**. Jumping around will feel like half the story is missing. Start on the MacBook (that’s the daily driver), then the build story, then current state, then the install journal. Architecture and roadmap come after you know *why* the boxes exist.
 
-## Roadmap
+Replace every [placeholder](/conventions/placeholders) with values from **your** network and password manager. Never commit tokens or passwords.
 
-| Doc | Contents |
-| --- | -------- |
-| [Overview](roadmap/README.md) | Phase table |
-| [Foundation sequence](roadmap/foundation-sequence.md) | Steps 1–15 before Kubernetes |
-| [Phase details](roadmap/phases.md) | Phase 0–11 tasks |
+</div>
 
----
+## How to read these docs
 
-## Installation journal
+| Step | Go here | Why |
+| ---- | ------- | --- |
+| 1 | [MacBook workstation](/macbook/) | Your laptop is the control plane for SSH, Git, and tooling |
+| 2 | [Build story](/build-story) | The narrative — why each choice was made |
+| 3 | [Current state](/current-state) | What’s done, what’s next, what’s blocked |
+| 4 | [Install journal](/installation/) | Phase 0: Proxmox install, issues, verified checks |
+| 5 | [Architecture](/architecture/target-topology) | How storage, network, and services fit together |
+| 6 | [Roadmap](/roadmap/) | Phases after the foundation is solid |
 
-| Doc | Contents |
-| --- | -------- |
-| [Installation index](installation/README.md) | Install docs hub |
-| [Journey](installation/journey.md) | Install timeline |
-| [Issues tracker](installation/issues-tracker.md) | Problems and fixes |
-| [Verified state](installation/verified-state.md) | Validation commands (with placeholders) |
+## What’s in the lab
 
----
+- **Hypervisor** — Proxmox VE on dedicated NVMe, VMs on a separate data pool
+- **Automation** — bootstrap scripts, Terraform for IaC, Ansible where install media matters
+- **Edge** — Cloudflare Tunnel + Access for UI; no raw `:8006` on the WAN
+- **Cluster (planned)** — kubeadm, Argo CD, Harbor, observability
+- **Public tooling** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/) for day-to-day Mac workflows
 
-## Architecture
+## Keep going
 
-| Doc | Contents |
-| --- | -------- |
-| [Hardware & storage](architecture/hardware-and-storage.md) | Example disk layout |
-| [Proxmox storage layout](architecture/proxmox-storage-layout.md) | ZFS pools |
-| [Service placement](architecture/service-placement.md) | VM vs k8s vs Docker |
-| [Target topology](architecture/target-topology.md) | End-state diagram |
-| [Network, DNS & ingress](architecture/network-dns-ingress.md) | DNS and edge access |
-| [Automation layers](architecture/automation-layers.md) | Bootstrap vs Terraform vs Ansible |
-
----
-
-## Kubernetes & platform
-
-| Doc | Contents |
-| --- | -------- |
-| [Kubernetes hub](kubernetes/README.md) | kubeadm, Lima Docker |
-| [kubeadm architecture](kubernetes/kubeadm-architecture.md) | Nodes, HAProxy, sizing |
-| [GitOps bootstrap](kubernetes/gitops-bootstrap.md) | Argo CD, Longhorn, Helm |
-| [Harbor registry](platform/harbor-registry.md) | Proxy cache, replication |
-| [ITSM & n8n](platform/itsm-and-automation.md) | Tickets vs automation |
-
----
-
-## Security & operations
-
-| Doc | Contents |
-| --- | -------- |
-| [Supply chain & policies](security/supply-chain-and-policies.md) | Cosign, Kyverno |
-| [Wazuh](security/wazuh.md) | SIEM placement |
-| [Proxmox updates](operations/proxmox-updates.md) | Check vs upgrade |
-| [Backups](operations/backups.md) | vzdump stages |
-| [Backup platform](operations/backup-platform.md) | PBS, Velero |
-
----
-
-## Community labs
-
-| Lab | Docs |
-| --- | ---- |
-| Overview | [Community labs](community-labs.md) |
-| Docker Lab | [Standalone Pages](https://nasraldin.github.io/docker-lab/) |
-| Camunda Lab | [Standalone Pages](https://nasraldin.github.io/camunda-lab/) |
-
----
-
-## Reference
-
-| Doc | Contents |
-| --- | -------- |
-| [Guest OS strategy](guest-os/README.md) | Debian, Talos, CoreOS |
-| [Decision log](decisions/log.md) | Architectural choices |
-| [Status legend](conventions/status-legend.md) | Status symbols |
-
-> Legacy plan stub: [homelab-plan.md](homelab-plan.md)
+- [Platform tooling](/platform-tooling) — who owns what (Terraform vs Ansible vs Argo CD)
+- [Community labs](/community-labs) — standalone public projects
+- [Decision log](/decisions/log) — locked choices so we don’t redo debates

@@ -1,9 +1,10 @@
 # Build story — from zero to platform lab
 
-A human-readable timeline of building this homelab. Technical detail lives in
-linked docs — this page is the **narrative spine**.
+This page is the spine of the whole site. Technical depth lives in the linked docs; here you get the **order of events** and why each call was made.
 
-**Status today:** [current-state.md](current-state.md) (🔄 setup — Phase 0 automation pending)
+I’m [Nasr Aldin](https://nasraldin.com). I built this lab as a Platform Engineering portfolio on real hardware — not a throwaway VM on a laptop.
+
+**Where we are today:** [current-state.md](current-state.md)
 
 ---
 

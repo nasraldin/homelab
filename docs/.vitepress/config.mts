@@ -1,10 +1,14 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
+const websiteIcon = {
+  svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+}
+
 export default defineConfig({
-  title: 'Homelab',
+  title: 'Nasr Aldin Homelab',
+  titleTemplate: ':title · Nasr Aldin Homelab',
   description:
-    'Learn Platform Engineering by building a real homelab — Proxmox, GitOps, Kubernetes, and operations',
+    'Platform Engineering homelab by Nasr Aldin — Proxmox, GitOps, Kubernetes, and day-2 operations on real hardware.',
   base: '/homelab/',
   lang: 'en-US',
   cleanUrls: true,
@@ -14,13 +18,31 @@ export default defineConfig({
 
   head: [
     ['meta', { name: 'author', content: 'Nasr Aldin' }],
+    ['meta', { property: 'og:title', content: 'Nasr Aldin Homelab' }],
+    [
+      'meta',
+      {
+        property: 'og:description',
+        content:
+          'Platform Engineering on real hardware — notes from Nasr Aldin.',
+      },
+    ],
+    ['meta', { property: 'og:url', content: 'https://nasraldin.github.io/homelab/' }],
+    [
+      'meta',
+      {
+        property: 'og:image',
+        content: 'https://nasraldin.github.io/homelab/homelab-hero.webp',
+      },
+    ],
+    ['link', { rel: 'me', href: 'https://nasraldin.com' }],
   ],
 
   themeConfig: {
-    siteTitle: 'Homelab',
-    logo: undefined,
+    siteTitle: 'Nasr Aldin Homelab',
     nav: [
-      { text: 'Start here', link: '/current-state' },
+      { text: 'MacBook', link: '/macbook/' },
+      { text: 'Current state', link: '/current-state' },
       { text: 'Architecture', link: '/architecture/target-topology' },
       { text: 'Roadmap', link: '/roadmap/' },
       {
@@ -31,10 +53,6 @@ export default defineConfig({
           { text: 'Camunda Lab', link: 'https://nasraldin.github.io/camunda-lab/' },
         ],
       },
-      {
-        text: 'GitHub',
-        link: 'https://github.com/nasraldin/homelab',
-      },
     ],
 
     sidebar: {
@@ -44,11 +62,17 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Home', link: '/' },
-            { text: 'Current state', link: '/current-state' },
+            { text: 'MacBook workstation', link: '/macbook/' },
             { text: 'Build story', link: '/build-story' },
+            { text: 'Current state', link: '/current-state' },
             { text: 'Platform tooling', link: '/platform-tooling' },
             { text: 'Using placeholders', link: '/conventions/placeholders' },
           ],
+        },
+        {
+          text: 'MacBook',
+          collapsed: true,
+          items: [{ text: 'Workstation overview', link: '/macbook/' }],
         },
         {
           text: 'Roadmap',
@@ -135,15 +159,20 @@ export default defineConfig({
           collapsed: true,
           items: [
             { text: 'Overview', link: '/community-labs' },
-            { text: 'Docker Lab (external)', link: 'https://nasraldin.github.io/docker-lab/' },
-            { text: 'Camunda Lab (external)', link: 'https://nasraldin.github.io/camunda-lab/' },
+            { text: 'Docker Lab', link: 'https://nasraldin.github.io/docker-lab/' },
+            { text: 'Camunda Lab', link: 'https://nasraldin.github.io/camunda-lab/' },
           ],
         },
       ],
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/nasraldin/homelab' },
+      { icon: 'github', link: 'https://github.com/nasraldin/homelab', ariaLabel: 'GitHub' },
+      {
+        icon: websiteIcon,
+        link: 'https://nasraldin.com',
+        ariaLabel: 'Nasr Aldin website',
+      },
     ],
 
     search: {
@@ -156,8 +185,10 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'Educational Platform Engineering homelab guide',
-      copyright: 'Copyright © 2026 Nasr Aldin',
+      message:
+        'Working notes from <a href="https://nasraldin.com">Nasr Aldin</a> — Platform Engineering on real hardware.',
+      copyright:
+        'Copyright © 2026 <a href="https://nasraldin.com">Nasr Aldin</a>',
     },
 
     outline: {

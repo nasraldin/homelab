@@ -1,11 +1,12 @@
 # Current state — July 2026
 
-**Overall:** 🔄 **Setup in progress** — Proxmox is installed and validated; automation
-and storage pools are **ready in Git, not yet applied** on the node.
+This is the **status board**. Read it after the [build story](build-story.md) so the checkmarks mean something.
 
-**Node:** `pve01.lab.example.com` · `192.168.1.10/24` · Proxmox VE **9.2.4**
+**Overall:** setup in progress. Proxmox is installed and checked; host automation and storage pools are ready in Git but **not applied** on the node yet.
 
-Read the full story: [build-story.md](build-story.md) · Next commands: [installation/next-steps.md](installation/next-steps.md)
+**Node (examples):** `pve01.lab.example.com` · `192.168.1.10/24` · Proxmox VE **9.2.4**
+
+**Next concrete steps:** [installation/next-steps.md](installation/next-steps.md)
 
 ---
 

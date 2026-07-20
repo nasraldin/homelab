@@ -2,17 +2,17 @@
 
 Last reviewed: 2026-07-20
 
-> **Live status:** [current-state.md](../current-state.md) · **Story:** [build-story.md](../build-story.md)
+This roadmap is the **forward path** after Phase 0. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) first so the phases match what you already have.
 
 ## Goals
 
-1. **Platform Engineering portfolio** — Terraform, GitOps, observability, security.
-2. **Full automation** — no click-ops for VMs, storage, or cluster bootstrap.
-3. **Clear ownership** — [platform-tooling.md](../platform-tooling.md).
-4. **Safe operations** — backups, notify-only update checks, manual hypervisor upgrades.
-5. **Scalable DNS** — AdGuard + Technitium + Cloudflare.
+1. A Platform Engineering portfolio you can explain: Terraform, GitOps, observability, security.
+2. Automation for VMs, storage, and cluster bootstrap — click-ops only when something is new once.
+3. Clear ownership — see [platform tooling](../platform-tooling.md).
+4. Safe operations — backups, notify-only update checks, manual hypervisor upgrades.
+5. DNS that scales — AdGuard + Technitium + Cloudflare when we get there.
 
-Status symbols: [status-legend.md](../conventions/status-legend.md).
+Status symbols: [status legend](../conventions/status-legend.md).
 
 ---
 

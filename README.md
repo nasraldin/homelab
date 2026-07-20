@@ -3,7 +3,7 @@
 Root repository for the **Platform Engineering homelab curriculum** and shared
 tooling. Documentation is published as a searchable GitHub Pages site.
 
-**Docs site:** https://nasraldin.github.io/homelab/
+**Docs site:** https://nasraldin.github.io/homelab/ — by [Nasr Aldin](https://nasraldin.com)
 
 Each lab under this directory is its own repository (gitignored here) with its
 own remote. Clone them as siblings for local development and docs aggregation.

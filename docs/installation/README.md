@@ -1,19 +1,19 @@
 # Phase 0 — Fresh Proxmox install
 
-Install journal for **pve01** — planning, installer choices, problems, verified state.
+This section is the install journal for **pve01**: what we planned, what the installer asked, what broke, and what “good” looked like when we were done.
 
-**Story:** [build-story.md](../build-story.md) Chapter 3–4 · **Status:** [current-state.md](../current-state.md)
+Read the [build story](../build-story.md) (chapters on install) first if you want the why. Use [current state](../current-state.md) for the live checklist.
 
-Operational runbooks: **proxmox-bootstrap**. This section is the historical record.
+Operational runbooks live in the private **proxmox-bootstrap** repo. What’s here is the historical record students can follow.
 
-## Start here
+## Read in this order
 
-| Doc | Purpose |
-| --- | ------- |
-| [Journey timeline](journey.md) | What happened, in order — planning → install → fixes |
-| [Issues tracker](issues-tracker.md) | Every problem, symptom, root cause, fix, status |
-| [Verified state](verified-state.md) | Known-good config snapshot on `pve01` |
-| [Next steps](next-steps.md) | What to run after install (bootstrap, tunnel, Terraform) |
+| # | Doc | Purpose |
+| - | --- | ------- |
+| 1 | [Journey timeline](journey.md) | Planning → install → fixes, in sequence |
+| 2 | [Issues tracker](issues-tracker.md) | Symptom, cause, fix for each problem |
+| 3 | [Verified state](verified-state.md) | Known-good checks (with placeholders) |
+| 4 | [Next steps](next-steps.md) | Bootstrap, tunnel, Terraform after install |
 
 ## Deep dives (proxmox-bootstrap)
 
