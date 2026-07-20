@@ -29,9 +29,9 @@ help:
 	@echo "  make install         npm install (Prettier)"
 	@echo "  make format          Prettier write + terraform fmt"
 	@echo "  make lint            Prettier check + yamllint + shellcheck (+ tf fmt check)"
-	@echo "  make docs-install    Create .venv-docs + install MkDocs"
-	@echo "  make docs-serve      Collect lab docs + serve http://127.0.0.1:8000"
-	@echo "  make docs-build      Collect lab docs + build ./site"
+	@echo "  make docs-install    npm install (includes VitePress)"
+	@echo "  make docs-serve      Collect lab docs + VitePress dev server"
+	@echo "  make docs-build      Collect lab docs + build docs/.vitepress/dist"
 	@echo "  make format-prettier md/json/yml via Prettier"
 	@echo "  make format-tf       terraform fmt -recursive in terraform-lab"
 	@echo "  make lint-yaml       yamllint (uses .yamllint.yaml)"
@@ -87,30 +87,17 @@ lint-tf:
 	@command -v terraform >/dev/null || { echo "skip lint-tf (terraform not installed)"; exit 0; }
 	cd terraform-lab && terraform fmt -check -recursive
 
-## Docs (MkDocs Material → GitHub Pages)
+## Docs (VitePress → GitHub Pages)
 
 docs-install:
-	python3 -m venv $(ROOT).venv-docs
-	$(ROOT).venv-docs/bin/pip install -r $(ROOT)requirements-docs.txt
+	npm install
 
 docs-collect:
 	@chmod +x $(ROOT)scripts/collect-lab-docs.sh
 	@$(ROOT)scripts/collect-lab-docs.sh
 
-docs-serve: docs-collect
-	@if [[ -x "$(ROOT).venv-docs/bin/mkdocs" ]]; then \
-		"$(ROOT).venv-docs/bin/mkdocs" serve; \
-	elif command -v mkdocs >/dev/null 2>&1; then \
-		mkdocs serve; \
-	else \
-		echo "Run: make docs-install"; exit 1; \
-	fi
+docs-serve:
+	npm run docs:dev
 
-docs-build: docs-collect
-	@if [[ -x "$(ROOT).venv-docs/bin/mkdocs" ]]; then \
-		"$(ROOT).venv-docs/bin/mkdocs" build --strict; \
-	elif command -v mkdocs >/dev/null 2>&1; then \
-		mkdocs build --strict; \
-	else \
-		echo "Run: make docs-install"; exit 1; \
-	fi
+docs-build:
+	npm run docs:build

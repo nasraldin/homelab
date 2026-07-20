@@ -83,8 +83,8 @@ with values from **your** network and password manager — never commit secrets.
 | Lab | Docs |
 | --- | ---- |
 | Overview | [Community labs](community-labs.md) |
-| Docker Lab | [In this site](labs/docker-lab/index.md) · [Standalone Pages](https://nasraldin.github.io/docker-lab/) |
-| Camunda Lab | [In this site](labs/camunda-lab/index.md) · [Standalone Pages](https://nasraldin.github.io/camunda-lab/) |
+| Docker Lab | [Standalone Pages](https://nasraldin.github.io/docker-lab/) |
+| Camunda Lab | [Standalone Pages](https://nasraldin.github.io/camunda-lab/) |
 
 ---
 

@@ -1,21 +1,21 @@
 # Community labs
 
-Optional public projects that complement this homelab curriculum. Their docs are
-aggregated into this site when the sibling repos are cloned (or checked out in CI).
+Optional public projects that complement this curriculum. Each keeps its **own**
+docs site (MkDocs Material) so CLI/product docs stay independent of this hub.
 
-| Lab | Standalone docs | Purpose |
-| --- | --------------- | ------- |
-| [Docker Lab](labs/docker-lab/index.md) | [nasraldin.github.io/docker-lab](https://nasraldin.github.io/docker-lab/) | Native Linux Docker on Apple Silicon (`ducker`) |
-| [Camunda Lab](labs/camunda-lab/index.md) | [nasraldin.github.io/camunda-lab](https://nasraldin.github.io/camunda-lab/) | Local Camunda 8 on Docker |
+| Lab | Docs site | Purpose |
+| --- | --------- | ------- |
+| [Docker Lab](https://nasraldin.github.io/docker-lab/) | Standalone Pages | Native Linux Docker on Apple Silicon (`ducker`) |
+| [Camunda Lab](https://nasraldin.github.io/camunda-lab/) | Standalone Pages | Local Camunda 8 on Docker |
 
-Clone siblings from the workspace root:
+Clone siblings from the workspace root when you want the source next to this repo:
 
 ```bash
 ./clone-labs.sh
-make docs-serve
 ```
 
-!!! note "Implementation labs"
-    Private day-1 repos (Proxmox bootstrap, Terraform, Ansible, Cloudflare Tunnel)
-    are **not** mirrored into this public site. Follow the platform guides here and
-    adapt commands to your own automation repositories.
+::: tip Implementation labs
+Private day-1 repos (Proxmox bootstrap, Terraform, Ansible, Cloudflare Tunnel)
+are **not** published on this public site. Follow the platform guides here and
+adapt commands to your own automation repositories.
+:::

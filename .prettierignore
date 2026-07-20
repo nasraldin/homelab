@@ -32,6 +32,8 @@ node_modules/
 **/.DS_Store
 **/site/
 **/.venv-docs/
+**/docs/.vitepress/cache/
+**/docs/.vitepress/dist/
 **/coverage/
 
 # Camunda UI — own npm package / own formatters; root Prettier must not

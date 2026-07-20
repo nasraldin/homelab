@@ -1,13 +1,19 @@
 {
   "name": "homelab-workspace",
   "private": true,
-  "description": "Root tooling to format/lint all sibling lab repos under ~/homelab",
+  "description": "Platform Engineering homelab curriculum and workspace tooling",
+  "type": "module",
   "scripts": {
     "format": "prettier --write . --ignore-path .prettierignore",
     "format:check": "prettier --check . --ignore-path .prettierignore",
-    "lint:prettier": "prettier --check . --ignore-path .prettierignore"
+    "lint:prettier": "prettier --check . --ignore-path .prettierignore",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.40"
   }
 }

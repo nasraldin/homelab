@@ -37,15 +37,17 @@ then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are s
 
 ## Documentation site
 
+VitePress site with full-text search. Published at
+https://nasraldin.github.io/homelab/
+
 ```bash
-make docs-install   # once: Python venv + mkdocs-material
-make docs-serve     # http://127.0.0.1:8000
-make docs-build     # static site in ./site
+make docs-install   # once (npm install — VitePress)
+make docs-serve     # http://localhost:5173/homelab/
+make docs-build     # output: docs/.vitepress/dist
 ```
 
 - Platform guides live in [`docs/`](docs/) (committed).
-- Public community labs (`docker-lab`, `camunda-lab`) are copied into `docs/labs/`
-  at build time (gitignored).
+- Community labs (`docker-lab`, `camunda-lab`) keep their **own** MkDocs sites — linked from this hub.
 - Values that look like IPs or hostnames are **[placeholders](docs/conventions/placeholders.md)** — adapt them; never commit secrets.
 
 ## Format & lint everything
