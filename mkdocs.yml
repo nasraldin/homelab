@@ -1,0 +1,149 @@
+site_name: Homelab
+site_description: Learn Platform Engineering by building a real homelab — Proxmox, GitOps, Kubernetes, and operations
+site_author: Nasr Aldin
+site_url: https://nasraldin.github.io/homelab/
+
+repo_name: nasraldin/homelab
+repo_url: https://github.com/nasraldin/homelab
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2026 Nasr Aldin — Educational homelab guide
+
+validation:
+  nav:
+    omitted_files: ignore
+    not_found: ignore
+  links:
+    not_found: ignore
+    unrecognized_links: ignore
+    anchors: ignore
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - tags
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nasraldin/homelab
+    - icon: fontawesome/solid/globe
+      link: https://nasraldin.com
+
+nav:
+  - Home: index.md
+  - Start here:
+      - Current state: current-state.md
+      - Build story: build-story.md
+      - Platform tooling: platform-tooling.md
+      - Using placeholders: conventions/placeholders.md
+  - Roadmap:
+      - Overview: roadmap/README.md
+      - Foundation sequence: roadmap/foundation-sequence.md
+      - Phase details: roadmap/phases.md
+  - Installation:
+      - Index: installation/README.md
+      - Journey: installation/journey.md
+      - Next steps: installation/next-steps.md
+      - Issues tracker: installation/issues-tracker.md
+      - Verified state: installation/verified-state.md
+  - Architecture:
+      - Hardware & storage: architecture/hardware-and-storage.md
+      - Proxmox storage layout: architecture/proxmox-storage-layout.md
+      - Service placement: architecture/service-placement.md
+      - Target topology: architecture/target-topology.md
+      - Network, DNS & ingress: architecture/network-dns-ingress.md
+      - Automation layers: architecture/automation-layers.md
+  - Kubernetes:
+      - Hub: kubernetes/README.md
+      - kubeadm architecture: kubernetes/kubeadm-architecture.md
+      - GitOps bootstrap: kubernetes/gitops-bootstrap.md
+      - Mac Lima Docker: kubernetes/development/mac-lima-docker.md
+  - Platform:
+      - Hub: platform/README.md
+      - Harbor registry: platform/harbor-registry.md
+      - ITSM & automation: platform/itsm-and-automation.md
+  - Security:
+      - Hub: security/README.md
+      - Supply chain & policies: security/supply-chain-and-policies.md
+      - Wazuh: security/wazuh.md
+  - Operations:
+      - Hub: operations/README.md
+      - Proxmox updates: operations/proxmox-updates.md
+      - Backups: operations/backups.md
+      - Backup platform: operations/backup-platform.md
+  - Reference:
+      - Guest OS strategy: guest-os/README.md
+      - Decision log: decisions/log.md
+      - Status legend: conventions/status-legend.md
+      - Legacy plan: homelab-plan.md
+  - Community labs:
+      - Overview: community-labs.md
+      - Docker Lab:
+          - Home: labs/docker-lab/index.md
+          - Installation: labs/docker-lab/installation.md
+          - Architecture: labs/docker-lab/architecture.md
+          - CLI reference: labs/docker-lab/cli-reference.md
+          - Troubleshooting: labs/docker-lab/troubleshooting.md
+      - Camunda Lab:
+          - Home: labs/camunda-lab/index.md
+          - Installation: labs/camunda-lab/installation.md
+          - Profiles: labs/camunda-lab/profiles.md
+          - Lab UI: labs/camunda-lab/lab-ui.md
+          - CLI reference: labs/camunda-lab/cli-reference.md
+          - Troubleshooting: labs/camunda-lab/troubleshooting.md

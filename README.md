@@ -1,23 +1,26 @@
 # Homelab workspace
 
-Root git repo for **shared tooling only**. Each lab under this directory is its
-own repository (ignored here) with its own remote.
+Root repository for the **Platform Engineering homelab curriculum** and shared
+tooling. Documentation is published as a searchable GitHub Pages site.
 
-| Lab                                | Repo                                           |
-| ---------------------------------- | ---------------------------------------------- |
-| Docs / ownership guide             | https://github.com/nasraldin/homelab-docs      |
-| Ansible + install media            | https://github.com/nasraldin/ansible-lab       |
-| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap |
-| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     |
-| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel |
-| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        |
-| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       |
-| Homebrew taps (nested tap repos)   | local `homebrew/` only — not a single git repo |
+**Docs site:** https://nasraldin.github.io/homelab/
 
-All of the directories above are **gitignored by this root repo** the same way so they do not nest inside `nasraldin/homelab`. Each lab (except `homebrew/`) keeps its own `.git` and remote.
+Each lab under this directory is its own repository (gitignored here) with its
+own remote. Clone them as siblings for local development and docs aggregation.
 
-Local clones still live as siblings under `~/homelab/` so relative paths and
-`make format` / `make lint` work across labs.
+| Lab                                | Repo                                           | Notes                          |
+| ---------------------------------- | ---------------------------------------------- | ------------------------------ |
+| Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages      |
+| Ansible + install media            | https://github.com/nasraldin/ansible-lab       | Private implementation         |
+| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private implementation         |
+| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private implementation         |
+| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private implementation         |
+| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public community project       |
+| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public community project       |
+| Homebrew taps (nested tap repos)   | local `homebrew/` only                         | Not a single git repo          |
+
+> Legacy docs repo `homelab-docs` still exists locally until migration is
+> verified; do not treat it as the source of truth anymore.
 
 ## Clone all labs (fresh machine)
 
@@ -31,6 +34,19 @@ cd ~/homelab
 
 Add a future lab: one line in [`repos.conf`](repos.conf) (`path` + tab + `owner/repo`),
 then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are supported.
+
+## Documentation site
+
+```bash
+make docs-install   # once: Python venv + mkdocs-material
+make docs-serve     # http://127.0.0.1:8000
+make docs-build     # static site in ./site
+```
+
+- Platform guides live in [`docs/`](docs/) (committed).
+- Public community labs (`docker-lab`, `camunda-lab`) are copied into `docs/labs/`
+  at build time (gitignored).
+- Values that look like IPs or hostnames are **[placeholders](docs/conventions/placeholders.md)** — adapt them; never commit secrets.
 
 ## Format & lint everything
 
@@ -54,9 +70,3 @@ make lint                          # check
 
 Secrets (`config.env`, `credentials.auto.tfvars`, …) are in
 [`.prettierignore`](.prettierignore) so formatters skip them.
-
-## Lab map
-
-See [homelab-docs](https://github.com/nasraldin/homelab-docs) (local: `./homelab-docs/`) for the platform ownership guide.
-
-**Docs site (searchable):** https://nasraldin.github.io/homelab-docs/

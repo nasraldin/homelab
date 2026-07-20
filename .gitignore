@@ -11,6 +11,12 @@ terraform-lab/
 # Agent / local scratch at workspace root
 .superpowers/
 
+# Docs site (generated)
+site/
+.venv-docs/
+docs/labs/
+external/
+
 # Tooling
 node_modules/
 .DS_Store
