@@ -123,10 +123,12 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 | Order | Phase                         | Doc                                                              |
 | ----- | ----------------------------- | ---------------------------------------------------------------- |
-| 8     | DNS VMs (AdGuard, Technitium) | [phases.md §3](../roadmap/phases.md)                             |
+| 8     | TP-Link DHCP → AdGuard        | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)         |
 | 9     | GitLab VM                     | [service-placement.md](../architecture/service-placement.md)     |
 | 10    | kubeadm Stage A               | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
 | 11    | Argo CD bootstrap             | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)         |
+
+DNS VMs (AdGuard + Technitium) are ✅ — see [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
 ---
 

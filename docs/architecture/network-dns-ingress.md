@@ -7,28 +7,37 @@ Today the lab is a single Proxmox node on a flat LAN — no VLANs yet, remote UI
 - Current LAN bridge layout and deferred VLANs
 - Filtering vs authoritative vs public DNS roles
 - Kubernetes ingress controller and cert-manager path
-- Internal (`*.lab.example.com`) vs public (`*.example.com`) naming
+- Internal (`*.lab.nasraldin.com`) vs public (`*.nasraldin.com`) naming
 
 ## Network (today)
 
-- Flat LAN `192.168.1.0/24`, bridge `vmbr0`
+- Flat LAN `192.168.68.0/22`, bridge `vmbr0`, gateway `192.168.68.1`
 - **VLANs deferred** — enable when guest count warrants segmentation
 - Remote Proxmox UI: Cloudflare Tunnel + Access (no WAN ports on PVE)
 
 ## DNS (decided)
 
-| Layer                  | Tool               | Role                                     | Status |
-| ---------------------- | ------------------ | ---------------------------------------- | ------ |
-| Filtering              | **AdGuard Home**   | Ads, trackers, per-client rules, DoH/DoT | ⏳     |
-| Authoritative internal | **Technitium DNS** | `*.lab.example.com` zones, split DNS     | ⏳     |
-| Public                 | **Cloudflare**     | `*.example.com`, Tunnel                  | ✅     |
-| In-cluster             | **ExternalDNS**    | K8s → DNS records                        | ⏳     |
+| Layer                  | Tool               | Role                                          | Status |
+| ---------------------- | ------------------ | --------------------------------------------- | ------ |
+| Filtering              | **AdGuard Home**   | LAN resolver — ads, trackers, forward lab zone | ✅     |
+| Authoritative internal | **Technitium DNS** | `lab.nasraldin.com` zone only                 | ✅     |
+| Public                 | **Cloudflare**     | Public names + Tunnel                         | ✅     |
+| In-cluster             | **ExternalDNS**    | K8s → DNS records                             | ⏳     |
+| Router DHCP DNS        | **TP-Link → .10**  | All Wi‑Fi/LAN clients use AdGuard             | ⏳     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
-**Interim:** `/etc/hosts` on Mac + node for `pve01.lab.example.com`.
+**Topology:** Clients → AdGuard (`192.168.68.10`) → forward `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`.
 
-Example internal names (future): `gitlab.lab`, `grafana.lab`, `argocd.lab`.
+| Host            | IP               | Notes                          |
+| --------------- | ---------------- | ------------------------------ |
+| adguard-01      | `192.168.68.10`  | Debian 13 VM, UI `:3000`       |
+| technitium-01   | `192.168.68.11`  | Debian 13 VM, UI `:5380`       |
+| pve01 (seed A)  | `192.168.68.13`  | In Technitium zone             |
+
+**Interim:** `/etc/hosts` on Mac + node for break-glass until [DHCP cutover](../operations/dns-dhcp-cutover.md) is verified, then remove lab duplicates DNS owns.
+
+Example internal names: `gitlab.lab.nasraldin.com`, `grafana.lab.nasraldin.com`, `argocd.lab.nasraldin.com`.
 
 ## Ingress (Kubernetes)
 
@@ -41,7 +50,11 @@ Example internal names (future): `gitlab.lab`, `grafana.lab`, `argocd.lab`.
 
 ## Naming
 
-| Scope    | Pattern             | Example                 |
-| -------- | ------------------- | ----------------------- |
-| Internal | `*.lab.example.com` | `pve01.lab.example.com` |
-| Public   | `*.example.com`     | `grafana.example.com`   |
+| Scope    | Pattern                | Example                    |
+| -------- | ---------------------- | -------------------------- |
+| Internal | `*.lab.nasraldin.com`  | `pve01.lab.nasraldin.com`  |
+| Public   | `*.nasraldin.com`      | (Cloudflare / Tunnel apps) |
+
+## Cutover
+
+When dig proofs are green, apply [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md) on the TP-Link so DHCP clients use AdGuard.

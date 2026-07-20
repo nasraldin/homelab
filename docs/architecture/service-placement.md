@@ -36,7 +36,7 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **GitHub Runner**                         | ☸ k8s                         | 11       | `actions-runner-controller` when needed                                                                              |
 | **HAProxy**                               | 🖥 VM                          | 6        | API VIP `:6443` for kubeadm HA                                                                                       |
 | **PBS**                                   | 🖥 Dedicated VM                | backup   | Stage 3 — Dell or separate disk                                                                                      |
-| **AdGuard / Technitium**                  | 🖥 LXC or VM                   | 3        | DNS — outside k8s                                                                                                    |
+| **AdGuard / Technitium**                  | 🖥 Debian 13 VMs               | 3        | DNS — outside k8s (`.10` / `.11` on `data01`)                                                                        |
 | **kubeadm cluster**                       | 🖥 3–5 VMs                     | 6        | CP + workers on `data01`                                                                                             |
 | **k3s**                                   | 🧪 Skip / legacy              | —        | Replaced by kubeadm for CKA                                                                                          |
 | **Talos**                                 | 🧪 Optional 2nd cluster       | later    | Learning only                                                                                                        |

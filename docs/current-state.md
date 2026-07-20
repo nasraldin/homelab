@@ -2,7 +2,7 @@
 
 Live status board for the lab. Read the [build story](build-story.md) first so the checkmarks mean something; next work is Phase 2–3 ([foundation sequence](roadmap/foundation-sequence.md)).
 
-**Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). **Next focus:** Phase 2–3 (GitLab + DNS). **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
+**Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs ✅. **Next focus:** Phase 2 (GitLab) + TP-Link DHCP DNS cutover. **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
 
@@ -31,7 +31,8 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | -------------- | -------------------------------------------------------------------- |
 | Install        | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)     |
 | Network        | Static IP, FQDN, `vmbr0`                                             |
-| DNS (interim)  | `/etc/hosts` on node + Mac (Cloudflare wildcard avoided)             |
+| DNS (lab)      | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅ |
+| DNS (interim)  | `/etc/hosts` still OK for break-glass until DHCP cutover             |
 | SSH            | Key auth Mac → `root@192.168.68.13` + admin user                     |
 | APT            | deb822, no-subscription enabled, enterprise disabled                 |
 | API            | `terraform@pve!provider` token                                       |
@@ -58,13 +59,13 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (⏳ Phase 2+)
 
-| #   | Task                          | Where    |
-| --- | ----------------------------- | -------- |
-| 1   | GitLab VM                     | Phase 2  |
-| 2   | DNS VMs (AdGuard, Technitium) | Phase 3  |
-| 3+  | kubeadm, Argo CD, platform    | Phase 6+ |
+| #   | Task                                      | Where    |
+| --- | ----------------------------------------- | -------- |
+| 1   | TP-Link DHCP DNS → AdGuard (`.10`)        | Phase 3  |
+| 2   | GitLab VM                                 | Phase 2  |
+| 3+  | kubeadm, Argo CD, platform                | Phase 6+ |
 
-**Active focus** — Phase 2–3. Do **not** start Kubernetes until GitLab + DNS are in place ([foundation sequence](roadmap/foundation-sequence.md) steps 11–12).
+**Active focus** — GitLab + router DNS cutover. Do **not** start Kubernetes until GitLab is in place ([foundation sequence](roadmap/foundation-sequence.md) steps 11–12). Cutover runbook: [dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md).
 
 ---
 
@@ -96,7 +97,7 @@ Full log: [decisions/log.md](decisions/log.md)
 | `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall)                   |
 | `terraform-lab`     | Layer 1–2 infra            | synced | ✅ `data01` / Stage 1; ⏸️ `aux01` |
 | `cloudflare-tunnel` | Remote UI                  | synced | ✅                                |
-| `ansible-lab`       | Unattended install media   | synced | n/a yet                           |
+| `ansible-lab`       | Guest config (DNS first)   | synced | ✅ DNS playbook; archive branch `host-install` |
 
 ---
 

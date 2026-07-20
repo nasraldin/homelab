@@ -10,11 +10,12 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
-| Doc                                      | Topic                                  |
-| ---------------------------------------- | -------------------------------------- |
-| [proxmox-updates.md](proxmox-updates.md) | Daily check, manual upgrade, n8n layer |
-| [backups.md](backups.md)                 | vzdump stages, drills, migration       |
-| [backup-platform.md](backup-platform.md) | PBS, Velero, MinIO — Veeam-equivalent  |
+| Doc                                                | Topic                                         |
+| -------------------------------------------------- | --------------------------------------------- |
+| [proxmox-updates.md](proxmox-updates.md)           | Daily check, manual upgrade, n8n layer        |
+| [backups.md](backups.md)                           | vzdump stages, drills, migration              |
+| [backup-platform.md](backup-platform.md)           | PBS, Velero, MinIO — Veeam-equivalent         |
+| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)         | TP-Link DHCP DNS → AdGuard (all LAN clients)  |
 
 ## Repo runbooks
 

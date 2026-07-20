@@ -63,8 +63,8 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 | Task                 | Status |
 | -------------------- | ------ |
-| AdGuard Home         | ⏳     |
-| Technitium DNS       | ⏳     |
+| AdGuard Home         | ✅     |
+| Technitium DNS       | ✅     |
 | Router DNS → AdGuard | ⏳     |
 | OPNsense             | ⏸️     |
 | VLANs                | ⏸️     |

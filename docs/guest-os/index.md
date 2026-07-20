@@ -83,9 +83,9 @@ systemctl is-active qemu-guest-agent
 | Good for                        | Not ideal for                     |
 | ------------------------------- | --------------------------------- |
 | kubeadm cluster nodes           | Immutable k8s nodes (use Talos)   |
-| AdGuard, Technitium (LXC or VM) | Learning CoreOS/Ignition patterns |
+| AdGuard, Technitium (Debian 13 VMs) | Learning CoreOS/Ignition patterns |
 
-**In this lab:** add **Debian 12** cloud image to `terraform-lab` for k8s nodes ([kubeadm architecture](../kubernetes/kubeadm-architecture.md)).
+**In this lab:** DNS guests use **Debian 13 (Trixie)** cloud images via `terraform-lab`. Prefer Debian 12/13 for k8s nodes ([kubeadm architecture](../kubernetes/kubeadm-architecture.md)).
 
 ---
 

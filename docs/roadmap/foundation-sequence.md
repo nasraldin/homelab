@@ -2,7 +2,7 @@
 
 Ordered foundation checklist, corrected for X1 Pro hardware and the current repos. Do not start Kubernetes until steps **1–12** are ✅ (or ⏸️ with a documented hold). Read [current state](../current-state.md) for the live board; use [installation/next-steps.md](../installation/next-steps.md) for remaining commands.
 
-**Status:** Phase 0 ✅ closed · `aux01` ⏸️ (no Slot 3 NVMe) · next = Phase 2–3 (GitLab + DNS).
+**Status:** Phase 0 ✅ closed · DNS VMs ✅ · `aux01` ⏸️ (no Slot 3 NVMe) · next = GitLab + TP-Link DHCP cutover.
 
 ## What this page covers
 
@@ -23,7 +23,7 @@ Ordered foundation checklist, corrected for X1 Pro hardware and the current repo
 | 8   | Host firewall                                     | ✅      | `enable-firewall.sh`                                                                                                                           |
 | 9   | Weekly restore drills                             | ✅      | First proof done — keep weekly cadence ([runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md)) |
 | 10  | Bootstrap drift check                             | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                       |
-| 11  | DNS VMs (AdGuard, Technitium)                     | ⏳      | Phase 3 — **next**                                                                                                                             |
+| 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; dig proofs green — [cutover](../operations/dns-dhcp-cutover.md) still ⏳                            |
 | 12  | GitLab VM                                         | ⏳      | Phase 2 — **next**                                                                                                                             |
 | 13  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                               |
 | 14  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
@@ -31,7 +31,7 @@ Ordered foundation checklist, corrected for X1 Pro hardware and the current repo
 
 ## Next (Phase 2–3)
 
-Build GitLab + DNS VMs on `data01` via Terraform. See [phases.md](phases.md) and [service-placement.md](../architecture/service-placement.md).
+Apply [TP-Link DHCP DNS cutover](../operations/dns-dhcp-cutover.md) when ready, then build GitLab on `data01` via Terraform. See [phases.md](phases.md) and [service-placement.md](../architecture/service-placement.md).
 
 When Slot 3 OEM disk is installed:
 
