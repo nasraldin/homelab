@@ -47,7 +47,7 @@ cd ~/homelab/cloudflare-tunnel && ./mac/bootstrap.sh --yes
 | ----- | ---------- | -------- |
 | M.2 slots | Two slots | **Three** — Slot 3 is PCIe ×1; OEM 2 TB for `aux01` |
 | Slot 2 disk | Kingston 4 TB generic | **FURY Renegade 4 TB** → `data01` |
-| Kubernetes | k3s / Talos first | **kubeadm** on Debian ([kubernetes](../kubernetes/README.md)) |
+| Kubernetes | k3s / Talos first | **kubeadm** on Debian ([kubernetes](../kubernetes/index.md)) |
 | Updates | n8n or cron primary | **systemd + scripts**; n8n optional |
 | Automation applied | Implied done | **🟡 in Git** — must run on node |
 

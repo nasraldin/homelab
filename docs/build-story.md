@@ -2,7 +2,7 @@
 
 Narrative spine of the lab: order of events and why each call was made. Technical depth lives in the linked docs. I’m [Nasr Aldin](https://nasraldin.com) — Platform Engineering portfolio on real hardware, not a throwaway laptop VM.
 
-Read this first if you’re new. Then use [current state](current-state.md) for the live checklist, and the [install journal](installation/README.md) / [roadmap](roadmap/README.md) when you need commands or phase status.
+Read this first if you’re new. Then use [current state](current-state.md) for the live checklist, and the [install journal](installation/index.md) / [roadmap](roadmap/index.md) when you need commands or phase status.
 
 ## What this page covers
 
@@ -184,4 +184,4 @@ Task tables: [roadmap/phases.md](roadmap/phases.md)
 2. [build-story.md](build-story.md) — this page
 3. [installation/next-steps.md](installation/next-steps.md) — what to run next
 4. [platform-tooling.md](platform-tooling.md) — who owns what
-5. Deep dives by topic from [README.md](README.md)
+5. Deep dives by topic from [README.md](index.md)

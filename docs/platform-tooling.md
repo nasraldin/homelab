@@ -127,12 +127,12 @@ provisioning and does not replace Terraform or Argo CD.
 | `ansible-lab/`                    | Installer media + Ansible for early host/guest work               |
 | Argo CD / `argocd/` app manifests | Planned (Phase 7) — create when the first cluster exists          |
 
-**Live phase status:** see [docs/roadmap/README.md](docs/roadmap/README.md) (updated 2026-07-20).
+**Live phase status:** see [roadmap overview](roadmap/index.md) (updated 2026-07-20).
 
 ## Related docs
 
 - **[docs/index.md](docs/index.md)** — documentation index · **[Docs site](https://nasraldin.github.io/homelab-docs/)**
-- [Guest OS strategy](docs/guest-os/README.md) — Debian, CoreOS, Talos
+- [Guest OS strategy](guest-os/index.md) — Debian, CoreOS, Talos
 - [Proxmox updates](docs/operations/proxmox-updates.md) — check vs upgrade
 - [Backups](docs/operations/backups.md) — vzdump stages
 

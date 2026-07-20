@@ -39,6 +39,6 @@ Do **not** run your homelab Kubernetes on Lima. CKA and platform engineering pra
 
 ## Related
 
-- [Guest OS strategy](../guest-os/README.md)
+- [Guest OS strategy](../guest-os/index.md)
 - [Foundation sequence](../roadmap/foundation-sequence.md)
 - [Phases §6](../roadmap/phases.md#phase-6--kubernetes)

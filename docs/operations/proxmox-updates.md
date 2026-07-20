@@ -24,7 +24,7 @@ Layer 3 — n8n (optional, future)
   Webhook from script → Telegram / Discord / Git issue / dashboard
 
 Layer 4 — Homelab agent (future)
-  Unified ops agent — see [operations README](README.md)
+  Unified ops agent — see [operations README](index.md)
 ```
 
 | Approach | Role | Status |

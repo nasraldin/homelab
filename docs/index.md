@@ -2,8 +2,8 @@
 layout: home
 hero:
   name: Nasr Aldin Homelab
-  text: Platform engineering on hardware I actually run
-  tagline: I build and operate this lab the same way I’d build a small platform team stack — Proxmox underneath, Git for truth, Kubernetes when it’s earned, and day-2 ops that don’t lie to you.
+  text: Platform engineering, built and operated for real.
+  tagline: This homelab is my platform engineering playground, run with production principles. Proxmox provides the foundation, Git is the source of truth, Kubernetes is introduced only where it makes sense, and every service is managed with day-two operations in mind.
   actions:
     - theme: brand
       text: Where things stand
@@ -21,11 +21,11 @@ hero:
 
 <div class="home-intro">
 
-This site is my working notes for a real homelab — not a brochure. I’m [Nasr Aldin](https://nasraldin.com). I use this lab to practice Platform Engineering end to end: install once, automate what repeats, keep secrets out of Git, and write down what broke so the next pass is faster.
+This site documents my working homelab—not a polished showcase. I’m [Nasr Aldin](https://nasraldin.com), and I use this lab to practice platform engineering end to end: build reliable infrastructure, automate repetitive work, keep secrets out of Git, and document failures so the next iteration is faster.
 
-If you’re following along as a student, read **in order**. Skip around and the story falls apart. Start on the MacBook (daily driver), then the build story, then current state, then the install journal. Architecture and roadmap come after you know why the boxes exist.
+If you're following along as a student, read the documentation in order. Start with the MacBook (daily driver), then the build story, current state, and installation journal. The architecture and roadmap make more sense once you understand why the infrastructure exists.
 
-Swap every [placeholder](/conventions/placeholders) for values from **your** network and password manager. Never commit tokens or passwords.
+Every configuration here is intended as a reference, not a copy-and-paste solution. Replace placeholders with values from your own environment and password manager, and never commit passwords, API keys, or other secrets to Git.
 
 </div>
 

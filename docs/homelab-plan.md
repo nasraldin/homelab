@@ -13,7 +13,7 @@ This document has been split into topic-based docs. **Start here:**
 | Topic | Doc |
 | ----- | --- |
 | Next commands | [docs/installation/next-steps.md](docs/installation/next-steps.md) |
-| Roadmap & phases | [docs/roadmap/README.md](docs/roadmap/README.md) |
+| Roadmap & phases | [docs/roadmap/index.md](roadmap/index.md) |
 | Hardware & storage | [docs/architecture/hardware-and-storage.md](docs/architecture/hardware-and-storage.md) |
 | Tool ownership | [platform-tooling.md](platform-tooling.md) |
 | Decision log | [docs/decisions/log.md](docs/decisions/log.md) |

@@ -1,6 +1,6 @@
 # Walk the Homelab Roadmap Phase by Phase
 
-Task-level status for each roadmap phase. Read the [roadmap overview](README.md) first; use [foundation sequence](foundation-sequence.md) when you need the ordered “do this before k8s” list instead of phase tables. Symbols: [status legend](../conventions/status-legend.md).
+Task-level status for each roadmap phase. Read the [roadmap overview](index.md) first; use [foundation sequence](foundation-sequence.md) when you need the ordered “do this before k8s” list instead of phase tables. Symbols: [status legend](../conventions/status-legend.md).
 
 ## What this page covers
 
@@ -91,7 +91,7 @@ Prometheus, Grafana, Loki, Alertmanager — deploy via Argo CD (⏳).
 | kubeadm Stage B (3 CP + HAProxy) | ⏳ | After Stage A stable |
 | Cilium, cert-manager, metrics-server | ⏳ | Phase 6b |
 | Longhorn, NGINX Ingress, KEDA | ⏳ | Phase 6b |
-| Talos cluster (optional) | 🔮 | [guest-os](../guest-os/README.md) |
+| Talos cluster (optional) | 🔮 | [guest-os](../guest-os/index.md) |
 
 ---
 

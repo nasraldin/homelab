@@ -185,7 +185,7 @@ export default defineConfig({
 
     footer: {
       message:
-        'Working notes from <a href="https://nasraldin.com">Nasr Aldin</a> — Platform Engineering on real hardware.',
+        'Working notes from <a href="https://nasraldin.com">Nasr Aldin</a>',
       copyright:
         'Copyright © 2026 <a href="https://nasraldin.com">Nasr Aldin</a>',
     },

@@ -269,5 +269,5 @@ VMs from Terraform; **kubeadm join tokens and upgrades** by hand (or Ansible) un
 ## Related
 
 - [Mac Lima Docker](development/mac-lima-docker.md)
-- [Guest OS](../guest-os/README.md)
+- [Guest OS](../guest-os/index.md)
 - [Network & DNS](../architecture/network-dns-ingress.md)

@@ -1,6 +1,6 @@
 # Walk the Full Proxmox Install from Plan to Ready
 
-Chronological record of this lab’s install: Minisforum X1 Pro → Proxmox VE 9.2 → automation-ready host (dates approximate, July 2026). Read this after the [install section overview](README.md); pair with the [issues tracker](issues-tracker.md) when a step fails.
+Chronological record of this lab’s install: Minisforum X1 Pro → Proxmox VE 9.2 → automation-ready host (dates approximate, July 2026). Read this after the [install section overview](index.md); pair with the [issues tracker](issues-tracker.md) when a step fails.
 
 Use [verified state](verified-state.md) when you want the “good” command outputs, and [next steps](next-steps.md) once the node is up.
 

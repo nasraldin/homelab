@@ -23,7 +23,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 3 | DNS & networking | ⏳ | [phases.md §3](phases.md#phase-3--dns--networking) |
 | 4 | Edge firewall | ⏸️ | deferred |
 | 5 | Monitoring | ⏳ | needs k8s |
-| 6 | Kubernetes (kubeadm) | ⏳ | [kubernetes/](../kubernetes/README.md) |
+| 6 | Kubernetes (kubeadm) | ⏳ | [kubernetes/](../kubernetes/index.md) |
 | 7 | GitOps | ⏳ | Argo CD |
 | 8 | Core platform | ⏳ | Harbor, Keycloak, … |
 | 9 | K8s operations | ⏳ | Kyverno, Velero, … |

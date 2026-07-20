@@ -160,4 +160,4 @@ n8n never owns ticket state — only **automates** around Zammad.
 
 - [service-placement.md](../architecture/service-placement.md)
 - [proxmox-updates.md](../operations/proxmox-updates.md) — n8n as Layer 3 optional
-- [platform/README.md](README.md)
+- [platform/README.md](index.md)

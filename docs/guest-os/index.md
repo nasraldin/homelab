@@ -16,7 +16,7 @@ Do not put CoreOS or Talos everywhere “because immutable sounds modern.” Mat
 | OS | Share | Primary use |
 | -- | ----- | ----------- |
 | **Debian Server 12/13** | ~70% | k8s nodes, GitLab, Vault, general VMs |
-| **kubeadm on Debian** | Primary k8s | CKA + production-style cluster ([k8s docs](../kubernetes/README.md)) |
+| **kubeadm on Debian** | Primary k8s | CKA + production-style cluster ([k8s docs](../kubernetes/index.md)) |
 | **Talos Linux** | Optional cluster | Immutable Kubernetes nodes (production-style) |
 | **Fedora CoreOS** | 1–2 VMs | Immutable container hosts, Ignition, OpenShift path |
 | **Fedora Server** | As needed | RHEL ecosystem / `dnf` practice |
