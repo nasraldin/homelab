@@ -10,19 +10,19 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
-| Doc | Topic |
-| --- | ----- |
+| Doc                                      | Topic                                  |
+| ---------------------------------------- | -------------------------------------- |
 | [proxmox-updates.md](proxmox-updates.md) | Daily check, manual upgrade, n8n layer |
-| [backups.md](backups.md) | vzdump stages, drills, migration |
-| [backup-platform.md](backup-platform.md) | PBS, Velero, MinIO — Veeam-equivalent |
+| [backups.md](backups.md)                 | vzdump stages, drills, migration       |
+| [backup-platform.md](backup-platform.md) | PBS, Velero, MinIO — Veeam-equivalent  |
 
 ## Repo runbooks
 
-| Repo | Doc |
-| ---- | --- |
+| Repo              | Doc                                                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | proxmox-bootstrap | [13-complete-operations-guide](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/13-complete-operations-guide.md) |
-| proxmox-bootstrap | [06-runbook](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/06-runbook.md) |
-| terraform-lab | [scripts-reference](https://github.com/nasraldin/terraform-lab/blob/main/docs/scripts-reference.md) |
+| proxmox-bootstrap | [06-runbook](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/06-runbook.md)                                     |
+| terraform-lab     | [scripts-reference](https://github.com/nasraldin/terraform-lab/blob/main/docs/scripts-reference.md)                           |
 
 ## Future: homelab operations agent
 

@@ -14,34 +14,34 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 **Goal:** Hardened hypervisor, backups, safe updates.
 
-| Task | Status | Where |
-| ---- | ------ | ----- |
-| Install Proxmox 9.x on 990 PRO | ✅ | USB |
-| Hostname / FQDN | 🟡 | bootstrap |
-| APT repos (no-subscription, deb822) | 🟡 | bootstrap |
-| NTP, postfix, admin user, SSH | 🟡 | bootstrap |
-| ZFS tuning, ARC, TRIM | 🟡 | bootstrap |
-| Terraform API token | 🟡 | bootstrap |
-| Storage `data01` (FURY) | 🟡 | terraform |
-| Storage `aux01` (OEM Slot 3) | 🟡 | terraform |
-| Backups `local-backup` + daily job | 🟡 | [backups.md](../operations/backups.md) |
-| Update check timer | 🟡 | [proxmox-updates.md](../operations/proxmox-updates.md) |
-| Cloudflare Tunnel | 🟡 | cloudflare-tunnel |
-| Host firewall | 🟡 | optional |
-| VLANs | ⏸️ | deferred |
+| Task                                | Status | Where                                                  |
+| ----------------------------------- | ------ | ------------------------------------------------------ |
+| Install Proxmox 9.x on 990 PRO      | ✅     | USB                                                    |
+| Hostname / FQDN                     | 🟡     | bootstrap                                              |
+| APT repos (no-subscription, deb822) | 🟡     | bootstrap                                              |
+| NTP, postfix, admin user, SSH       | 🟡     | bootstrap                                              |
+| ZFS tuning, ARC, TRIM               | 🟡     | bootstrap                                              |
+| Terraform API token                 | 🟡     | bootstrap                                              |
+| Storage `data01` (FURY)             | 🟡     | terraform                                              |
+| Storage `aux01` (OEM Slot 3)        | 🟡     | terraform                                              |
+| Backups `local-backup` + daily job  | 🟡     | [backups.md](../operations/backups.md)                 |
+| Update check timer                  | 🟡     | [proxmox-updates.md](../operations/proxmox-updates.md) |
+| Cloudflare Tunnel                   | 🟡     | cloudflare-tunnel                                      |
+| Host firewall                       | 🟡     | optional                                               |
+| VLANs                               | ⏸️     | deferred                                               |
 
 ---
 
 ## Phase 1 — Control plane & IaC
 
-| Task | Status | Where |
-| ---- | ------ | ----- |
-| `terraform-lab` module | ✅ | Git |
-| `data01`, pools, images | 🟡 | apply |
-| VM / LXC modules | ✅ | Git |
-| k8s VM module (legacy k3s cloud-init) | ✅ | Git — **new clusters: kubeadm + Ansible** |
-| Mac control plane | 🟡 | bootstrap |
-| `infra-01` VM | ⏳ | optional |
+| Task                                  | Status | Where                                     |
+| ------------------------------------- | ------ | ----------------------------------------- |
+| `terraform-lab` module                | ✅     | Git                                       |
+| `data01`, pools, images               | 🟡     | apply                                     |
+| VM / LXC modules                      | ✅     | Git                                       |
+| k8s VM module (legacy k3s cloud-init) | ✅     | Git — **new clusters: kubeadm + Ansible** |
+| Mac control plane                     | 🟡     | bootstrap                                 |
+| `infra-01` VM                         | ⏳     | optional                                  |
 
 **First VMs:** `adguard-01`, `technitium-01` (Phase 3), `gitlab-01` (Phase 2), kubeadm nodes (Phase 6).
 
@@ -49,22 +49,22 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 ## Phase 2 — Source control
 
-| Task | Status |
-| ---- | ------ |
-| GitHub `nasraldin/*` | ✅ |
-| Self-hosted GitLab | ⏳ optional |
+| Task                 | Status      |
+| -------------------- | ----------- |
+| GitHub `nasraldin/*` | ✅          |
+| Self-hosted GitLab   | ⏳ optional |
 
 ---
 
 ## Phase 3 — DNS & networking
 
-| Task | Status |
-| ---- | ------ |
-| AdGuard Home | ⏳ |
-| Technitium DNS | ⏳ |
-| Router DNS → AdGuard | ⏳ |
-| OPNsense | ⏸️ |
-| VLANs | ⏸️ |
+| Task                 | Status |
+| -------------------- | ------ |
+| AdGuard Home         | ⏳     |
+| Technitium DNS       | ⏳     |
+| Router DNS → AdGuard | ⏳     |
+| OPNsense             | ⏸️     |
+| VLANs                | ⏸️     |
 
 See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
@@ -84,14 +84,14 @@ Prometheus, Grafana, Loki, Alertmanager — deploy via Argo CD (⏳).
 
 ## Phase 6 — Kubernetes (kubeadm)
 
-| Task | Status | Notes |
-| ---- | ------ | ----- |
-| Debian VMs (Terraform) | ⏳ | `terraform-lab` VM module |
-| kubeadm Stage A (1 CP + 2 workers) | ⏳ | [kubeadm-architecture](../kubernetes/kubeadm-architecture.md) |
-| kubeadm Stage B (3 CP + HAProxy) | ⏳ | After Stage A stable |
-| Cilium, cert-manager, metrics-server | ⏳ | Phase 6b |
-| Longhorn, NGINX Ingress, KEDA | ⏳ | Phase 6b |
-| Talos cluster (optional) | 🔮 | [guest-os](../guest-os/index.md) |
+| Task                                 | Status | Notes                                                         |
+| ------------------------------------ | ------ | ------------------------------------------------------------- |
+| Debian VMs (Terraform)               | ⏳     | `terraform-lab` VM module                                     |
+| kubeadm Stage A (1 CP + 2 workers)   | ⏳     | [kubeadm-architecture](../kubernetes/kubeadm-architecture.md) |
+| kubeadm Stage B (3 CP + HAProxy)     | ⏳     | After Stage A stable                                          |
+| Cilium, cert-manager, metrics-server | ⏳     | Phase 6b                                                      |
+| Longhorn, NGINX Ingress, KEDA        | ⏳     | Phase 6b                                                      |
+| Talos cluster (optional)             | 🔮     | [guest-os](../guest-os/index.md)                              |
 
 ---
 

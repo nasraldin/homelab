@@ -13,14 +13,14 @@ Zot is optional side practice on a spare VM if you want a minimal OCI registry. 
 
 ## Harbor vs Zot (short)
 
-| | **Harbor** | **Zot** |
-| - | ---------- | ------- |
-| Admin model | Web UI (projects, users, registries, replication) | **Config file** / env vars |
-| Proxy cache upstreams | UI: Administration → Registries | Edit JSON, restart |
-| Vulnerability scan | Trivy built-in | Limited / external |
-| RBAC / robot accounts | ✅ | Minimal |
-| RAM | Higher (~4–8 GB) | Lower (~512 MB–1 GB) |
-| This lab | ✅ **Primary** | 🧪 Optional lab only |
+|                       | **Harbor**                                        | **Zot**                    |
+| --------------------- | ------------------------------------------------- | -------------------------- |
+| Admin model           | Web UI (projects, users, registries, replication) | **Config file** / env vars |
+| Proxy cache upstreams | UI: Administration → Registries                   | Edit JSON, restart         |
+| Vulnerability scan    | Trivy built-in                                    | Limited / external         |
+| RBAC / robot accounts | ✅                                                | Minimal                    |
+| RAM                   | Higher (~4–8 GB)                                  | Lower (~512 MB–1 GB)       |
+| This lab              | ✅ **Primary**                                    | 🧪 Optional lab only       |
 
 **Do not run Harbor and Zot as two production registries** — pick one URL for
 the cluster (`harbor.lab.example.com`).
@@ -65,10 +65,10 @@ image: harbor.lab.example.com/dockerhub/library/redis:7.2
 
 No manual import. First pod pull populates the cache.
 
-| Good for | Not good for |
-| -------- | ------------ |
-| nginx, redis, postgres upstream | Images you must own if Docker Hub is down forever |
-| Pinning pulls through one URL | One-off “mirror this exact list” without pull traffic |
+| Good for                        | Not good for                                          |
+| ------------------------------- | ----------------------------------------------------- |
+| nginx, redis, postgres upstream | Images you must own if Docker Hub is down forever     |
+| Pinning pulls through one URL   | One-off “mirror this exact list” without pull traffic |
 
 ### 2. Replication (copy into your project)
 
@@ -83,10 +83,10 @@ docker pull harbor.lab.example.com/apps/nginx:1.27
 
 Image is **fully stored** in Harbor. Works offline from upstream after sync.
 
-| Good for | Not good for |
-| -------- | ------------ |
-| Known base images you always need | “Browse and click import” |
-| Air-gap style preparedness | Ad-hoc one image without a rule |
+| Good for                          | Not good for                    |
+| --------------------------------- | ------------------------------- |
+| Known base images you always need | “Browse and click import”       |
+| Air-gap style preparedness        | Ad-hoc one image without a rule |
 
 ### 3. Manual import (CLI — common for cherry-picks)
 
@@ -98,9 +98,9 @@ docker push harbor.lab.example.com/library/nginx:1.27
 
 Or in CI: build → scan → **cosign sign** → push to `apps/my-api:1.2.3`.
 
-| Good for | Not good for |
-| -------- | ------------ |
-| Your own images | Bulk upstream mirroring |
+| Good for                         | Not good for                   |
+| -------------------------------- | ------------------------------ |
+| Your own images                  | Bulk upstream mirroring        |
 | One image you want in `library/` | Day-to-day Docker Hub browsing |
 
 **Automation alternative:** script or GitLab job that pulls upstream, retags,
@@ -136,11 +136,11 @@ harbor.lab.example.com
 
 **Naming in manifests:**
 
-| Source | Example image |
-| ------ | ------------- |
+| Source            | Example image                                               |
+| ----------------- | ----------------------------------------------------------- |
 | Cached Docker Hub | `harbor.lab.example.com/proxy-dockerhub/library/nginx:1.27` |
-| Your app (signed) | `harbor.lab.example.com/apps/api:1.2.3` |
-| Replicated infra | `harbor.lab.example.com/infra/redis:7.2` |
+| Your app (signed) | `harbor.lab.example.com/apps/api:1.2.3`                     |
+| Replicated infra  | `harbor.lab.example.com/infra/redis:7.2`                    |
 
 Exact project names are yours — keep **proxy_** prefix obvious in Kyverno policies.
 
@@ -172,10 +172,10 @@ Details: [supply-chain-and-policies.md](../security/supply-chain-and-policies.md
 
 ## Robot accounts & pulls
 
-| Client | Auth |
-| ------ | ---- |
-| GitLab CI | Robot account per project — push `apps/*` |
-| Kubernetes | `imagePullSecret` from ESO/Vault — read-only robot |
+| Client          | Auth                                                 |
+| --------------- | ---------------------------------------------------- |
+| GitLab CI       | Robot account per project — push `apps/*`            |
+| Kubernetes      | `imagePullSecret` from ESO/Vault — read-only robot   |
 | Your Mac (Lima) | `docker login harbor.lab.example.com` for push tests |
 
 Create robots in Harbor UI: Project → Robot Accounts.
@@ -184,12 +184,12 @@ Create robots in Harbor UI: Project → Robot Accounts.
 
 ## When to use replication vs proxy cache
 
-| Scenario | Use |
-| -------- | --- |
-| Helm chart pulls `bitnami/redis` occasionally | **Proxy cache** |
-| Cluster must survive Docker Hub outage for 10 core images | **Replication** on schedule |
-| Your built microservice | **CI push** + Cosign |
-| “I saw an image on Hub and want it saved” | **Manual** pull/tag/push or add replication rule |
+| Scenario                                                  | Use                                              |
+| --------------------------------------------------------- | ------------------------------------------------ |
+| Helm chart pulls `bitnami/redis` occasionally             | **Proxy cache**                                  |
+| Cluster must survive Docker Hub outage for 10 core images | **Replication** on schedule                      |
+| Your built microservice                                   | **CI push** + Cosign                             |
+| “I saw an image on Hub and want it saved”                 | **Manual** pull/tag/push or add replication rule |
 
 ---
 
@@ -202,13 +202,13 @@ production Kyverno `verifyImages` at two registries. Compare, then decommission.
 
 ## Phase checklist
 
-| Step | Action |
-| ---- | ------ |
-| 8 | Deploy Harbor via Argo CD (Helm) |
-| 8 | Create proxy cache projects (Docker Hub first) |
-| 8 | Enable Trivy scanning |
-| 8b | GitLab CI: push signed images to `apps/` |
-| 9 | Kyverno: allow only `harbor.lab.example.com/*` + signature verify |
+| Step | Action                                                            |
+| ---- | ----------------------------------------------------------------- |
+| 8    | Deploy Harbor via Argo CD (Helm)                                  |
+| 8    | Create proxy cache projects (Docker Hub first)                    |
+| 8    | Enable Trivy scanning                                             |
+| 8b   | GitLab CI: push signed images to `apps/`                          |
+| 9    | Kyverno: allow only `harbor.lab.example.com/*` + signature verify |
 
 ---
 

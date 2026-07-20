@@ -33,11 +33,11 @@ cat /etc/network/interfaces
 # vmbr0 static, gateway 192.168.1.1, bridge-ports nic0
 ```
 
-| Check | Expected |
-| ----- | -------- |
-| `ping -c1 192.168.1.1` | OK |
-| `systemctl is-active ssh` | active |
-| `pve-firewall status` | disabled (until `enable-firewall.sh`) |
+| Check                     | Expected                              |
+| ------------------------- | ------------------------------------- |
+| `ping -c1 192.168.1.1`    | OK                                    |
+| `systemctl is-active ssh` | active                                |
+| `pve-firewall status`     | disabled (until `enable-firewall.sh`) |
 
 ---
 
@@ -142,11 +142,11 @@ ssh pve01 hostname
 
 ## Not yet applied (expected 🟡)
 
-| Item | Repo / script |
-| ---- | ------------- |
-| ZFS autotrim + ARC limit | `proxmox-bootstrap` |
-| `data01` pool on Kingston | `terraform-lab` |
-| Backup job `local-backup` | `terraform-lab` |
-| Update check timer | `proxmox-bootstrap` |
-| Cloudflare Tunnel | `cloudflare-tunnel` |
-| Host firewall | `proxmox-bootstrap` optional |
+| Item                      | Repo / script                |
+| ------------------------- | ---------------------------- |
+| ZFS autotrim + ARC limit  | `proxmox-bootstrap`          |
+| `data01` pool on Kingston | `terraform-lab`              |
+| Backup job `local-backup` | `terraform-lab`              |
+| Update check timer        | `proxmox-bootstrap`          |
+| Cloudflare Tunnel         | `cloudflare-tunnel`          |
+| Host firewall             | `proxmox-bootstrap` optional |

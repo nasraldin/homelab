@@ -10,10 +10,10 @@ Read this after [current state](current-state.md) if you’re wiring the Mac con
 - How to clone sibling repos with `./clone-labs.sh`
 - What stays private (bootstrap / Terraform / tunnel) vs what’s public here
 
-| Lab | Docs | What it’s for |
-| --- | ---- | ------------- |
-| [Docker Lab](https://nasraldin.github.io/docker-lab/) | Standalone Pages | Real Linux Docker on Apple Silicon (`ducker`) |
-| [Camunda Lab](https://nasraldin.github.io/camunda-lab/) | Standalone Pages | Local Camunda 8 on Docker |
+| Lab                                                     | Docs             | What it’s for                                 |
+| ------------------------------------------------------- | ---------------- | --------------------------------------------- |
+| [Docker Lab](https://nasraldin.github.io/docker-lab/)   | Standalone Pages | Real Linux Docker on Apple Silicon (`ducker`) |
+| [Camunda Lab](https://nasraldin.github.io/camunda-lab/) | Standalone Pages | Local Camunda 8 on Docker                     |
 
 Clone the sibling repos under `~/homelab` when you want the source next to this curriculum:
 

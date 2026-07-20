@@ -13,16 +13,16 @@ Use [backups.md](backups.md) for current vzdump stages on the X1 Pro. This page 
 
 ## Enterprise concept → homelab tool
 
-| Veeam / enterprise idea | Homelab tool | Phase |
-| ----------------------- | ------------ | ----- |
-| VM backup (Hyper-V/VMware) | **Proxmox vzdump** now → **PBS** later | 0–1 now, Stage 3 |
-| Incremental + dedup | **Proxmox Backup Server** | Dell server (Stage 3) |
-| Backup copy / offsite sync | PBS **remote sync** to NAS or cloud | Stage 3+ |
-| Immutable backup repo | **MinIO Object Lock** | Phase 8–9 |
-| Kubernetes backup (Kasten) | **Velero** | Phase 9 |
-| App-aware DB backup | **CloudNativePG** (PostgreSQL WAL) | Phase 8+ |
-| Restore testing / DR drill | Weekly vzdump restore + Velero restore jobs | Ongoing |
-| Central scheduling / reporting | Terraform jobs + Grafana + backup alerts | Phase 5, 9 |
+| Veeam / enterprise idea        | Homelab tool                                | Phase                 |
+| ------------------------------ | ------------------------------------------- | --------------------- |
+| VM backup (Hyper-V/VMware)     | **Proxmox vzdump** now → **PBS** later      | 0–1 now, Stage 3      |
+| Incremental + dedup            | **Proxmox Backup Server**                   | Dell server (Stage 3) |
+| Backup copy / offsite sync     | PBS **remote sync** to NAS or cloud         | Stage 3+              |
+| Immutable backup repo          | **MinIO Object Lock**                       | Phase 8–9             |
+| Kubernetes backup (Kasten)     | **Velero**                                  | Phase 9               |
+| App-aware DB backup            | **CloudNativePG** (PostgreSQL WAL)          | Phase 8+              |
+| Restore testing / DR drill     | Weekly vzdump restore + Velero restore jobs | Ongoing               |
+| Central scheduling / reporting | Terraform jobs + Grafana + backup alerts    | Phase 5, 9            |
 
 **Skip for this lab (unless curious):** Bareos/Bacula — traditional file backup;
 less aligned with Proxmox + k8s than PBS + Velero.
@@ -35,12 +35,12 @@ less aligned with Proxmox + k8s than PBS + Velero.
 
 You already designed this in **terraform-lab**:
 
-| Setting | Value |
-| ------- | ----- |
-| Job | `daily-all` @ 02:00 |
-| Mode | snapshot, zstd |
-| Retention | 7 daily / 4 weekly / 3 monthly |
-| Target | `local-backup` → later `aux-backup` |
+| Setting   | Value                               |
+| --------- | ----------------------------------- |
+| Job       | `daily-all` @ 02:00                 |
+| Mode      | snapshot, zstd                      |
+| Retention | 7 daily / 4 weekly / 3 monthly      |
+| Target    | `local-backup` → later `aux-backup` |
 
 This is **production-like ops** (schedule, retention, restore drills) without PBS
 yet. Veeam analogy: basic VM backup job.
@@ -82,12 +82,12 @@ only; not true air-gap.
 
 ### What you practice with vzdump → PBS
 
-| Skill | How |
-| ----- | --- |
-| RPO / RTO | Define retention vs acceptable data loss |
-| Restore drill | [backup-restore-drill runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md) |
-| Backup storage migration | Change `backup_storage_id` only |
-| Offsite copy | PBS sync job |
+| Skill                    | How                                                                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| RPO / RTO                | Define retention vs acceptable data loss                                                                                   |
+| Restore drill            | [backup-restore-drill runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md) |
+| Backup storage migration | Change `backup_storage_id` only                                                                                            |
+| Offsite copy             | PBS sync job                                                                                                               |
 
 ---
 
@@ -126,10 +126,10 @@ Kubernetes (kubeadm)
 
 For PostgreSQL in k8s (GitLab, Keycloak, apps):
 
-| Tool | Use |
-| ---- | --- |
+| Tool              | Use                                                   |
+| ----------------- | ----------------------------------------------------- |
 | **CloudNativePG** | Operator-managed Postgres + continuous WAL → S3/MinIO |
-| Velero | Coarse namespace + PVC snapshot |
+| Velero            | Coarse namespace + PVC snapshot                       |
 
 Enterprise teams use **both**: Velero for k8s objects; operator for **PITR**.
 
@@ -153,11 +153,11 @@ hypervisor disk.
 
 ## Your hardware vs generic advice
 
-| Generic blog | Your lab (correct) |
-| ------------ | ------------------ |
-| PBS on 3rd NVMe in X1 Pro | **Dell server** for PBS (Stage 3) |
-| Backups on 4 TB Kingston | **Guest disks only** — backups on 990 PRO / aux / PBS |
-| vzdump + PBS day one | **vzdump first** (Stages 1–2), PBS when Dell exists |
+| Generic blog              | Your lab (correct)                                    |
+| ------------------------- | ----------------------------------------------------- |
+| PBS on 3rd NVMe in X1 Pro | **Dell server** for PBS (Stage 3)                     |
+| Backups on 4 TB Kingston  | **Guest disks only** — backups on 990 PRO / aux / PBS |
+| vzdump + PBS day one      | **vzdump first** (Stages 1–2), PBS when Dell exists   |
 
 ---
 
@@ -197,13 +197,13 @@ ONGOING
 
 ## What to learn for Platform Engineer interviews
 
-| Topic | Homelab proof |
-| ----- | ------------- |
+| Topic                    | Homelab proof                     |
+| ------------------------ | --------------------------------- |
 | “How do you backup VMs?” | vzdump + PBS architecture diagram |
-| “K8s DR?” | Velero backup/restore demo |
-| “Immutable backups?” | MinIO Object Lock + retention |
-| “Postgres PITR?” | CloudNativePG WAL restore |
-| “Do you test restores?” | Restore drill runbook + logs |
+| “K8s DR?”                | Velero backup/restore demo        |
+| “Immutable backups?”     | MinIO Object Lock + retention     |
+| “Postgres PITR?”         | CloudNativePG WAL restore         |
+| “Do you test restores?”  | Restore drill runbook + logs      |
 
 ---
 

@@ -27,12 +27,12 @@ Layer 4 — Homelab agent (future)
   Unified ops agent — see [operations README](index.md)
 ```
 
-| Approach | Role | Status |
-| -------- | ---- | ------ |
-| **systemd timer + shell** | Check + notify on host | 🟡 `install-update-automation.sh` |
-| **apply-updates.sh** | Manual maintenance-window upgrade | 🟡 in Git |
-| **n8n** | Notification orchestration, approvals, tickets | ⏸️ optional — not primary |
-| **Unattended apt on timer** | — | ❌ rejected |
+| Approach                    | Role                                           | Status                            |
+| --------------------------- | ---------------------------------------------- | --------------------------------- |
+| **systemd timer + shell**   | Check + notify on host                         | 🟡 `install-update-automation.sh` |
+| **apply-updates.sh**        | Manual maintenance-window upgrade              | 🟡 in Git                         |
+| **n8n**                     | Notification orchestration, approvals, tickets | ⏸️ optional — not primary         |
+| **Unattended apt on timer** | —                                              | ❌ rejected                       |
 
 ### Why not n8n as the primary mechanism?
 
@@ -50,10 +50,10 @@ CHECK → REPORT → YOU APPROVE → UPDATE → REBOOT IF NEEDED → VERIFY
 
 ## What runs automatically (no daily action)
 
-| Unit | Schedule | Action |
-| ---- | -------- | ------ |
-| `pve-update-check.timer` | Daily 07:00 (+ 15m jitter) | Start check service |
-| `pve-update-check.service` | oneshot | `/usr/local/bin/pve-check-updates --quiet` |
+| Unit                       | Schedule                   | Action                                     |
+| -------------------------- | -------------------------- | ------------------------------------------ |
+| `pve-update-check.timer`   | Daily 07:00 (+ 15m jitter) | Start check service                        |
+| `pve-update-check.service` | oneshot                    | `/usr/local/bin/pve-check-updates --quiet` |
 
 Equivalent cron (not used): `0 7 * * * root /usr/local/bin/pve-check-updates`
 
@@ -135,10 +135,10 @@ check-updates.sh --json (future)
 
 ## Implementation reference
 
-| Piece | Location |
-| ----- | -------- |
-| Check script | `proxmox-bootstrap/pve/check-updates.sh` |
-| Upgrade script | `proxmox-bootstrap/pve/apply-updates.sh` |
-| Timer install | `proxmox-bootstrap/pve/install-update-automation.sh` |
-| Notifications | `proxmox-bootstrap/lib/notify.sh` |
-| Full guide | [proxmox-bootstrap: update automation](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/12-update-automation.md) |
+| Piece          | Location                                                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Check script   | `proxmox-bootstrap/pve/check-updates.sh`                                                                                      |
+| Upgrade script | `proxmox-bootstrap/pve/apply-updates.sh`                                                                                      |
+| Timer install  | `proxmox-bootstrap/pve/install-update-automation.sh`                                                                          |
+| Notifications  | `proxmox-bootstrap/lib/notify.sh`                                                                                             |
+| Full guide     | [proxmox-bootstrap: update automation](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/12-update-automation.md) |

@@ -10,7 +10,7 @@ Phases stack on purpose: Harbor (8) → CI signing (8b) → Kyverno + Falco (9) 
 - Phase order for registry, signing, admission, SIEM
 - How these pieces relate without overlapping jobs
 
-| Doc | Topic |
-| --- | ----- |
-| [Supply chain & policies](supply-chain-and-policies.md) | Cosign, Trivy, Syft, Harbor, Kyverno (vs OPA) |
-| [Wazuh (SIEM/XDR)](wazuh.md) | Where Wazuh fits vs Prometheus, Falco, Kyverno |
+| Doc                                                     | Topic                                          |
+| ------------------------------------------------------- | ---------------------------------------------- |
+| [Supply chain & policies](supply-chain-and-policies.md) | Cosign, Trivy, Syft, Harbor, Kyverno (vs OPA)  |
+| [Wazuh (SIEM/XDR)](wazuh.md)                            | Where Wazuh fits vs Prometheus, Falco, Kyverno |

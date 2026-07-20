@@ -13,11 +13,11 @@ For the Veeam-style OSS map (PBS, Velero, MinIO), see [backup-platform.md](backu
 
 ## Stages
 
-| Stage | Hardware | Proxmox storage ID | Status |
-| ----- | -------- | ------------------ | ------ |
-| **1 (now)** | 990 PRO `local-backup` | `local-backup` | 🟡 `terraform apply` |
-| **2** | +4 TB aux NVMe (`aux01`) | `aux-backup` | 🔮 IaC + rsync script ready |
-| **3** | Dell server | PBS datastore | 🔮 design only |
+| Stage       | Hardware                 | Proxmox storage ID | Status                      |
+| ----------- | ------------------------ | ------------------ | --------------------------- |
+| **1 (now)** | 990 PRO `local-backup`   | `local-backup`     | 🟡 `terraform apply`        |
+| **2**       | +4 TB aux NVMe (`aux01`) | `aux-backup`       | 🔮 IaC + rsync script ready |
+| **3**       | Dell server              | PBS datastore      | 🔮 design only              |
 
 Layout: [hardware-and-storage.md](../architecture/hardware-and-storage.md).
 
@@ -25,13 +25,13 @@ Layout: [hardware-and-storage.md](../architecture/hardware-and-storage.md).
 
 ## Stage 1 job (`daily-all`)
 
-| Setting | Value |
-| ------- | ----- |
-| Schedule | 02:00 daily |
-| Mode | snapshot |
-| Compression | zstd |
-| Retention | 7 daily, 4 weekly, 3 monthly |
-| Storage | `local-backup` → `/var/lib/vz/backups` |
+| Setting     | Value                                         |
+| ----------- | --------------------------------------------- |
+| Schedule    | 02:00 daily                                   |
+| Mode        | snapshot                                      |
+| Compression | zstd                                          |
+| Retention   | 7 daily, 4 weekly, 3 monthly                  |
+| Storage     | `local-backup` → `/var/lib/vz/backups`        |
 | Guest disks | **`data01` only** — never on backup datastore |
 
 **Owner:** `terraform-lab` (`backup.tf`).
@@ -44,11 +44,11 @@ cd ~/homelab/terraform-lab && terraform apply
 
 ## Operations
 
-| Cadence | Action |
-| ------- | ------ |
-| Daily | Automatic vzdump (after apply) |
-| Weekly | **Restore drill** — VMID 999, verify, delete |
-| On failure | Email via `NOTIFY_EMAIL` |
+| Cadence    | Action                                       |
+| ---------- | -------------------------------------------- |
+| Daily      | Automatic vzdump (after apply)               |
+| Weekly     | **Restore drill** — VMID 999, verify, delete |
+| On failure | Email via `NOTIFY_EMAIL`                     |
 
 ---
 
@@ -74,10 +74,10 @@ If you never restore, you do not have backups — only archives.
 
 ## Future
 
-| Feature | Status |
-| ------- | ------ |
-| Post-backup verify + Discord/ntfy | ⏳ |
-| Dell PBS (Stage 3) | 🔮 |
+| Feature                           | Status |
+| --------------------------------- | ------ |
+| Post-backup verify + Discord/ntfy | ⏳     |
+| Dell PBS (Stage 3)                | 🔮     |
 
 ## References
 

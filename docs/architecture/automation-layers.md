@@ -42,14 +42,14 @@ Remote access
 
 ## Can Ansible provision Proxmox from empty hardware?
 
-| Question | Answer |
-| -------- | ------ |
-| Ansible on **empty** X1 Pro (no OS)? | **No** — nothing to SSH to |
-| Ansible **after** Proxmox is installed? | **Yes** — configure guests and optional host tasks |
-| Ansible install Proxmox packages on Debian? | Possible but **not your path** — use official PVE installer |
-| Terraform install Proxmox? | **No** — needs API on running PVE |
-| Mac automate **first** Proxmox install? | **Yes** — `ansible-lab` (USB unattended ISO + `answer.toml`) |
-| Mac automate **everything after** install? | **Yes** — `proxmox-bootstrap` + `terraform-lab` |
+| Question                                    | Answer                                                       |
+| ------------------------------------------- | ------------------------------------------------------------ |
+| Ansible on **empty** X1 Pro (no OS)?        | **No** — nothing to SSH to                                   |
+| Ansible **after** Proxmox is installed?     | **Yes** — configure guests and optional host tasks           |
+| Ansible install Proxmox packages on Debian? | Possible but **not your path** — use official PVE installer  |
+| Terraform install Proxmox?                  | **No** — needs API on running PVE                            |
+| Mac automate **first** Proxmox install?     | **Yes** — `ansible-lab` (USB unattended ISO + `answer.toml`) |
+| Mac automate **everything after** install?  | **Yes** — `proxmox-bootstrap` + `terraform-lab`              |
 
 Professional pattern: **one short manual or unattended install**, then **100% code**.
 
@@ -59,14 +59,14 @@ Professional pattern: **one short manual or unattended install**, then **100% co
 
 You do **not** need an `ansible-control` VM yet. Your Mac is the control plane:
 
-| Mac role | Tool | Target |
-| -------- | ---- | ------ |
-| SSH + DNS | `proxmox-bootstrap/mac/` | `pve01` |
-| Host config | `proxmox-bootstrap --remote` | Proxmox node |
-| VMs / storage | `terraform-lab` | Proxmox API |
-| Guest config | `ansible-lab` playbooks | VMs over SSH |
-| Remote UI | `cloudflare-tunnel` | Tunnel on `pve01` |
-| Reinstall PVE | `ansible-lab` USB ISO | Bare metal |
+| Mac role      | Tool                         | Target            |
+| ------------- | ---------------------------- | ----------------- |
+| SSH + DNS     | `proxmox-bootstrap/mac/`     | `pve01`           |
+| Host config   | `proxmox-bootstrap --remote` | Proxmox node      |
+| VMs / storage | `terraform-lab`              | Proxmox API       |
+| Guest config  | `ansible-lab` playbooks      | VMs over SSH      |
+| Remote UI     | `cloudflare-tunnel`          | Tunnel on `pve01` |
+| Reinstall PVE | `ansible-lab` USB ISO        | Bare metal        |
 
 Add a dedicated ansible VM later only if you want CI runners **inside** the lab.
 
@@ -76,12 +76,12 @@ Add a dedicated ansible VM later only if you want CI runners **inside** the lab.
 
 Both touch the Proxmox **host** — split by purpose:
 
-| | **proxmox-bootstrap** | **ansible-lab** |
-| - | ----------------------- | ----------------- |
-| **When** | After any PVE install; daily drift check | Reinstall PVE from scratch; Ansible roles |
-| **Style** | Shell, `--check`, report OK/FIXED | `answer.toml`, ISO, playbooks |
-| **Owns** | APT, ZFS autotrim, SSH hardening, Terraform token verify | Unattended install, disk-by-serial, `make site` |
-| **Use now** | ✅ `pve01` already installed | ✅ Next time SSD is wiped |
+|             | **proxmox-bootstrap**                                    | **ansible-lab**                                 |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------- |
+| **When**    | After any PVE install; daily drift check                 | Reinstall PVE from scratch; Ansible roles       |
+| **Style**   | Shell, `--check`, report OK/FIXED                        | `answer.toml`, ISO, playbooks                   |
+| **Owns**    | APT, ZFS autotrim, SSH hardening, Terraform token verify | Unattended install, disk-by-serial, `make site` |
+| **Use now** | ✅ `pve01` already installed                             | ✅ Next time SSD is wiped                       |
 
 **Do not duplicate:** use `proxmox-bootstrap` for day-1 host tuning on a live node;
 use `ansible-lab` when you need a **rebuildable** unattended installer.
@@ -92,10 +92,10 @@ use `ansible-lab` when you need a **rebuildable** unattended installer.
 
 Your **decided** layout (two NVMe populated):
 
-| Disk | Pool | Created by |
-| ---- | ---- | ---------- |
-| Samsung 990 PRO 2 TB | `rpool` (OS) | Installer / `answer.toml` |
-| Kingston Fury 4 TB | `data01` | **terraform-lab** (not first-boot zpool create) |
+| Disk                 | Pool         | Created by                                      |
+| -------------------- | ------------ | ----------------------------------------------- |
+| Samsung 990 PRO 2 TB | `rpool` (OS) | Installer / `answer.toml`                       |
+| Kingston Fury 4 TB   | `data01`     | **terraform-lab** (not first-boot zpool create) |
 
 Reason: second pool creation in `answer.toml` first-boot is fragile (disk order,
 wiping wrong disk). Installer selects **one** disk by serial; Terraform owns
@@ -175,12 +175,12 @@ See [ansible-lab: 04-pxe-install](https://github.com/nasraldin/ansible-lab/blob/
 
 ## What Ansible should manage (and not)
 
-| ✅ Ansible | ❌ Not Ansible |
-| ---------- | -------------- |
-| GitLab VM packages, users, Docker | Creating Proxmox VMs (Terraform) |
-| AdGuard/Technitium VM prep | kubeadm cluster (Terraform VMs + kubeadm) |
-| Security baseline on **guests** | Helm charts in k8s (Argo CD) |
-| Optional host tasks overlapping bootstrap | Proxmox from bare metal without ISO |
+| ✅ Ansible                                | ❌ Not Ansible                            |
+| ----------------------------------------- | ----------------------------------------- |
+| GitLab VM packages, users, Docker         | Creating Proxmox VMs (Terraform)          |
+| AdGuard/Technitium VM prep                | kubeadm cluster (Terraform VMs + kubeadm) |
+| Security baseline on **guests**           | Helm charts in k8s (Argo CD)              |
+| Optional host tasks overlapping bootstrap | Proxmox from bare metal without ISO       |
 
 Kubernetes platform: **Terraform** creates nodes → **Argo CD** owns cluster apps.
 
@@ -211,13 +211,13 @@ Terraform for `data01`.
 
 ## Where you are now
 
-| Step | Status |
-| ---- | ------ |
-| USB install Proxmox | ✅ done |
-| SSH, DNS, API token | ✅ done |
-| `proxmox-bootstrap` on node | 🟡 run from Mac |
-| `cloudflare-tunnel` | 🟡 run from Mac (on LAN) |
-| `terraform apply` (data01, aux01, backups) | 🟡 |
-| kubeadm + Argo CD | ⏳ Phase 6–7 |
+| Step                                       | Status                   |
+| ------------------------------------------ | ------------------------ |
+| USB install Proxmox                        | ✅ done                  |
+| SSH, DNS, API token                        | ✅ done                  |
+| `proxmox-bootstrap` on node                | 🟡 run from Mac          |
+| `cloudflare-tunnel`                        | 🟡 run from Mac (on LAN) |
+| `terraform apply` (data01, aux01, backups) | 🟡                       |
+| kubeadm + Argo CD                          | ⏳ Phase 6–7             |
 
 Next: [current-state.md](../current-state.md) · [installation/next-steps.md](../installation/next-steps.md)

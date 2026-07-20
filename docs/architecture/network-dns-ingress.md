@@ -17,12 +17,12 @@ Today the lab is a single Proxmox node on a flat LAN — no VLANs yet, remote UI
 
 ## DNS (decided)
 
-| Layer | Tool | Role | Status |
-| ----- | ---- | ---- | ------ |
-| Filtering | **AdGuard Home** | Ads, trackers, per-client rules, DoH/DoT | ⏳ |
-| Authoritative internal | **Technitium DNS** | `*.lab.example.com` zones, split DNS | ⏳ |
-| Public | **Cloudflare** | `*.example.com`, Tunnel | 🟡 |
-| In-cluster | **ExternalDNS** | K8s → DNS records | ⏳ |
+| Layer                  | Tool               | Role                                     | Status |
+| ---------------------- | ------------------ | ---------------------------------------- | ------ |
+| Filtering              | **AdGuard Home**   | Ads, trackers, per-client rules, DoH/DoT | ⏳     |
+| Authoritative internal | **Technitium DNS** | `*.lab.example.com` zones, split DNS     | ⏳     |
+| Public                 | **Cloudflare**     | `*.example.com`, Tunnel                  | 🟡     |
+| In-cluster             | **ExternalDNS**    | K8s → DNS records                        | ⏳     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
@@ -32,16 +32,16 @@ Example internal names (future): `gitlab.lab`, `grafana.lab`, `argocd.lab`.
 
 ## Ingress (Kubernetes)
 
-| Choice | Status |
-| ------ | ------ |
-| **NGINX Ingress Controller** | ⏳ planned |
-| ~~Traefik~~ | ❌ not using |
-| **Gateway API** | 🔮 after NGINX |
-| **cert-manager** | ⏳ with Argo CD |
+| Choice                       | Status          |
+| ---------------------------- | --------------- |
+| **NGINX Ingress Controller** | ⏳ planned      |
+| ~~Traefik~~                  | ❌ not using    |
+| **Gateway API**              | 🔮 after NGINX  |
+| **cert-manager**             | ⏳ with Argo CD |
 
 ## Naming
 
-| Scope | Pattern | Example |
-| ----- | ------- | ------- |
+| Scope    | Pattern             | Example                 |
+| -------- | ------------------- | ----------------------- |
 | Internal | `*.lab.example.com` | `pve01.lab.example.com` |
-| Public | `*.example.com` | `grafana.example.com` |
+| Public   | `*.example.com`     | `grafana.example.com`   |

@@ -16,13 +16,13 @@ I’m still writing these pages. Until they land, use [Docker Lab](https://nasra
 
 ## What will go here
 
-| Topic | Intent |
-| ----- | ------ |
-| Baseline setup | Homebrew, shells, editors, Git identity |
-| SSH & hosts | Key auth to Proxmox, `/etc/hosts` vs lab DNS |
-| Day-to-day CLIs | Terraform, kubectl (later), lab CLIs |
-| Containers on Mac | Lima / Docker Lab workflow |
-| Secrets hygiene | What never leaves the password manager |
+| Topic             | Intent                                       |
+| ----------------- | -------------------------------------------- |
+| Baseline setup    | Homebrew, shells, editors, Git identity      |
+| SSH & hosts       | Key auth to Proxmox, `/etc/hosts` vs lab DNS |
+| Day-to-day CLIs   | Terraform, kubectl (later), lab CLIs         |
+| Containers on Mac | Lima / Docker Lab workflow                   |
+| Secrets hygiene   | What never leaves the password manager       |
 
 ## Related now
 

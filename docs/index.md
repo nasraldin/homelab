@@ -31,14 +31,14 @@ Every configuration here is intended as a reference, not a copy-and-paste soluti
 
 ## How to read these docs
 
-| Step | Go here | Why |
-| ---- | ------- | --- |
-| 1 | [MacBook workstation](/macbook/) | Laptop is the control plane for SSH, Git, and tooling |
-| 2 | [Build story](/build-story) | Why each choice was made |
-| 3 | [Current state](/current-state) | What’s done, next, or blocked |
-| 4 | [Install journal](/installation/) | Phase 0: Proxmox install, issues, checks |
-| 5 | [Architecture](/architecture/target-topology) | Storage, network, and services |
-| 6 | [Roadmap](/roadmap/) | What comes after the foundation |
+| Step | Go here                                       | Why                                                   |
+| ---- | --------------------------------------------- | ----------------------------------------------------- |
+| 1    | [MacBook workstation](/macbook/)              | Laptop is the control plane for SSH, Git, and tooling |
+| 2    | [Build story](/build-story)                   | Why each choice was made                              |
+| 3    | [Current state](/current-state)               | What’s done, next, or blocked                         |
+| 4    | [Install journal](/installation/)             | Phase 0: Proxmox install, issues, checks              |
+| 5    | [Architecture](/architecture/target-topology) | Storage, network, and services                        |
+| 6    | [Roadmap](/roadmap/)                          | What comes after the foundation                       |
 
 ## What’s in the lab
 

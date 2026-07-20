@@ -13,13 +13,13 @@ Read this before you create VMs or run `kubeadm init`. It settles API load-balan
 
 ## Why kubeadm (not k3s) for your goal
 
-| | k3s | kubeadm |
-| - | --- | ------- |
-| CKA exam alignment | Partial — hides control plane | **Full** — you manage every component |
-| Production similarity | Edge / small clusters | **Default** for on-prem and many cloud bootstraps |
-| etcd | Embedded (simplified) | **You** run stacked or external etcd |
-| Upgrades / certs | Simplified | **Real** `kubeadm upgrade` workflow |
-| Interview story | “Fast homelab” | **“I built and operate HA Kubernetes”** |
+|                       | k3s                           | kubeadm                                           |
+| --------------------- | ----------------------------- | ------------------------------------------------- |
+| CKA exam alignment    | Partial — hides control plane | **Full** — you manage every component             |
+| Production similarity | Edge / small clusters         | **Default** for on-prem and many cloud bootstraps |
+| etcd                  | Embedded (simplified)         | **You** run stacked or external etcd              |
+| Upgrades / certs      | Simplified                    | **Real** `kubeadm upgrade` workflow               |
+| Interview story       | “Fast homelab”                | **“I built and operate HA Kubernetes”**           |
 
 **Decision:** kubeadm on Debian for the primary cluster. k3s module in `terraform-lab` is legacy; new work targets kubeadm + Ansible (or manual for CKA depth).
 
@@ -95,11 +95,11 @@ Do **not** build 3 CP + HAProxy on day one if Phase 0–5 are not done. CKA does
 
 ### Stage A — Learn the control plane (CKA core)
 
-| VM | vCPU | RAM | Disk | IP example |
-| -- | ---- | --- | ---- | ---------- |
-| k8s-cp-01 | 2 | 4 GB | 40 GB | 192.168.1.30 |
-| k8s-w-01 | 4 | 8 GB | 60 GB | 192.168.1.31 |
-| k8s-w-02 | 4 | 8 GB | 60 GB | 192.168.1.32 |
+| VM        | vCPU | RAM  | Disk  | IP example   |
+| --------- | ---- | ---- | ----- | ------------ |
+| k8s-cp-01 | 2    | 4 GB | 40 GB | 192.168.1.30 |
+| k8s-w-01  | 4    | 8 GB | 60 GB | 192.168.1.31 |
+| k8s-w-02  | 4    | 8 GB | 60 GB | 192.168.1.32 |
 
 - **1 control plane**, 2 workers
 - `kubectl` → `https://192.168.1.30:6443` directly
@@ -109,11 +109,11 @@ Do **not** build 3 CP + HAProxy on day one if Phase 0–5 are not done. CKA does
 
 ### Stage B — Production HA (stacked etcd)
 
-| VM | vCPU | RAM | Disk |
-| -- | ---- | --- | ---- |
-| haproxy-01 | 2 | 2 GB | 20 GB |
+| VM            | vCPU   | RAM       | Disk       |
+| ------------- | ------ | --------- | ---------- |
+| haproxy-01    | 2      | 2 GB      | 20 GB      |
 | k8s-cp-01..03 | 2 each | 4 GB each | 40 GB each |
-| k8s-w-01..02 | 4 each | 8 GB each | 60 GB each |
+| k8s-w-01..02  | 4 each | 8 GB each | 60 GB each |
 
 - Add cp-02, cp-03; point **all** kubelets and `kubectl` at HAProxy VIP
 - First CP bootstrapped; others `kubeadm join --control-plane`
@@ -129,10 +129,10 @@ Add GitLab VM, monitoring, Wazuh — only after Stage B is stable.
 
 ## Guest OS: Debian 12 or 13
 
-| Choice | When |
-| ------ | ---- |
-| **Debian 12 (bookworm)** | Most mature cloud images and kubeadm docs today |
-| **Debian 13 (trixie)** | Fine if cloud image is available in Proxmox; same steps |
+| Choice                   | When                                                    |
+| ------------------------ | ------------------------------------------------------- |
+| **Debian 12 (bookworm)** | Most mature cloud images and kubeadm docs today         |
+| **Debian 13 (trixie)**   | Fine if cloud image is available in Proxmox; same steps |
 
 **Not Fedora** for long-lived cluster nodes — short lifecycle, wrong lesson for “stable production.”
 
@@ -142,13 +142,13 @@ Add GitLab VM, monitoring, Wazuh — only after Stage B is stable.
 
 ## Node software stack (every VM)
 
-| Component | Version / notes |
-| --------- | ----------------- |
-| Container runtime | **containerd** (not Docker on nodes) |
-| CNI | **Cilium** (eBPF; Gateway API later) |
-| Kubernetes | kubeadm + kubelet + kubectl (same minor version) |
-| Swap | **off** (`swapoff -a`, fstab) |
-| Kernel | `br_netfilter`, `overlay`, forwarding enabled |
+| Component         | Version / notes                                  |
+| ----------------- | ------------------------------------------------ |
+| Container runtime | **containerd** (not Docker on nodes)             |
+| CNI               | **Cilium** (eBPF; Gateway API later)             |
+| Kubernetes        | kubeadm + kubelet + kubectl (same minor version) |
+| Swap              | **off** (`swapoff -a`, fstab)                    |
+| Kernel            | `br_netfilter`, `overlay`, forwarding enabled    |
 
 Install order per node:
 
@@ -165,13 +165,13 @@ Install order per node:
 
 Install these **before** Harbor, GitLab-in-cluster, or Argo CD app-of-apps. This is the “minimum viable production cluster.”
 
-| Addon | Purpose | CKA relevance |
-| ----- | ------- | ------------- |
-| **Cilium** | CNI, network policies | Networking, policies |
-| **cert-manager** | TLS certificates | Ingress TLS |
-| **metrics-server** | `kubectl top` | HPA, resource metrics |
-| **NGINX Ingress** | HTTP routing | Ingress, Services |
-| **KEDA** | Event-driven autoscaling | ScaledObject (platform pattern) |
+| Addon              | Purpose                  | CKA relevance                   |
+| ------------------ | ------------------------ | ------------------------------- |
+| **Cilium**         | CNI, network policies    | Networking, policies            |
+| **cert-manager**   | TLS certificates         | Ingress TLS                     |
+| **metrics-server** | `kubectl top`            | HPA, resource metrics           |
+| **NGINX Ingress**  | HTTP routing             | Ingress, Services               |
+| **KEDA**           | Event-driven autoscaling | ScaledObject (platform pattern) |
 
 **Defer to Phase 7–9:** Argo CD, Longhorn, Velero, Kyverno, ExternalDNS, ESO, Vault, Prometheus stack.
 
@@ -231,14 +231,14 @@ Install Cilium **before** workloads that need networking.
 
 ## CKA study mapping
 
-| CKA domain | Homelab practice |
-| ---------- | ---------------- |
-| Cluster architecture | kubeadm init/join, static pods, `/etc/kubernetes/manifests` |
-| Workloads | Deployments, DaemonSets, StatefulSets on your workers |
-| Services & networking | Cilium, NetworkPolicy, Ingress, CoreDNS debug |
-| Storage | hostPath, local-path or Longhorn (Phase 9) |
-| Troubleshooting | Break kubelet, fix RBAC, recover etcd snapshot (Stage B) |
-| HA / upgrades | Stage B: `kubeadm upgrade plan/apply` |
+| CKA domain            | Homelab practice                                            |
+| --------------------- | ----------------------------------------------------------- |
+| Cluster architecture  | kubeadm init/join, static pods, `/etc/kubernetes/manifests` |
+| Workloads             | Deployments, DaemonSets, StatefulSets on your workers       |
+| Services & networking | Cilium, NetworkPolicy, Ingress, CoreDNS debug               |
+| Storage               | hostPath, local-path or Longhorn (Phase 9)                  |
+| Troubleshooting       | Break kubelet, fix RBAC, recover etcd snapshot (Stage B)    |
+| HA / upgrades         | Stage B: `kubeadm upgrade plan/apply`                       |
 
 Use **killer.sh** or **CKA simulator** alongside the cluster — do not rely on the homelab alone for exam quirks.
 
@@ -246,11 +246,11 @@ Use **killer.sh** or **CKA simulator** alongside the cluster — do not rely on 
 
 ## Terraform / automation path
 
-| Now | Next |
-| --- | ---- |
-| Terraform `vm` module → Debian cloud images | Same — VMs only |
-| Retire `k8s-cluster` k3s cloud-init | Ansible role: containerd + kubeadm |
-| Manual kubeadm for CKA depth | GitOps for **addons** after Argo CD (Phase 7) |
+| Now                                         | Next                                          |
+| ------------------------------------------- | --------------------------------------------- |
+| Terraform `vm` module → Debian cloud images | Same — VMs only                               |
+| Retire `k8s-cluster` k3s cloud-init         | Ansible role: containerd + kubeadm            |
+| Manual kubeadm for CKA depth                | GitOps for **addons** after Argo CD (Phase 7) |
 
 VMs from Terraform; **kubeadm join tokens and upgrades** by hand (or Ansible) until you want full IaC.
 

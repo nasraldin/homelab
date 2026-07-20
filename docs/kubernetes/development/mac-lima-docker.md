@@ -51,9 +51,7 @@ Merge into `~/.docker/config.json` (keep your existing keys):
 
 ```json
 {
-  "cliPluginsExtraDirs": [
-    "/opt/homebrew/lib/docker/cli-plugins"
-  ]
+  "cliPluginsExtraDirs": ["/opt/homebrew/lib/docker/cli-plugins"]
 }
 ```
 
@@ -89,13 +87,13 @@ limactl start docker-prod --tty=false
 
 ### Sizing (36 GB Mac)
 
-| Resource | Value | Why |
-| -------- | ----- | --- |
-| `cpus` | 6 | Leave cores for macOS + IDE |
-| `memory` | 12GiB | ~24 GB left for macOS (not 24GiB for Lima) |
-| `disk` | 150GiB | Images, layers, build cache |
-| `vmType` | `vz` | Apple Virtualization Framework — fastest |
-| OS | Debian 12 arm64 | Matches future Proxmox k8s nodes |
+| Resource | Value           | Why                                        |
+| -------- | --------------- | ------------------------------------------ |
+| `cpus`   | 6               | Leave cores for macOS + IDE                |
+| `memory` | 12GiB           | ~24 GB left for macOS (not 24GiB for Lima) |
+| `disk`   | 150GiB          | Images, layers, build cache                |
+| `vmType` | `vz`            | Apple Virtualization Framework — fastest   |
+| OS       | Debian 12 arm64 | Matches future Proxmox k8s nodes           |
 
 Edit `~/.lima/docker-prod.yaml` if you need more RAM for heavy Compose stacks (max **16GiB** on 36 GB host).
 
@@ -179,12 +177,12 @@ runc --version
 
 ## Lima vs VirtualBox
 
-| | Lima (`vz`) | VirtualBox |
-| - | ----------- | ---------- |
-| Apple Silicon | Native | Poor / emulated |
-| Docker workload speed | **Best** | Slower |
-| Full VM learning | Good enough | Manual ISO install |
-| Your X1 Pro | N/A | Use Proxmox instead |
+|                       | Lima (`vz`) | VirtualBox          |
+| --------------------- | ----------- | ------------------- |
+| Apple Silicon         | Native      | Poor / emulated     |
+| Docker workload speed | **Best**    | Slower              |
+| Full VM learning      | Good enough | Manual ISO install  |
+| Your X1 Pro           | N/A         | Use Proxmox instead |
 
 Use **Proxmox** for “install Debian from ISO, systemd, kubeadm” — use **Lima** for daily Docker CLI speed.
 

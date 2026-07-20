@@ -10,7 +10,7 @@ Decide VM vs Kubernetes placement first ([service placement](../architecture/ser
 - Where platform services sit in the phase plan
 - Pointer to VM vs k8s placement decisions
 
-| Doc | Topic |
-| --- | ----- |
-| [Harbor registry](harbor-registry.md) | Proxy cache, replication, projects — Harbor vs Zot |
+| Doc                                    | Topic                                               |
+| -------------------------------------- | --------------------------------------------------- |
+| [Harbor registry](harbor-registry.md)  | Proxy cache, replication, projects — Harbor vs Zot  |
 | [ITSM and n8n](itsm-and-automation.md) | Zammad vs GLPI/iTop; n8n automates, does not ticket |

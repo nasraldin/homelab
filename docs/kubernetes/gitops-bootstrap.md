@@ -185,7 +185,7 @@ spec:
         - values.yaml
       parameters:
         - name: installCRDs
-          value: "true"
+          value: 'true'
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -201,18 +201,18 @@ spec:
 
 ## Install order via Argo CD (after bootstrap)
 
-| Order | Component | Namespace |
-| ----- | --------- | --------- |
-| 1 | cert-manager | cert-manager |
-| 2 | ingress-nginx | ingress-nginx |
-| 3 | metrics-server | kube-system |
-| 4 | KEDA | keda |
-| 5 | external-secrets | external-secrets |
-| 6 | prometheus-stack | monitoring |
-| 7 | loki | monitoring |
-| 8 | harbor | harbor |
-| 9 | keycloak | keycloak |
-| 10 | apps | per-app |
+| Order | Component        | Namespace        |
+| ----- | ---------------- | ---------------- |
+| 1     | cert-manager     | cert-manager     |
+| 2     | ingress-nginx    | ingress-nginx    |
+| 3     | metrics-server   | kube-system      |
+| 4     | KEDA             | keda             |
+| 5     | external-secrets | external-secrets |
+| 6     | prometheus-stack | monitoring       |
+| 7     | loki             | monitoring       |
+| 8     | harbor           | harbor           |
+| 9     | keycloak         | keycloak         |
+| 10    | apps             | per-app          |
 
 Longhorn can stay manual-managed until comfortable, then **adopt** via Argo with matching values.
 
@@ -220,25 +220,25 @@ Longhorn can stay manual-managed until comfortable, then **adopt** via Argo with
 
 ## What stays outside Argo CD
 
-| Item | Tool |
-| ---- | ---- |
-| Proxmox VMs / disks | Terraform |
-| kubeadm join / upgrade | Ansible or runbook |
-| GitLab VM packages | Ansible |
+| Item                     | Tool                  |
+| ------------------------ | --------------------- |
+| Proxmox VMs / disks      | Terraform             |
+| kubeadm join / upgrade   | Ansible or runbook    |
+| GitLab VM packages       | Ansible               |
 | Bootstrap Argo CD itself | One-time helm/kubectl |
-| Emergency break-glass | `kubectl` debug |
+| Emergency break-glass    | `kubectl` debug       |
 
 ---
 
 ## Anti-patterns
 
-| Don't | Do |
-| ----- | -- |
-| GitLab in k8s | GitLab VM |
-| `helm install` for every app | Argo `Application` |
-| Longhorn on OS disk | Dedicated vdisk per worker |
-| Terraform helm_provider for Grafana | Argo CD |
-| Manual `kubectl apply` for prod apps | Git commit |
+| Don't                                | Do                         |
+| ------------------------------------ | -------------------------- |
+| GitLab in k8s                        | GitLab VM                  |
+| `helm install` for every app         | Argo `Application`         |
+| Longhorn on OS disk                  | Dedicated vdisk per worker |
+| Terraform helm_provider for Grafana  | Argo CD                    |
+| Manual `kubectl apply` for prod apps | Git commit                 |
 
 ---
 

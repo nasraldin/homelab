@@ -13,13 +13,13 @@ Do not put CoreOS or Talos everywhere “because immutable sounds modern.” Mat
 
 ## Summary mix (target)
 
-| OS | Share | Primary use |
-| -- | ----- | ----------- |
-| **Debian Server 12/13** | ~70% | k8s nodes, GitLab, Vault, general VMs |
-| **kubeadm on Debian** | Primary k8s | CKA + production-style cluster ([k8s docs](../kubernetes/index.md)) |
-| **Talos Linux** | Optional cluster | Immutable Kubernetes nodes (production-style) |
-| **Fedora CoreOS** | 1–2 VMs | Immutable container hosts, Ignition, OpenShift path |
-| **Fedora Server** | As needed | RHEL ecosystem / `dnf` practice |
+| OS                      | Share            | Primary use                                                         |
+| ----------------------- | ---------------- | ------------------------------------------------------------------- |
+| **Debian Server 12/13** | ~70%             | k8s nodes, GitLab, Vault, general VMs                               |
+| **kubeadm on Debian**   | Primary k8s      | CKA + production-style cluster ([k8s docs](../kubernetes/index.md)) |
+| **Talos Linux**         | Optional cluster | Immutable Kubernetes nodes (production-style)                       |
+| **Fedora CoreOS**       | 1–2 VMs          | Immutable container hosts, Ignition, OpenShift path                 |
+| **Fedora Server**       | As needed        | RHEL ecosystem / `dnf` practice                                     |
 
 Do **not** replace Debian/kubeadm with CoreOS everywhere — each OS has a role.
 
@@ -29,9 +29,9 @@ Do **not** replace Debian/kubeadm with CoreOS everywhere — each OS has a role.
 
 **Use for:** most VMs — anything you manage with `apt`, SSH, Ansible.
 
-| Good for | Not ideal for |
-| -------- | ------------- |
-| kubeadm cluster nodes | Immutable k8s nodes (use Talos) |
+| Good for                        | Not ideal for                     |
+| ------------------------------- | --------------------------------- |
+| kubeadm cluster nodes           | Immutable k8s nodes (use Talos)   |
 | AdGuard, Technitium (LXC or VM) | Learning CoreOS/Ignition patterns |
 
 **In this lab:** add **Debian 12** cloud image to `terraform-lab` for k8s nodes ([kubeadm architecture](../kubernetes/kubeadm-architecture.md)).
@@ -42,10 +42,10 @@ Do **not** replace Debian/kubeadm with CoreOS everywhere — each OS has a role.
 
 **Use for:** RHEL administration practice — `dnf`, SELinux, systemd patterns closer to enterprise Linux.
 
-| Good for | Avoid for |
-| -------- | --------- |
-| RHEL skill building | Primary k8s platform (use kubeadm/Talos) |
-| Services you want on RPM ecosystem | Proxmox host (PVE is Debian) |
+| Good for                           | Avoid for                                |
+| ---------------------------------- | ---------------------------------------- |
+| RHEL skill building                | Primary k8s platform (use kubeadm/Talos) |
+| Services you want on RPM ecosystem | Proxmox host (PVE is Debian)             |
 
 ---
 
@@ -62,13 +62,13 @@ Do **not** replace Debian/kubeadm with CoreOS everywhere — each OS has a role.
 
 ### When NOT to use CoreOS
 
-| Avoid for | Use instead |
-| --------- | ----------- |
-| GitLab server | Debian Server VM |
-| Database server | Debian Server VM |
-| Monitoring stack VM | Kubernetes (Argo CD) |
+| Avoid for                           | Use instead             |
+| ----------------------------------- | ----------------------- |
+| GitLab server                       | Debian Server VM        |
+| Database server                     | Debian Server VM        |
+| Monitoring stack VM                 | Kubernetes (Argo CD)    |
 | Daily `apt install` experimentation | Debian or Fedora Server |
-| General Linux learning | Debian Server |
+| General Linux learning              | Debian Server           |
 
 ### Provisioning note
 
@@ -82,13 +82,13 @@ CoreOS ships **qcow2/raw** images (not a traditional ISO) — import via Proxmox
 
 **Purpose-built immutable Kubernetes** — no SSH, no package manager, API-driven.
 
-| | Fedora CoreOS | Talos Linux |
-| - | ------------- | ----------- |
-| Main role | Container / OpenShift-style hosts | Kubernetes nodes only |
-| SSH | Usually yes | No |
-| General containers | Excellent | No |
-| K8s | Possible | Designed for it |
-| OpenShift learning | Excellent | No |
+|                    | Fedora CoreOS                     | Talos Linux           |
+| ------------------ | --------------------------------- | --------------------- |
+| Main role          | Container / OpenShift-style hosts | Kubernetes nodes only |
+| SSH                | Usually yes                       | No                    |
+| General containers | Excellent                         | No                    |
+| K8s                | Possible                          | Designed for it       |
+| OpenShift learning | Excellent                         | No                    |
 
 ### This lab’s order
 

@@ -30,21 +30,21 @@ Endpoints (agents or agentless)
   Wazuh dashboard  ← SOC-style UI, compliance reports
 ```
 
-**Question it answers:** *“Did something security-relevant happen?”*  
-(not *“Is CPU high?”* — that’s Prometheus/Grafana)
+**Question it answers:** _“Did something security-relevant happen?”_  
+(not _“Is CPU high?”_ — that’s Prometheus/Grafana)
 
 ---
 
 ## Main capabilities (enterprise mapping)
 
-| Feature | What it does | Veeam/enterprise analogue |
-| ------- | ------------ | ------------------------- |
-| **SIEM** | Collect & correlate logs | Splunk, Sentinel, QRadar |
-| **EDR / XDR** | Process, malware, suspicious behavior | CrowdStrike, Defender |
-| **FIM** | `/etc/passwd`, sshd_config changes | Change auditing |
-| **Vuln detection** | CVEs in installed packages | Qualys, Tenable (light) |
-| **Compliance** | CIS, PCI, GDPR report templates | GRC tooling |
-| **Active response** | Auto-block IP after brute force | SOAR playbooks (simple) |
+| Feature             | What it does                          | Veeam/enterprise analogue |
+| ------------------- | ------------------------------------- | ------------------------- |
+| **SIEM**            | Collect & correlate logs              | Splunk, Sentinel, QRadar  |
+| **EDR / XDR**       | Process, malware, suspicious behavior | CrowdStrike, Defender     |
+| **FIM**             | `/etc/passwd`, sshd_config changes    | Change auditing           |
+| **Vuln detection**  | CVEs in installed packages            | Qualys, Tenable (light)   |
+| **Compliance**      | CIS, PCI, GDPR report templates       | GRC tooling               |
+| **Active response** | Auto-block IP after brute force       | SOAR playbooks (simple)   |
 
 Homelab value: practice **SOC workflows** — alerts, triage, dashboards — without
 Splunk licensing.
@@ -66,15 +66,15 @@ Harbor scan                      │
                           (health + app logs)
 ```
 
-| Tool | Layer | Role |
-| ---- | ----- | ---- |
-| **Kyverno** | Deploy | Block bad manifests (policy) |
-| **Trivy** | Build + scan | Image/config CVEs |
-| **Falco** | K8s runtime | Container threat detection |
-| **Wazuh** | Host + SIEM | VMs, Proxmox, auth logs, FIM, compliance |
-| **Prometheus** | Metrics | SLOs, capacity |
-| **Loki** | App logs | Debug, tracing adjacency |
-| **Wazuh/OpenSearch** | Security events | Incidents, audit, compliance |
+| Tool                 | Layer           | Role                                     |
+| -------------------- | --------------- | ---------------------------------------- |
+| **Kyverno**          | Deploy          | Block bad manifests (policy)             |
+| **Trivy**            | Build + scan    | Image/config CVEs                        |
+| **Falco**            | K8s runtime     | Container threat detection               |
+| **Wazuh**            | Host + SIEM     | VMs, Proxmox, auth logs, FIM, compliance |
+| **Prometheus**       | Metrics         | SLOs, capacity                           |
+| **Loki**             | App logs        | Debug, tracing adjacency                 |
+| **Wazuh/OpenSearch** | Security events | Incidents, audit, compliance             |
 
 **They complement each other** — Wazuh does not replace Prometheus or Loki.
 
@@ -82,13 +82,13 @@ Harbor scan                      │
 
 ## Wazuh vs tools you’ll already run
 
-| | Prometheus + Grafana | Loki | Falco | Kyverno | Wazuh |
-| - | -------------------- | ---- | ----- | ------- | ----- |
-| **Focus** | Metrics | App logs | K8s runtime threats | Admission policy | SIEM / endpoint / compliance |
-| **“SSH brute force?”** | No | Maybe (if parsed) | Maybe | No | **Yes (built-in rules)** |
-| **“File /etc/shadow changed?”** | No | No | No | No | **Yes (FIM)** |
-| **“Unsigned image?”** | No | No | No | **Yes** | No |
-| **“Shell in container?”** | No | No | **Yes** | No | Partial |
+|                                 | Prometheus + Grafana | Loki              | Falco               | Kyverno          | Wazuh                        |
+| ------------------------------- | -------------------- | ----------------- | ------------------- | ---------------- | ---------------------------- |
+| **Focus**                       | Metrics              | App logs          | K8s runtime threats | Admission policy | SIEM / endpoint / compliance |
+| **“SSH brute force?”**          | No                   | Maybe (if parsed) | Maybe               | No               | **Yes (built-in rules)**     |
+| **“File /etc/shadow changed?”** | No                   | No                | No                  | No               | **Yes (FIM)**                |
+| **“Unsigned image?”**           | No                   | No                | No                  | **Yes**          | No                           |
+| **“Shell in container?”**       | No                   | No                | **Yes**             | No               | Partial                      |
 
 ---
 
@@ -98,10 +98,10 @@ Harbor scan                      │
 
 Run **Wazuh manager + indexer + dashboard** as:
 
-| Option | Pros | Cons |
-| ------ | ---- | ---- |
-| **Dedicated VM** (recommended) | Isolated RAM/CPU; survives k8s rebuild | Another VM to manage |
-| **Kubernetes** (Helm) | GitOps-native | ~8–16 GB RAM; noisy neighbor with GitLab |
+| Option                         | Pros                                   | Cons                                     |
+| ------------------------------ | -------------------------------------- | ---------------------------------------- |
+| **Dedicated VM** (recommended) | Isolated RAM/CPU; survives k8s rebuild | Another VM to manage                     |
+| **Kubernetes** (Helm)          | GitOps-native                          | ~8–16 GB RAM; noisy neighbor with GitLab |
 
 **Phase:** **11+** — after Prometheus/Grafana/Loki and core platform are stable.
 
@@ -109,13 +109,13 @@ Run **Wazuh manager + indexer + dashboard** as:
 
 Install Wazuh **agent** on:
 
-| Target | Priority | Why |
-| ------ | -------- | --- |
-| **pve01** (Proxmox) | High | Hypervisor is crown jewel |
-| **kubeadm / Talos nodes** | High | Cluster compromise detection |
-| **GitLab VM** (if VM) | Medium | Auth + repo audit |
-| **Mac** (optional) | Low | Learn endpoint monitoring; not required |
-| **Inside every pod** | No | Use Falco for k8s runtime |
+| Target                    | Priority | Why                                     |
+| ------------------------- | -------- | --------------------------------------- |
+| **pve01** (Proxmox)       | High     | Hypervisor is crown jewel               |
+| **kubeadm / Talos nodes** | High     | Cluster compromise detection            |
+| **GitLab VM** (if VM)     | Medium   | Auth + repo audit                       |
+| **Mac** (optional)        | Low      | Learn endpoint monitoring; not required |
+| **Inside every pod**      | No       | Use Falco for k8s runtime               |
 
 Agents forward to manager; low overhead (~100–200 MB each).
 
@@ -159,12 +159,12 @@ You do **not** need Wazuh to ingest everything on day one — start with
 
 Wazuh + OpenSearch is **not light**:
 
-| Component | Rough RAM |
-| --------- | --------- |
-| Wazuh manager | 2–4 GB |
+| Component          | Rough RAM                      |
+| ------------------ | ------------------------------ |
+| Wazuh manager      | 2–4 GB                         |
 | OpenSearch indexer | 4–8 GB+ (grows with retention) |
-| Dashboard | 1–2 GB |
-| Agents (×5) | ~1 GB total |
+| Dashboard          | 1–2 GB                         |
+| Agents (×5)        | ~1 GB total                    |
 
 **Budget ~12–16 GB** for the SOC stack. Fine on 96 GB **if** GitLab, Harbor,
 and monitoring are sized with limits — don’t deploy Wazuh in Phase 6.
@@ -177,13 +177,13 @@ and **Wazuh/OpenSearch for security** — two log systems is normal in enterpris
 
 ## Phase placement (your roadmap)
 
-| Phase | Security focus |
-| ----- | -------------- |
-| 0–1 | Proxmox hardening, backups, tunnel |
-| 6–7 | kubeadm + Argo CD |
-| 8 | Harbor, MinIO, Keycloak |
-| 9 | Kyverno, Velero, **Falco**, ESO, Prometheus/Grafana/Loki |
-| 10 | AI workloads |
+| Phase   | Security focus                                           |
+| ------- | -------------------------------------------------------- |
+| 0–1     | Proxmox hardening, backups, tunnel                       |
+| 6–7     | kubeadm + Argo CD                                        |
+| 8       | Harbor, MinIO, Keycloak                                  |
+| 9       | Kyverno, Velero, **Falco**, ESO, Prometheus/Grafana/Loki |
+| 10      | AI workloads                                             |
 | **11+** | **Wazuh**, GitLab runners hardening, advanced compliance |
 
 **Order:** Kyverno + Falco + observability **before** Wazuh. Wazuh without
@@ -193,24 +193,24 @@ metrics/logs baseline = alert fatigue with no context.
 
 ## What to learn for Platform Engineer interviews
 
-| Skill | Homelab demo |
-| ----- | ------------ |
-| Defense in depth | Diagram: Kyverno → Falco → Wazuh |
-| SIEM vs metrics | “Grafana for SLOs, Wazuh for threats” |
-| FIM | Show alert on sshd_config change |
-| Compliance | Run CIS report on a Linux VM |
-| Active response | Careful — test in lab only; document iptables ban rule |
+| Skill            | Homelab demo                                           |
+| ---------------- | ------------------------------------------------------ |
+| Defense in depth | Diagram: Kyverno → Falco → Wazuh                       |
+| SIEM vs metrics  | “Grafana for SLOs, Wazuh for threats”                  |
+| FIM              | Show alert on sshd_config change                       |
+| Compliance       | Run CIS report on a Linux VM                           |
+| Active response  | Careful — test in lab only; document iptables ban rule |
 
 ---
 
 ## When **not** to prioritize Wazuh
 
-| Situation | Do instead |
-| --------- | ---------- |
-| No k8s yet | Finish bootstrap + Terraform |
-| No monitoring | Prometheus + Loki first |
+| Situation                  | Do instead                                      |
+| -------------------------- | ----------------------------------------------- |
+| No k8s yet                 | Finish bootstrap + Terraform                    |
+| No monitoring              | Prometheus + Loki first                         |
 | Chasing every ChatGPT tool | Kyverno + Falco cover more k8s interview ground |
-| Single service homelab | `fail2ban` on Proxmox may be enough temporarily |
+| Single service homelab     | `fail2ban` on Proxmox may be enough temporarily |
 
 ---
 

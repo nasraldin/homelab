@@ -13,15 +13,15 @@ This lab uses **Kyverno** for Kubernetes policy, not Gatekeeper, unless you spec
 
 ## What problem each piece solves
 
-| Component | Problem | In this lab |
-| --------- | ------- | ----------- |
-| **Trivy** | Vulnerabilities in image layers | CI gate + optional Trivy Operator |
-| **Syft** | SBOM (what's inside the image) | CI artifact → attach to image |
-| **Cosign** | Prove image wasn't tampered with after build | Sign after scan, before push |
-| **Harbor** | Private registry + scan storage | Phase 8 — [harbor-registry.md](../platform/harbor-registry.md) |
-| **Kyverno** | Block bad manifests at admission | Phase 9 — verify signatures + policies |
-| **OPA / Gatekeeper** | Rego policies everywhere | **Optional** — skip unless learning Rego |
-| **Argo CD** | Git is desired state | Phase 7 — deploys Kyverno + policies |
+| Component            | Problem                                      | In this lab                                                    |
+| -------------------- | -------------------------------------------- | -------------------------------------------------------------- |
+| **Trivy**            | Vulnerabilities in image layers              | CI gate + optional Trivy Operator                              |
+| **Syft**             | SBOM (what's inside the image)               | CI artifact → attach to image                                  |
+| **Cosign**           | Prove image wasn't tampered with after build | Sign after scan, before push                                   |
+| **Harbor**           | Private registry + scan storage              | Phase 8 — [harbor-registry.md](../platform/harbor-registry.md) |
+| **Kyverno**          | Block bad manifests at admission             | Phase 9 — verify signatures + policies                         |
+| **OPA / Gatekeeper** | Rego policies everywhere                     | **Optional** — skip unless learning Rego                       |
+| **Argo CD**          | Git is desired state                         | Phase 7 — deploys Kyverno + policies                           |
 
 Sigstore and Kyverno are **complementary**: Cosign signs at build time; Kyverno
 enforces at deploy time (including Argo CD syncs).
@@ -66,13 +66,13 @@ Vault or GitLab CI variables.
 
 ## OPA vs Kyverno — decision for this lab
 
-| | **Kyverno** | **OPA Gatekeeper** |
-| - | ----------- | ------------------ |
-| Policy language | Kubernetes YAML | Rego |
-| Cosign verify | Built-in `verifyImages` | Via external data / custom |
-| Learning curve | Lower | Higher (Rego) |
-| Your phases | Phase 9 ✅ | Not planned |
-| When to add OPA | — | Multi-system policy (TF, API gateway) or Rego career focus |
+|                 | **Kyverno**             | **OPA Gatekeeper**                                         |
+| --------------- | ----------------------- | ---------------------------------------------------------- |
+| Policy language | Kubernetes YAML         | Rego                                                       |
+| Cosign verify   | Built-in `verifyImages` | Via external data / custom                                 |
+| Learning curve  | Lower                   | Higher (Rego)                                              |
+| Your phases     | Phase 9 ✅              | Not planned                                                |
+| When to add OPA | —                       | Multi-system policy (TF, API gateway) or Rego career focus |
 
 **Verdict:** Use **Kyverno** for Kubernetes admission. Learn OPA concepts from
 articles; implement policies in Kyverno unless you explicitly want Gatekeeper.
@@ -86,14 +86,14 @@ the better fit for Cosign + mutation + generate in one tool.
 
 You cannot meaningfully run Cosign verify in Kyverno until these exist:
 
-| # | Prerequisite | Phase | Repo |
-| - | ------------ | ----- | ---- |
-| 1 | kubeadm cluster | 6 | `terraform-lab` VMs + kubeadm |
-| 2 | Argo CD | 7 | new `argocd/` or app repo |
-| 3 | cert-manager + ingress | 6–7 | Argo CD |
-| 4 | **Harbor** (or interim GHCR) | 8 | Argo CD |
-| 5 | GitLab Runner **or** GHA with docker | 2 / 11 | `gitlab-01` or GitHub |
-| 6 | Internal DNS `harbor.lab.example.com` | 3 | AdGuard + Technitium |
+| #   | Prerequisite                          | Phase  | Repo                          |
+| --- | ------------------------------------- | ------ | ----------------------------- |
+| 1   | kubeadm cluster                       | 6      | `terraform-lab` VMs + kubeadm |
+| 2   | Argo CD                               | 7      | new `argocd/` or app repo     |
+| 3   | cert-manager + ingress                | 6–7    | Argo CD                       |
+| 4   | **Harbor** (or interim GHCR)          | 8      | Argo CD                       |
+| 5   | GitLab Runner **or** GHA with docker  | 2 / 11 | `gitlab-01` or GitHub         |
+| 6   | Internal DNS `harbor.lab.example.com` | 3      | AdGuard + Technitium          |
 
 **Order correction vs generic blogs:** Harbor and CI **before** strict Kyverno
 signature policies — otherwise every deploy fails until signing is wired.
@@ -203,7 +203,7 @@ spec:
               kinds: [Pod]
       verifyImages:
         - imageReferences:
-            - "harbor.lab.example.com/*"
+            - 'harbor.lab.example.com/*'
           attestors:
             - count: 1
               entries:
@@ -229,12 +229,12 @@ Argo CD, Cilium — signed platform images only.
 
 ### Phase 11+ — Harden further
 
-| Tool | When |
-| ---- | ---- |
-| Trivy Operator | Continuous scan of running workloads |
-| ESO + Vault | Cosign keys, Harbor creds |
-| Falco | Runtime threats (after baseline stable) |
-| Provenance (SLSA) | `cosign attest` with build metadata |
+| Tool              | When                                    |
+| ----------------- | --------------------------------------- |
+| Trivy Operator    | Continuous scan of running workloads    |
+| ESO + Vault       | Cosign keys, Harbor creds               |
+| Falco             | Runtime threats (after baseline stable) |
+| Provenance (SLSA) | `cosign attest` with build metadata     |
 
 ---
 
@@ -267,31 +267,31 @@ CD — no `kubectl apply` for permanent policy.
 
 ## What NOT to do in this lab (yet)
 
-| Anti-pattern | Why |
-| ------------ | --- |
-| Kyverno Enforce before Harbor + Cosign in CI | Blocks all workloads |
-| Gatekeeper + Kyverno together | Two admission stacks, confusion |
-| Sign only on `main` but deploy unsigned `:latest` | Verify policy useless |
-| Talos-only path for this feature | Primary cluster is **kubeadm** — same Kyverno/Cosign applies |
-| OPA for every policy because blog says so | Kyverno covers k8s admission |
-| Keyless Sigstore on day one | Needs internet + OIDC; keyed Cosign is fine for homelab |
+| Anti-pattern                                      | Why                                                          |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| Kyverno Enforce before Harbor + Cosign in CI      | Blocks all workloads                                         |
+| Gatekeeper + Kyverno together                     | Two admission stacks, confusion                              |
+| Sign only on `main` but deploy unsigned `:latest` | Verify policy useless                                        |
+| Talos-only path for this feature                  | Primary cluster is **kubeadm** — same Kyverno/Cosign applies |
+| OPA for every policy because blog says so         | Kyverno covers k8s admission                                 |
+| Keyless Sigstore on day one                       | Needs internet + OIDC; keyed Cosign is fine for homelab      |
 
 ---
 
 ## Mapping to your phase table
 
-| Blog step | Your phase | Status |
-| --------- | ---------- | ------ |
-| Harbor | 8 | ⏳ |
-| Argo CD | 7 | ⏳ |
-| kubeadm + Cilium | 6 | ⏳ |
-| Trivy in CI | 8b (with Harbor) | ⏳ |
-| Syft SBOM | 8b | ⏳ |
-| Cosign sign | 8b | ⏳ |
-| Kyverno install | 9 | ⏳ |
-| verifyImages | 9 | ⏳ |
-| Policy pack | 9 | ⏳ |
-| Falco / Wazuh | 11+ | 🔮 |
+| Blog step        | Your phase       | Status |
+| ---------------- | ---------------- | ------ |
+| Harbor           | 8                | ⏳     |
+| Argo CD          | 7                | ⏳     |
+| kubeadm + Cilium | 6                | ⏳     |
+| Trivy in CI      | 8b (with Harbor) | ⏳     |
+| Syft SBOM        | 8b               | ⏳     |
+| Cosign sign      | 8b               | ⏳     |
+| Kyverno install  | 9                | ⏳     |
+| verifyImages     | 9                | ⏳     |
+| Policy pack      | 9                | ⏳     |
+| Falco / Wazuh    | 11+              | 🔮     |
 
 ---
 

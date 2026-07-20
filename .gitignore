@@ -24,3 +24,5 @@ node_modules/
 .DS_Store
 *.log
 # package-lock.json is committed for reproducible Prettier installs
+
+.history

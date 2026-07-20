@@ -76,12 +76,12 @@ FURY via Terraform.
 
 Repos created and pushed; **not yet applied** on `pve01`:
 
-| Layer | Repo | What it does |
-| ----- | ---- | ------------ |
-| 0 | `proxmox-bootstrap` | Repos, ZFS tune, ARC cap, admin user, update checks |
-| 1 | `terraform-lab` | `data01`, `aux01`, vzdump jobs, VMs when defined |
-| Edge | `cloudflare-tunnel` | `homelab.example.com` → PVE UI |
-| Docs | `homelab-docs` | This story, roadmap, architecture |
+| Layer | Repo                | What it does                                        |
+| ----- | ------------------- | --------------------------------------------------- |
+| 0     | `proxmox-bootstrap` | Repos, ZFS tune, ARC cap, admin user, update checks |
+| 1     | `terraform-lab`     | `data01`, `aux01`, vzdump jobs, VMs when defined    |
+| Edge  | `cloudflare-tunnel` | `homelab.example.com` → PVE UI                      |
+| Docs  | `homelab-docs`      | This story, roadmap, architecture                   |
 
 **Next:** Run bootstrap → Terraform apply → tunnel → prove restore drill.
 
@@ -165,14 +165,14 @@ Elasticsearch.
 
 | Chapter | Roadmap phases |
 | ------- | -------------- |
-| 1–2 | Planning (all) |
-| 3 | Phase 0a ✅ |
-| 4 | Phase 0b–1 🔄 |
-| 5 | Phase 2–3 |
-| 6 | Phase 6 |
-| 7 | Phase 7–8 |
-| 8 | Phase 9–11 |
-| 9 | Phase 10–11 |
+| 1–2     | Planning (all) |
+| 3       | Phase 0a ✅    |
+| 4       | Phase 0b–1 🔄  |
+| 5       | Phase 2–3      |
+| 6       | Phase 6        |
+| 7       | Phase 7–8      |
+| 8       | Phase 9–11     |
+| 9       | Phase 10–11    |
 
 Task tables: [roadmap/phases.md](roadmap/phases.md)
 

@@ -10,17 +10,17 @@ Read this before you paste install or Terraform commands from the [install journ
 - Rules for what never lands in Git
 - Where secrets and ownership fit next to platform tooling
 
-| Placeholder | Meaning | You should use |
-| ----------- | ------- | -------------- |
-| `192.168.1.10` | Proxmox host LAN IP | Your static LAN IP |
-| `192.168.1.1` | Default gateway | Your router |
-| `192.168.1.0/24` | Homelab LAN CIDR | Your subnet |
-| `pve01.lab.example.com` | Internal node FQDN | Your lab DNS name |
-| `homelab.example.com` | Public UI hostname (Tunnel) | Your Cloudflare hostname |
-| `kube-api.lab.example.com` | Kubernetes API VIP name | Your cluster API DNS |
-| `<ADMIN_USER>` | Non-root admin account | Your username |
-| `<SECRET>` / `PVEAPIToken=…=<SECRET>` | API token secret | Value from a password manager — **never commit** |
-| `config.env` / `secrets.env` | Local env files | Copy from `*.example` files in each lab |
+| Placeholder                           | Meaning                     | You should use                                   |
+| ------------------------------------- | --------------------------- | ------------------------------------------------ |
+| `192.168.1.10`                        | Proxmox host LAN IP         | Your static LAN IP                               |
+| `192.168.1.1`                         | Default gateway             | Your router                                      |
+| `192.168.1.0/24`                      | Homelab LAN CIDR            | Your subnet                                      |
+| `pve01.lab.example.com`               | Internal node FQDN          | Your lab DNS name                                |
+| `homelab.example.com`                 | Public UI hostname (Tunnel) | Your Cloudflare hostname                         |
+| `kube-api.lab.example.com`            | Kubernetes API VIP name     | Your cluster API DNS                             |
+| `<ADMIN_USER>`                        | Non-root admin account      | Your username                                    |
+| `<SECRET>` / `PVEAPIToken=…=<SECRET>` | API token secret            | Value from a password manager — **never commit** |
+| `config.env` / `secrets.env`          | Local env files             | Copy from `*.example` files in each lab          |
 
 ## Rules
 

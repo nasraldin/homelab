@@ -24,14 +24,14 @@ Use [verified state](verified-state.md) when you want the “good” command out
 
 ### Hardware (X1 Pro)
 
-| Component | Detail |
-| --------- | ------ |
-| CPU | AMD Ryzen AI 9 HX470, 12C/24T |
-| RAM | 96 GB DDR5 |
-| NIC | 2× 2.5 GbE (`nic0` in use, `nic1` spare) |
-| Slot 1 | Samsung 990 PRO 2 TB → Proxmox OS (`rpool`) |
-| Slot 2 | Kingston FURY Renegade 4 TB → `data01` (guest VM disks) |
-| Slot 3 | Kingston OM8TAP 2 TB OEM (PCIe ×1) → `aux01` (backups, ISO) |
+| Component | Detail                                                      |
+| --------- | ----------------------------------------------------------- |
+| CPU       | AMD Ryzen AI 9 HX470, 12C/24T                               |
+| RAM       | 96 GB DDR5                                                  |
+| NIC       | 2× 2.5 GbE (`nic0` in use, `nic1` spare)                    |
+| Slot 1    | Samsung 990 PRO 2 TB → Proxmox OS (`rpool`)                 |
+| Slot 2    | Kingston FURY Renegade 4 TB → `data01` (guest VM disks)     |
+| Slot 3    | Kingston OM8TAP 2 TB OEM (PCIe ×1) → `aux01` (backups, ISO) |
 
 > **Note:** Three M.2 slots — 2× PCIe4 ×4 + 1× ×1. Slot 3 is **not** full speed;
 > use OEM drive there, not an expensive 4 TB flagship NVMe.
@@ -39,15 +39,15 @@ Use [verified state](verified-state.md) when you want the “good” command out
 
 ### Key decisions
 
-| Topic | Choice | Rejected |
-| ----- | ------ | -------- |
-| Install method | USB interactive install | PXE/Ansible first install (overkill for one node) |
-| OS disk FS | ZFS single-disk (`rpool`) | ext4, LVM-thin-only |
-| Hostname | Short `pve01`, FQDN `pve01.lab.example.com` | `pve.homelab`, `homelab.lab` |
-| Public UI URL | `homelab.example.com` (tunnel later) | `pve01.lab` on Cloudflare DNS |
-| Internal DNS | `/etc/hosts` interim → AdGuard + Technitium | Rely on Cloudflare wildcard |
-| Updates | `full-upgrade` in maintenance window | Stacked `upgrade`+`dist-upgrade`+`full-upgrade` |
-| Post-install | Owned `proxmox-bootstrap` scripts | Community `curl \| bash` post-pve-install |
+| Topic          | Choice                                      | Rejected                                          |
+| -------------- | ------------------------------------------- | ------------------------------------------------- |
+| Install method | USB interactive install                     | PXE/Ansible first install (overkill for one node) |
+| OS disk FS     | ZFS single-disk (`rpool`)                   | ext4, LVM-thin-only                               |
+| Hostname       | Short `pve01`, FQDN `pve01.lab.example.com` | `pve.homelab`, `homelab.lab`                      |
+| Public UI URL  | `homelab.example.com` (tunnel later)        | `pve01.lab` on Cloudflare DNS                     |
+| Internal DNS   | `/etc/hosts` interim → AdGuard + Technitium | Rely on Cloudflare wildcard                       |
+| Updates        | `full-upgrade` in maintenance window        | Stacked `upgrade`+`dist-upgrade`+`full-upgrade`   |
+| Post-install   | Owned `proxmox-bootstrap` scripts           | Community `curl \| bash` post-pve-install         |
 
 ---
 
@@ -63,13 +63,13 @@ Use [verified state](verified-state.md) when you want the “good” command out
 
 ### Network at install
 
-| Setting | Value |
-| ------- | ----- |
-| FQDN | `pve01.lab.example.com` |
-| IP | `192.168.1.10/24` |
-| Gateway | `192.168.1.1` |
-| DNS | `1.1.1.1` |
-| Timezone | `Asia/Dubai` |
+| Setting  | Value                   |
+| -------- | ----------------------- |
+| FQDN     | `pve01.lab.example.com` |
+| IP       | `192.168.1.10/24`       |
+| Gateway  | `192.168.1.1`           |
+| DNS      | `1.1.1.1`               |
+| Timezone | `Asia/Dubai`            |
 
 Router DHCP range: `192.168.1.50`–`192.168.1.250` — static `.13` is safe.
 
@@ -143,23 +143,23 @@ Verified active:
 
 ## 7. Storage tuning (pending automation)
 
-| Setting | Current | Target |
-| ------- | ------- | ------ |
-| `rpool` state | ONLINE | — |
-| `ashift` | 12 | Keep |
-| `autotrim` | off | `on` (via bootstrap) |
-| `fstrim.timer` | enabled | Keep |
-| ZFS ARC | default | ~16 GB cap (via bootstrap) |
-| Kingston 4 TB | unused | `data01` pool via Terraform |
+| Setting        | Current | Target                      |
+| -------------- | ------- | --------------------------- |
+| `rpool` state  | ONLINE  | —                           |
+| `ashift`       | 12      | Keep                        |
+| `autotrim`     | off     | `on` (via bootstrap)        |
+| `fstrim.timer` | enabled | Keep                        |
+| ZFS ARC        | default | ~16 GB cap (via bootstrap)  |
+| Kingston 4 TB  | unused  | `data01` pool via Terraform |
 
 ---
 
 ## 8. API & Terraform identity
 
-| Item | Value |
-| ---- | ----- |
-| User | `terraform@pve` |
-| Token ID | `terraform@pve!provider` |
+| Item      | Value                                                              |
+| --------- | ------------------------------------------------------------------ |
+| User      | `terraform@pve`                                                    |
+| Token ID  | `terraform@pve!provider`                                           |
 | Auth test | `curl` with single-quoted `Authorization` header → version `9.2.4` |
 
 Root `@pam` ticket auth verified separately (wrong password was the only failure).

@@ -91,23 +91,23 @@ Weekly [restore drill](https://github.com/nasraldin/terraform-lab/blob/main/docs
 
 ## 7. Later phases (do not skip ahead)
 
-| Order | Phase | Doc |
-| ----- | ----- | --- |
-| 8 | DNS VMs (AdGuard, Technitium) | [phases.md §3](../roadmap/phases.md) |
-| 9 | GitLab VM | [service-placement.md](../architecture/service-placement.md) |
-| 10 | kubeadm Stage A | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
-| 11 | Argo CD bootstrap | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md) |
+| Order | Phase                         | Doc                                                              |
+| ----- | ----------------------------- | ---------------------------------------------------------------- |
+| 8     | DNS VMs (AdGuard, Technitium) | [phases.md §3](../roadmap/phases.md)                             |
+| 9     | GitLab VM                     | [service-placement.md](../architecture/service-placement.md)     |
+| 10    | kubeadm Stage A               | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
+| 11    | Argo CD bootstrap             | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)         |
 
 ---
 
 ## What not to do manually
 
-| Task | Tool |
-| ---- | ---- |
-| Create `data01` / `aux01` | Terraform |
-| VM / LXC disks | Terraform |
-| vzdump jobs | Terraform |
-| In-cluster apps | Argo CD (Phase 7+) |
-| Unattended hypervisor upgrade | ❌ |
+| Task                          | Tool               |
+| ----------------------------- | ------------------ |
+| Create `data01` / `aux01`     | Terraform          |
+| VM / LXC disks                | Terraform          |
+| vzdump jobs                   | Terraform          |
+| In-cluster apps               | Argo CD (Phase 7+) |
+| Unattended hypervisor upgrade | ❌                 |
 
 See [platform-tooling.md](../platform-tooling.md).

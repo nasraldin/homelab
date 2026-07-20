@@ -40,13 +40,13 @@ Side path (not Layer 3):
             (packages, users, Docker, GitLab Runner on a VM, …)
 ```
 
-| Layer | Tool in this repo                               | Owns                                                                            | Does **not** own                            |
-| ----- | ----------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------- |
-| 0     | `proxmox-bootstrap/`                            | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload               | VMs, pools, k8s apps                        |
-| 1     | `terraform-lab/`                                | ZFS pools, resource pools, images, VMs, LXC, backups                            | Helm charts, Ingress rules, app Deployments |
-| 2     | Ansible / kubeadm (on VMs)                      | Kubernetes install on Debian VMs                                                | Day-2 cluster config via GitOps             |
-| 3     | Argo CD (planned under `argocd/` / Git)         | Everything _in_ the cluster                                                     | Creating Proxmox VMs                        |
-| side  | Ansible (`ansible-lab/` roles, later dedicated) | Non-k8s guest config                                                            | k8s manifests / Helm                        |
+| Layer | Tool in this repo                               | Owns                                                              | Does **not** own                            |
+| ----- | ----------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------- |
+| 0     | `proxmox-bootstrap/`                            | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload | VMs, pools, k8s apps                        |
+| 1     | `terraform-lab/`                                | ZFS pools, resource pools, images, VMs, LXC, backups              | Helm charts, Ingress rules, app Deployments |
+| 2     | Ansible / kubeadm (on VMs)                      | Kubernetes install on Debian VMs                                  | Day-2 cluster config via GitOps             |
+| 3     | Argo CD (planned under `argocd/` / Git)         | Everything _in_ the cluster                                       | Creating Proxmox VMs                        |
+| side  | Ansible (`ansible-lab/` roles, later dedicated) | Non-k8s guest config                                              | k8s manifests / Helm                        |
 
 Guiding rule: **don’t manually configure anything the layer above can own.**
 A full rebuild is:
@@ -78,13 +78,13 @@ That pattern does not scale and is not how platform teams operate day-2.
 
 ### Day-2 operations
 
-| Task                             | Tool                                                                                           |
-| -------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Add a VM / disk / kubeadm node          | Terraform (`terraform.tfvars` + apply)                         |
-| Change a Deployment / Helm value | Git commit → Argo CD sync                                                                      |
-| Install packages on a GitLab VM  | Ansible                                                                                        |
+| Task                             | Tool                                                                                         |
+| -------------------------------- | -------------------------------------------------------------------------------------------- |
+| Add a VM / disk / kubeadm node   | Terraform (`terraform.tfvars` + apply)                                                       |
+| Change a Deployment / Helm value | Git commit → Argo CD sync                                                                    |
+| Install packages on a GitLab VM  | Ansible                                                                                      |
 | Expose a service publicly        | Cloudflare Tunnel + Access (GitOps for apps later); Proxmox UI only at `homelab.example.com` |
-| Browse the live cluster          | `kubectl` / **k9s** (UI only — not provisioning)                                               |
+| Browse the live cluster          | `kubectl` / **k9s** (UI only — not provisioning)                                             |
 
 **k9s** is a terminal UI for inspecting clusters. It is **not** part of
 provisioning and does not replace Terraform or Argo CD.
@@ -95,37 +95,37 @@ provisioning and does not replace Terraform or Argo CD.
 | ---------------------------------------------- | ------------------------------------------------------- |
 | Create / wipe ZFS `data01`, resource pools     | `terraform-lab/`                                        |
 | Create an Ubuntu VM or LXC                     | `terraform-lab/terraform.tfvars` (`vms` / `containers`) |
-| Create a kubeadm cluster (legacy: k3s module) | `terraform-lab` VM module + kubeadm docs |
+| Create a kubeadm cluster (legacy: k3s module)  | `terraform-lab` VM module + kubeadm docs                |
 | Upload a local `.iso` with no public URL       | `proxmox-bootstrap/mac/upload-isos.sh`                  |
 | Download Ubuntu cloud image from the internet  | `terraform-lab/` (`cloud_images`)                       |
 | Harden Proxmox host / SSH / APT                | `proxmox-bootstrap/`                                    |
 | Configure AdGuard / GitLab _VM_ packages       | Ansible                                                 |
-| Install cert-manager, ingress, Grafana, Harbor | **Argo CD** (Git) — **NGINX Ingress**, not Traefik |
+| Install cert-manager, ingress, Grafana, Harbor | **Argo CD** (Git) — **NGINX Ingress**, not Traefik      |
 | Deploy my application                          | **Argo CD** (Git)                                       |
 | One-off debug on a pod                         | `kubectl` / k9s (then fix it in Git)                    |
 
 ## Anti-patterns (do not do)
 
-| Anti-pattern                                     | Why it’s wrong                                 | Do this instead                                                  |
-| ------------------------------------------------ | ---------------------------------------------- | ---------------------------------------------------------------- |
-| Click VMs / storage in Proxmox UI                | Not reproducible                               | Terraform                                                        |
-| Terraform applies Helm charts forever            | Fights GitOps; secret sprawl                   | Argo CD                                                          |
-| Ansible installs the whole k8s platform          | Drift, no Git history of cluster desired state | TF for cluster + Argo for apps                                   |
-| Manual `kubectl apply` for anything permanent    | Snowflakes                                     | Commit to Git                                                    |
+| Anti-pattern                                     | Why it’s wrong                                 | Do this instead                                                |
+| ------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------- |
+| Click VMs / storage in Proxmox UI                | Not reproducible                               | Terraform                                                      |
+| Terraform applies Helm charts forever            | Fights GitOps; secret sprawl                   | Argo CD                                                        |
+| Ansible installs the whole k8s platform          | Drift, no Git history of cluster desired state | TF for cluster + Argo for apps                                 |
+| Manual `kubectl apply` for anything permanent    | Snowflakes                                     | Commit to Git                                                  |
 | Expose Proxmox `:8006` on the WAN without Access | Attack surface                                 | Use `cloudflare-tunnel/` → `homelab.example.com` + Access only |
-| Store API tokens / kubeconfigs in Git            | Credential leak                                | gitignored tfvars, password manager, sealed secrets              |
+| Store API tokens / kubeconfigs in Git            | Credential leak                                | gitignored tfvars, password manager, sealed secrets            |
 
 ## What exists in this repo today
 
-| Path                              | Status                                                            |
-| --------------------------------- | ----------------------------------------------------------------- |
-| [docs/index.md](docs/index.md) | **Documentation index** — roadmap, architecture, operations |
-| [platform-tooling.md](platform-tooling.md) | Layer ownership (this file)                               |
-| `proxmox-bootstrap/`              | Layer 0 — host bootstrap, firewall, updates, ops runbooks         |
-| `cloudflare-tunnel/`              | Remote UI — Tunnel + Access for `homelab.example.com`           |
-| `terraform-lab/`                  | Layers 1–2 — storage, pools, VMs, LXC, vzdump backups        |
-| `ansible-lab/`                    | Installer media + Ansible for early host/guest work               |
-| Argo CD / `argocd/` app manifests | Planned (Phase 7) — create when the first cluster exists          |
+| Path                                       | Status                                                      |
+| ------------------------------------------ | ----------------------------------------------------------- |
+| [docs/index.md](docs/index.md)             | **Documentation index** — roadmap, architecture, operations |
+| [platform-tooling.md](platform-tooling.md) | Layer ownership (this file)                                 |
+| `proxmox-bootstrap/`                       | Layer 0 — host bootstrap, firewall, updates, ops runbooks   |
+| `cloudflare-tunnel/`                       | Remote UI — Tunnel + Access for `homelab.example.com`       |
+| `terraform-lab/`                           | Layers 1–2 — storage, pools, VMs, LXC, vzdump backups       |
+| `ansible-lab/`                             | Installer media + Ansible for early host/guest work         |
+| Argo CD / `argocd/` app manifests          | Planned (Phase 7) — create when the first cluster exists    |
 
 **Live phase status:** see [roadmap overview](roadmap/index.md) (updated 2026-07-20).
 

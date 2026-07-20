@@ -34,13 +34,13 @@ pve01 (Proxmox VE 9.x)
 
 ## Design split
 
-| Tier | Runs on | Examples |
-| ---- | ------- | -------- |
-| **Hypervisor** | Proxmox host | ZFS, vzdump, update checks — **no Docker on host** |
-| **Management VMs** | Debian on `data01` | GitLab, HAProxy, DNS, Uptime Kuma |
-| **Kubernetes** | kubeadm VMs on `data01` | Argo CD, Longhorn, apps |
-| **Lab VMs** | Optional on `aux01` | Swarm, Coolify, experiments |
-| **Control plane (today)** | Mac | Terraform, Ansible, Lima Docker |
+| Tier                      | Runs on                 | Examples                                           |
+| ------------------------- | ----------------------- | -------------------------------------------------- |
+| **Hypervisor**            | Proxmox host            | ZFS, vzdump, update checks — **no Docker on host** |
+| **Management VMs**        | Debian on `data01`      | GitLab, HAProxy, DNS, Uptime Kuma                  |
+| **Kubernetes**            | kubeadm VMs on `data01` | Argo CD, Longhorn, apps                            |
+| **Lab VMs**               | Optional on `aux01`     | Swarm, Coolify, experiments                        |
+| **Control plane (today)** | Mac                     | Terraform, Ansible, Lima Docker                    |
 
 **Recoverability rule:** GitLab and backups stay **outside** the cluster Argo CD manages.
 
