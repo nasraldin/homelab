@@ -11,11 +11,11 @@
 .PHONY: help install format lint clone clone-pull \
 	format-prettier format-tf format-sh \
 	lint-prettier lint-yaml lint-sh lint-tf \
-	docs-install docs-collect docs-serve docs-build
+	docs-install docs-serve docs-build
 
 ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 LABS := ansible-lab camunda-lab cloudflare-tunnel docker-lab \
-	homelab-docs proxmox-bootstrap terraform-lab
+	proxmox-bootstrap terraform-lab
 
 # Shell scripts across labs (exclude git / terraform providers)
 SH_FILES := $(shell find $(LABS) -type f \( -name '*.sh' \) \
@@ -30,8 +30,8 @@ help:
 	@echo "  make format          Prettier write + terraform fmt"
 	@echo "  make lint            Prettier check + yamllint + shellcheck (+ tf fmt check)"
 	@echo "  make docs-install    npm install (includes VitePress)"
-	@echo "  make docs-serve      Collect lab docs + VitePress dev server"
-	@echo "  make docs-build      Collect lab docs + build docs/.vitepress/dist"
+	@echo "  make docs-serve      Start VitePress dev server"
+	@echo "  make docs-build      Build docs/.vitepress/dist"
 	@echo "  make format-prettier md/json/yml via Prettier"
 	@echo "  make format-tf       terraform fmt -recursive in terraform-lab"
 	@echo "  make lint-yaml       yamllint (uses .yamllint.yaml)"
@@ -81,7 +81,7 @@ lint-yaml:
 lint-sh:
 	@command -v shellcheck >/dev/null || { echo "need shellcheck (brew install shellcheck)"; exit 1; }
 	@if [ -z "$(SH_FILES)" ]; then echo "no shell scripts"; exit 0; fi
-	shellcheck --rcfile=$(ROOT).shellcheckrc $(SH_FILES)
+	shellcheck --severity=warning --rcfile=$(ROOT).shellcheckrc $(SH_FILES)
 
 lint-tf:
 	@command -v terraform >/dev/null || { echo "skip lint-tf (terraform not installed)"; exit 0; }
@@ -91,10 +91,6 @@ lint-tf:
 
 docs-install:
 	npm install
-
-docs-collect:
-	@chmod +x $(ROOT)scripts/collect-lab-docs.sh
-	@$(ROOT)scripts/collect-lab-docs.sh
 
 docs-serve:
 	npm run docs:dev

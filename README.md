@@ -11,16 +11,13 @@ own remote. Clone them as siblings for local development and docs aggregation.
 | Lab                                | Repo                                           | Notes                     |
 | ---------------------------------- | ---------------------------------------------- | ------------------------- |
 | Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages |
-| Ansible + install media            | https://github.com/nasraldin/ansible-lab       | Private implementation    |
+| Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private implementation    |
 | Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private implementation    |
 | Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private implementation    |
 | Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private implementation    |
 | Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public community project  |
 | Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public community project  |
 | Homebrew taps (nested tap repos)   | local `homebrew/` only                         | Not a single git repo     |
-
-> Legacy docs repo `homelab-docs` still exists locally until migration is
-> verified; do not treat it as the source of truth anymore.
 
 ## Clone all labs (fresh machine)
 
@@ -47,6 +44,7 @@ make docs-build     # output: docs/.vitepress/dist
 ```
 
 - Platform guides live in [`docs/`](docs/) (committed).
+- Canonical execution order: [`docs/operations/deploy-and-rebuild.md`](docs/operations/deploy-and-rebuild.md).
 - Community labs (`docker-lab`, `camunda-lab`) keep their **own** MkDocs sites — linked from this hub.
 - Values that look like IPs or hostnames are **[placeholders](docs/conventions/placeholders.md)** — adapt them; never commit secrets.
 

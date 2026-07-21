@@ -38,13 +38,13 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 
 ## Repository map
 
-| Repo                | Layer                           | URL                                            |
-| ------------------- | ------------------------------- | ---------------------------------------------- |
-| `proxmox-bootstrap` | Host day-1, firewall, updates   | https://github.com/nasraldin/proxmox-bootstrap |
-| `terraform-lab`     | Storage, VMs, LXC, backups      | https://github.com/nasraldin/terraform-lab     |
-| `cloudflare-tunnel` | Public UI via Tunnel + Access   | https://github.com/nasraldin/cloudflare-tunnel |
-| `ansible-lab`       | Installer media + guest Ansible | https://github.com/nasraldin/ansible-lab       |
-| `homelab-docs`      | Plans, story, architecture      | https://github.com/nasraldin/homelab-docs      |
+| Repo                | Layer                         | URL                                            |
+| ------------------- | ----------------------------- | ---------------------------------------------- |
+| `proxmox-bootstrap` | Host day-1, firewall, updates | https://github.com/nasraldin/proxmox-bootstrap |
+| `terraform-lab`     | Storage, VMs, LXC, backups    | https://github.com/nasraldin/terraform-lab     |
+| `cloudflare-tunnel` | Public UI via Tunnel + Access | https://github.com/nasraldin/cloudflare-tunnel |
+| `ansible-lab`       | Non-k8s guest configuration   | https://github.com/nasraldin/ansible-lab       |
+| `homelab`           | Plans, story, architecture    | https://github.com/nasraldin/homelab           |
 
 ---
 

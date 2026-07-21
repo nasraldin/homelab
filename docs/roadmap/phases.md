@@ -37,14 +37,14 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 ## Phase 1 — Control plane & IaC
 
-| Task                                  | Status  | Where                                     |
-| ------------------------------------- | ------- | ----------------------------------------- |
-| `terraform-lab` module                | ✅      | Git                                       |
-| `data01`, pools, images               | ✅ / ⏸️ | `data01` ✅; `aux01` ⏸️ (no Slot 3 disk)  |
-| VM / LXC modules                      | ✅      | Git                                       |
-| k8s VM module (legacy k3s cloud-init) | ✅      | Git — **new clusters: kubeadm + Ansible** |
-| Mac control plane                     | ✅      | bootstrap applied                         |
-| `infra-01` VM                         | ⏳      | optional                                  |
+| Task                                | Status  | Where                                    |
+| ----------------------------------- | ------- | ---------------------------------------- |
+| `terraform-lab` module              | ✅      | Git                                      |
+| `data01`, pools, images             | ✅ / ⏸️ | `data01` ✅; `aux01` ⏸️ (no Slot 3 disk) |
+| VM / LXC modules                    | ✅      | Git                                      |
+| Retire legacy k3s cloud-init module | ✅      | Kubernetes uses ordinary VMs + kubeadm   |
+| Mac control plane                   | ✅      | bootstrap applied                        |
+| `infra-01` VM                       | ⏳      | optional                                 |
 
 **First VMs:** `adguard-01`, `technitium-01` (Phase 3), `gitlab-01` (Phase 2), kubeadm nodes (Phase 6).
 
@@ -61,13 +61,13 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 ## Phase 3 — DNS & networking
 
-| Task                 | Status |
-| -------------------- | ------ |
-| AdGuard Home         | ✅     |
-| Technitium DNS       | ✅     |
-| Router DNS → AdGuard | ⏳     |
-| OPNsense             | ⏸️     |
-| VLANs                | ⏸️     |
+| Task                 | Status | Note                                            |
+| -------------------- | ------ | ----------------------------------------------- |
+| AdGuard Home         | ✅     | Filtering and child-safety policy is Ansible    |
+| Technitium DNS       | ✅     | Authoritative `lab.nasraldin.com`               |
+| Router DNS → AdGuard | ⏳     | IPv4 set; ISP IPv6 DNS still bypasses filtering |
+| OPNsense             | ⏸️     |                                                 |
+| VLANs                | ⏸️     |                                                 |
 
 See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 

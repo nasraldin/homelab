@@ -43,7 +43,7 @@ Every configuration here is intended as a reference, not a copy-and-paste soluti
 ## What’s in the lab
 
 - **Hypervisor** — Proxmox VE on its own NVMe; VMs on a separate data pool
-- **Automation** — bootstrap scripts, Terraform for IaC, Ansible for install media
+- **Automation** — bootstrap scripts, Terraform for IaC, Ansible for guest configuration
 - **Edge** — Cloudflare Tunnel + Access for UI; no raw `:8006` on the WAN
 - **Cluster (planned)** — kubeadm, Argo CD, Harbor, observability
 - **Public tooling** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/) for Mac day-to-day work
@@ -51,5 +51,6 @@ Every configuration here is intended as a reference, not a copy-and-paste soluti
 ## Keep going
 
 - [Platform tooling](/platform-tooling) — who owns what (Terraform vs Ansible vs Argo CD)
+- [Deploy and rebuild](/operations/deploy-and-rebuild) — exact cross-repository command order
 - [Community labs](/community-labs) — standalone public projects
 - [Decision log](/decisions/log) — locked choices so we don’t re-debate them

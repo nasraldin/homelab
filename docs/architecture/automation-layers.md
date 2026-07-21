@@ -15,8 +15,8 @@ Source of truth for tool boundaries: [platform-tooling.md](../platform-tooling.m
 ## The stack (your lab)
 
 ```text
-Layer 0 — Bare metal (manual or unattended ISO once)
-  USB / answer.toml  →  Proxmox on Samsung 990 PRO only
+Layer 0 — Bare metal (official installer once)
+  Proxmox installer  →  Proxmox on Samsung 990 PRO only
 
 Layer 0b — Host day-1 (idempotent, re-runnable)
   proxmox-bootstrap  →  repos, SSH, ZFS tune, API token, updates
@@ -34,22 +34,22 @@ Side path — Guest OS (not k8s)
   ansible-lab        →  packages, Docker, GitLab VM prep, etc.
 
 Remote access
-  cloudflare-tunnel  →  homelab.example.com (UI from work)
-  SSH + LAN DNS      →  pve01.lab.example.com (Terraform/Ansible)
+  cloudflare-tunnel  →  homelab.nasraldin.com (UI from work)
+  SSH + LAN DNS      →  pve01.lab.nasraldin.com (Terraform/Ansible)
 ```
 
 ---
 
 ## Can Ansible provision Proxmox from empty hardware?
 
-| Question                                    | Answer                                                       |
-| ------------------------------------------- | ------------------------------------------------------------ |
-| Ansible on **empty** X1 Pro (no OS)?        | **No** — nothing to SSH to                                   |
-| Ansible **after** Proxmox is installed?     | **Yes** — configure guests and optional host tasks           |
-| Ansible install Proxmox packages on Debian? | Possible but **not your path** — use official PVE installer  |
-| Terraform install Proxmox?                  | **No** — needs API on running PVE                            |
-| Mac automate **first** Proxmox install?     | **Yes** — `ansible-lab` (USB unattended ISO + `answer.toml`) |
-| Mac automate **everything after** install?  | **Yes** — `proxmox-bootstrap` + `terraform-lab`              |
+| Question                                    | Answer                                                      |
+| ------------------------------------------- | ----------------------------------------------------------- |
+| Ansible on **empty** X1 Pro (no OS)?        | **No** — nothing to SSH to                                  |
+| Ansible **after** Proxmox is installed?     | **Yes** — configure guests and optional host tasks          |
+| Ansible install Proxmox packages on Debian? | Possible but **not your path** — use official PVE installer |
+| Terraform install Proxmox?                  | **No** — needs API on running PVE                           |
+| Mac automate **first** Proxmox install?     | **No active path** — use the official installer             |
+| Mac automate **everything after** install?  | **Yes** — `proxmox-bootstrap` + `terraform-lab`             |
 
 Professional pattern: **one short manual or unattended install**, then **100% code**.
 
@@ -66,7 +66,7 @@ You do **not** need an `ansible-control` VM yet. Your Mac is the control plane:
 | VMs / storage | `terraform-lab`              | Proxmox API       |
 | Guest config  | `ansible-lab` playbooks      | VMs over SSH      |
 | Remote UI     | `cloudflare-tunnel`          | Tunnel on `pve01` |
-| Reinstall PVE | `ansible-lab` USB ISO        | Bare metal        |
+| Reinstall PVE | Official Proxmox installer   | Bare metal        |
 
 Add a dedicated ansible VM later only if you want CI runners **inside** the lab.
 
@@ -74,17 +74,15 @@ Add a dedicated ansible VM later only if you want CI runners **inside** the lab.
 
 ## proxmox-bootstrap vs ansible-lab
 
-Both touch the Proxmox **host** — split by purpose:
+These repositories no longer overlap:
 
-|             | **proxmox-bootstrap**                                    | **ansible-lab**                                 |
-| ----------- | -------------------------------------------------------- | ----------------------------------------------- |
-| **When**    | After any PVE install; daily drift check                 | Reinstall PVE from scratch; Ansible roles       |
-| **Style**   | Shell, `--check`, report OK/FIXED                        | `answer.toml`, ISO, playbooks                   |
-| **Owns**    | APT, ZFS autotrim, SSH hardening, Terraform token verify | Unattended install, disk-by-serial, `make site` |
-| **Use now** | ✅ `pve01` already installed                             | ✅ Next time SSD is wiped                       |
+| Repository          | Owns                                                              |
+| ------------------- | ----------------------------------------------------------------- |
+| `proxmox-bootstrap` | PVE host APT, SSH, ZFS tuning, firewall, updates, Terraform token |
+| `ansible-lab`       | Non-k8s guest OS and applications after Terraform creates VMs     |
 
-**Do not duplicate:** use `proxmox-bootstrap` for day-1 host tuning on a live node;
-use `ansible-lab` when you need a **rebuildable** unattended installer.
+The old USB/PXE experiment is retained only in the `ansible-lab`
+`host-install` history. It is not part of the supported rebuild sequence.
 
 ---
 
@@ -94,17 +92,17 @@ Your **decided** layout (two NVMe populated):
 
 | Disk                 | Pool         | Created by                                      |
 | -------------------- | ------------ | ----------------------------------------------- |
-| Samsung 990 PRO 2 TB | `rpool` (OS) | Installer / `answer.toml`                       |
+| Samsung 990 PRO 2 TB | `rpool` (OS) | Official Proxmox installer                      |
 | Kingston Fury 4 TB   | `data01`     | **terraform-lab** (not first-boot zpool create) |
 
-Reason: second pool creation in `answer.toml` first-boot is fragile (disk order,
-wiping wrong disk). Installer selects **one** disk by serial; Terraform owns
+Reason: creating an extra pool during install is fragile (disk order, wiping the
+wrong disk). The installer selects **one** disk; Terraform owns
 `data01` declaratively.
 
 Third M.2 (PCIe x1) and 2 TB disk are **future** — aux backup / `aux01`, not
 required for current automation.
 
-Serials for your machine (from `ansible-lab`):
+Verified disk serials:
 
 - OS: `S73WNJOW803723P` (Samsung 990 PRO)
 - Data: `50026B76871D1F07` (Kingston 4 TB)
@@ -118,12 +116,12 @@ Serials for your machine (from `ansible-lab`):
 ```text
 Mac (Wi‑Fi or Ethernet)
     │
-    ├── SSH  →  pve01.lab.example.com  ( /etc/hosts override )
+    ├── SSH  →  pve01.lab.nasraldin.com
     ├── API  →  Terraform provider
-    └── UI   →  https://192.168.1.10:8006  or LAN FQDN
+    └── UI   →  https://192.168.68.13:8006  or LAN FQDN
 ```
 
-X1 Pro: **Ethernet to router** (`nic0` → `vmbr0`, static `192.168.1.10/24`).
+X1 Pro: **Ethernet to router** (`nic0` → `vmbr0`, static `192.168.68.13/22`).
 Reserve DHCP for MAC `38:05:25:39:CF:43` on TP-Link.
 
 ### From work / cellular
@@ -131,7 +129,7 @@ Reserve DHCP for MAC `38:05:25:39:CF:43` on TP-Link.
 ```text
 Laptop
     │
-    └── https://homelab.example.com  (Cloudflare Access → Proxmox UI)
+    └── https://homelab.nasraldin.com  (Cloudflare Access → Proxmox UI)
 ```
 
 Terraform and Ansible still run best **on Mac at home** (or via VPN later).
@@ -147,65 +145,35 @@ Tailscale is optional; not in current design.
 ### A — Node already installed (today)
 
 ```bash
-cd ~/homelab/cloudflare-tunnel && ./mac/bootstrap.sh --yes   # remote UI
 cd ~/homelab/proxmox-bootstrap && ./mac/bootstrap.sh --remote --yes
-cd ~/homelab/terraform-lab && terraform apply
-cd ~/homelab/ansible-lab && ansible-playbook ...              # when VMs exist
+cd ~/homelab/cloudflare-tunnel && ./mac/bootstrap.sh --yes
+cd ~/homelab/terraform-lab && terraform plan -out=tfplan && terraform apply tfplan
+cd ~/homelab/ansible-lab && ansible-playbook playbooks/dns.yml -e @secrets.yml
 ```
 
 ### B — Wipe SSD and reinstall Proxmox
 
-```bash
-cd ~/homelab/ansible-lab
-cp proxmox/secrets.example.env proxmox/secrets.env   # ROOT_PASSWORD, keys
-make macos-deps && make download-iso && make render-answer
-make prepare-iso-only && make usb-hint
-# boot X1 Pro from USB → unattended install
-make wait && make site    # Ansible post-install
-cd ../proxmox-bootstrap && ./mac/bootstrap.sh --remote --yes
-cd ../terraform-lab && terraform apply
-```
+1. Install with the official Proxmox installer using the values in the
+   [install journal](../installation/journey.md).
+2. Run `proxmox-bootstrap`.
+3. Review and apply `terraform-lab`.
+4. Run the required `ansible-lab` playbooks.
 
-### C — PXE from Mac (optional, needs USB-Ethernet)
-
-Only with **isolated** cable Mac ↔ X1 Pro — never dnsmasq on home Wi‑Fi.
-See [ansible-lab: 04-pxe-install](https://github.com/nasraldin/ansible-lab/blob/main/docs/04-pxe-install.md).
+Use the [canonical deploy and rebuild runbook](../operations/deploy-and-rebuild.md)
+for exact commands and acceptance gates.
 
 ---
 
 ## What Ansible should manage (and not)
 
-| ✅ Ansible                                | ❌ Not Ansible                            |
-| ----------------------------------------- | ----------------------------------------- |
-| GitLab VM packages, users, Docker         | Creating Proxmox VMs (Terraform)          |
-| AdGuard/Technitium VM prep                | kubeadm cluster (Terraform VMs + kubeadm) |
-| Security baseline on **guests**           | Helm charts in k8s (Argo CD)              |
-| Optional host tasks overlapping bootstrap | Proxmox from bare metal without ISO       |
+| ✅ Ansible                        | ❌ Not Ansible                            |
+| --------------------------------- | ----------------------------------------- |
+| GitLab VM packages, users, Docker | Creating Proxmox VMs (Terraform)          |
+| AdGuard/Technitium VM prep        | kubeadm cluster (Terraform VMs + kubeadm) |
+| Security baseline on **guests**   | Helm charts in k8s (Argo CD)              |
+| Guest application configuration   | Proxmox host configuration                |
 
 Kubernetes platform: **Terraform** creates nodes → **Argo CD** owns cluster apps.
-
----
-
-## answer.toml for your X1 Pro
-
-Already templated in `ansible-lab`:
-
-```bash
-cd ~/homelab/ansible-lab
-cp proxmox/secrets.example.env proxmox/secrets.env
-# Edit ROOT_PASSWORD, SSH_PUBLIC_KEY_FILE
-make render-answer   # → proxmox/answer.toml
-```
-
-Key fields match your live node:
-
-- FQDN: `pve01.lab.example.com`
-- IP: `192.168.1.10/24`, gateway `192.168.1.1`
-- ZFS on Samsung only: `filter.ID_SERIAL = "*S73WNJOW803723P*"`
-- `first-boot` via ISO embed — **not** inline shell in `.toml`
-
-Do **not** use ChatGPT’s `tank-data` / `tank-ai` first-boot script — use
-Terraform for `data01`.
 
 ---
 
@@ -213,13 +181,15 @@ Terraform for `data01`.
 
 | Step                                         | Status                       |
 | -------------------------------------------- | ---------------------------- |
-| USB install Proxmox                          | ✅ done                      |
+| Official install Proxmox                     | ✅ done                      |
 | SSH, DNS, API token                          | ✅ done                      |
 | `proxmox-bootstrap` on node                  | ✅ done                      |
 | `cloudflare-tunnel`                          | ✅ done                      |
 | `terraform apply` (`data01`, Stage 1 backup) | ✅ done                      |
 | `aux01` (OEM Slot 3)                         | ⏸️ hold — NVMe not installed |
 | Host firewall                                | ✅ done                      |
+| AdGuard + Technitium guests                  | ✅ done                      |
+| Router DNS cutover                           | ⏳ IPv6 DNS bypass remains   |
 | kubeadm + Argo CD                            | ⏳ Phase 6–7                 |
 
-Next: [current-state.md](../current-state.md) · Phase 2–3 (GitLab + DNS)
+Next: [current-state.md](../current-state.md) · finish DNS cutover, then GitLab

@@ -21,7 +21,9 @@ Read this before you create VMs or run `kubeadm init`. It settles API load-balan
 | Upgrades / certs      | Simplified                    | **Real** `kubeadm upgrade` workflow               |
 | Interview story       | “Fast homelab”                | **“I built and operate HA Kubernetes”**           |
 
-**Decision:** kubeadm on Debian for the primary cluster. k3s module in `terraform-lab` is legacy; new work targets kubeadm + Ansible (or manual for CKA depth).
+**Decision:** kubeadm on Debian for the primary cluster. The old k3s module was
+removed from `terraform-lab`; new work uses ordinary VM entries followed by
+kubeadm (manual for CKA depth, then automated where useful).
 
 ---
 

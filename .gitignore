@@ -3,6 +3,7 @@ ansible-lab/
 camunda-lab/
 cloudflare-tunnel/
 docker-lab/
+# Retired docs clone kept locally for archive/history only
 homelab-docs/
 proxmox-bootstrap/
 homebrew/
@@ -21,10 +22,8 @@ homelab-binaries/
 # Docs site (generated)
 site/
 .venv-docs/
-docs/labs/
 docs/.vitepress/cache/
 docs/.vitepress/dist/
-external/
 
 # Tooling
 node_modules/

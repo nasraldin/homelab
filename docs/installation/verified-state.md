@@ -2,7 +2,7 @@
 
 Known-good checks from after the manual install and validation (July 2026). Re-run the same commands after bootstrap or any major host change. Read [journey](journey.md) first if you need context; go to [next steps](next-steps.md) once these checks pass.
 
-**Node:** `pve01.lab.example.com` · `192.168.1.10/24`
+**Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22`
 
 ## What this page covers
 
@@ -18,7 +18,7 @@ Known-good checks from after the manual install and validation (July 2026). Re-r
 ```bash
 pveversion -v    # pve-manager 9.2.4, kernel 7.0.14-5-pve
 hostname         # pve01
-hostname -f      # pve01.lab.example.com
+hostname -f      # pve01.lab.nasraldin.com
 ```
 
 ---
@@ -27,15 +27,15 @@ hostname -f      # pve01.lab.example.com
 
 ```bash
 ip -4 addr show vmbr0
-# inet 192.168.1.10/24
+# inet 192.168.68.13/22
 
 cat /etc/network/interfaces
-# vmbr0 static, gateway 192.168.1.1, bridge-ports nic0
+# vmbr0 static, gateway 192.168.68.1, bridge-ports nic0
 ```
 
 | Check                     | Expected                                         |
 | ------------------------- | ------------------------------------------------ |
-| `ping -c1 192.168.1.1`    | OK                                               |
+| `ping -c1 192.168.68.1`   | OK                                               |
 | `systemctl is-active ssh` | active                                           |
 | `pve-firewall status`     | **enabled/running** (after `enable-firewall.sh`) |
 
@@ -45,13 +45,13 @@ cat /etc/network/interfaces
 
 ```bash
 cat /etc/hosts
-# 192.168.1.10 pve01.lab.example.com pve01
+# 192.168.68.13 pve01.lab.nasraldin.com pve01
 
-getent ahostsv4 pve01.lab.example.com
-# 192.168.1.10 STREAM ...
+getent ahostsv4 pve01.lab.nasraldin.com
+# 192.168.68.13 STREAM ...
 
-ping -4 -c1 pve01.lab.example.com
-# 192.168.1.10
+ping -4 -c1 pve01.lab.nasraldin.com
+# 192.168.68.13
 ```
 
 ---
@@ -60,10 +60,10 @@ ping -4 -c1 pve01.lab.example.com
 
 ```bash
 grep pve01 /etc/hosts
-# 192.168.1.10 pve01.lab.example.com pve01
+# 192.168.68.13 pve01.lab.nasraldin.com pve01
 
-ping -c1 pve01.lab.example.com
-# 192.168.1.10  (NOT 203.0.113.x)
+ping -c1 pve01.lab.nasraldin.com
+# 192.168.68.13  (NOT the public wildcard)
 ```
 
 ---
@@ -110,13 +110,13 @@ apt policy 2>/dev/null | head -20
 
 ```bash
 # From Mac — connectivity (401 = OK)
-curl -sk https://pve01.lab.example.com:8006/api2/json/version
+curl -sk https://pve01.lab.nasraldin.com:8006/api2/json/version
 # HTTP 401 or empty body without auth
 
 # Token auth (single quotes!)
 curl -sk \
   -H 'Authorization: PVEAPIToken=terraform@pve!provider=<SECRET>' \
-  https://pve01.lab.example.com:8006/api2/json/version
+  https://pve01.lab.nasraldin.com:8006/api2/json/version
 # {"data":{"version":"9.2.4",...}}
 ```
 
@@ -130,7 +130,7 @@ pveum user list
 ## SSH (Mac → node)
 
 ```bash
-ssh -i ~/.ssh/pve01 root@192.168.1.10 hostname
+ssh -i ~/.ssh/pve01 root@192.168.68.13 hostname
 # pve01
 
 # Or with config alias:

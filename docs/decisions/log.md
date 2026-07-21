@@ -15,9 +15,9 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | ------- | ------------------------------------------------- | ----------------------------------------------------------------- |
 | 2026-07 | USB install, not PXE                              | Single node; fastest path; ansible-lab for unattended later       |
 | 2026-07 | ZFS on Samsung only for `rpool`                   | Separate failure domain; Kingston = `data01` via Terraform        |
-| 2026-07 | FQDN `pve01.lab.example.com`                      | Numbered nodes; internal subdomain under `example.com`            |
+| 2026-07 | FQDN `pve01.lab.nasraldin.com`                    | Numbered nodes; internal subdomain under owned domain             |
 | 2026-07 | `/etc/hosts` for lab DNS interim                  | Cloudflare wildcard breaks `*.lab`; AdGuard later                 |
-| 2026-07 | Public UI at `homelab.example.com`                | Tunnel + Access; not `pve01.lab` on Cloudflare                    |
+| 2026-07 | Public UI at `homelab.nasraldin.com`              | Tunnel + Access; not `pve01.lab` on Cloudflare                    |
 | 2026-07 | `terraform@pve!provider` token                    | API automation; not root password                                 |
 | 2026-07 | `proxmox-bootstrap` over curl scripts             | Idempotent, owned, auditable                                      |
 | 2026-07 | Backups on `local-backup` (990 PRO), not `data01` | Separate failure domain; migrate to aux disk later                |

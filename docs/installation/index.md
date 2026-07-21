@@ -16,7 +16,7 @@ Operational runbooks live in the private **proxmox-bootstrap** repo. These pages
 | --- | ----------------------------------- | ------------------------------------------ |
 | 1   | [Journey timeline](journey.md)      | Planning → install → fixes, in sequence    |
 | 2   | [Issues tracker](issues-tracker.md) | Symptom, cause, fix for each problem       |
-| 3   | [Verified state](verified-state.md) | Known-good checks (with placeholders)      |
+| 3   | [Verified state](verified-state.md) | Known-good checks for the live node        |
 | 4   | [Next steps](next-steps.md)         | Bootstrap, tunnel, Terraform after install |
 
 ## Deep dives (proxmox-bootstrap)
@@ -35,4 +35,4 @@ Operational runbooks live in the private **proxmox-bootstrap** repo. These pages
 - [Hardware & storage](../architecture/hardware-and-storage.md)
 - [Network, DNS & ingress](../architecture/network-dns-ingress.md)
 - [Foundation sequence](../roadmap/foundation-sequence.md)
-- [Cloudflare Tunnel](../../cloudflare-tunnel/README.md) (remote UI)
+- [Cloudflare Tunnel](https://github.com/nasraldin/cloudflare-tunnel) (remote UI)

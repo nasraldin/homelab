@@ -12,19 +12,12 @@ node_modules/
 # Secrets / local overlays (never format-push these via tooling noise)
 **/credentials.auto.tfvars
 **/config.env
-**/proxmox/secrets.env
-**/proxmox/answer.toml
-**/proxmox/first-boot.sh
-**/files/authorized_keys
 **/*.secret
 **/.env
 **/.env.local
 
 # Generated / bulky
 **/iso/
-**/pxe/tftp/
-**/pxe/http/
-**/pxe/runtime/
 **/*.iso
 **/vendor/
 **/dist/

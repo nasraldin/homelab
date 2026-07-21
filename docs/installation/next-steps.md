@@ -11,7 +11,7 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 - Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
 - Cloudflare Tunnel — ✅ applied
 - Host firewall — ✅ applied
-- Remaining: Phase 2+ (GitLab, DNS); `aux01` when Slot 3 disk arrives
+- Remaining: finish IPv6 DNS cutover, then GitLab; `aux01` when Slot 3 disk arrives
 
 ---
 
@@ -27,7 +27,8 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 | 6    | Restore drill (first proof)       | ✅                    |
 | 7    | Drift check                       | ✅                    |
 | —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
-| —    | DNS / GitLab VMs                  | ⏳ Phase 2–3 **next** |
+| —    | DNS VMs                           | ✅                    |
+| —    | Router IPv6 DNS / GitLab VM       | ⏳ Phase 2–3 **next** |
 
 ---
 
@@ -64,8 +65,10 @@ Daily **check** + notify; manual `./mac/apply-updates.sh` for upgrades.
 cd ~/homelab/terraform-lab
 # terraform.tfvars: ssh_public_key, zfs_pools data01 (+ aux01 when disk present), backup jobs
 terraform init
-terraform plan
-terraform apply
+terraform plan -out=tfplan
+terraform show tfplan
+terraform apply tfplan
+rm -f tfplan
 ```
 
 Creates:
@@ -121,12 +124,12 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 ## 8. Later phases (do not skip ahead)
 
-| Order | Phase                         | Doc                                                              |
-| ----- | ----------------------------- | ---------------------------------------------------------------- |
-| 8     | TP-Link DHCP → AdGuard        | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)         |
-| 9     | GitLab VM                     | [service-placement.md](../architecture/service-placement.md)     |
-| 10    | kubeadm Stage A               | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
-| 11    | Argo CD bootstrap             | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)         |
+| Order | Phase                   | Doc                                                              |
+| ----- | ----------------------- | ---------------------------------------------------------------- |
+| 8     | Finish TP-Link IPv6 DNS | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)         |
+| 9     | GitLab VM               | [service-placement.md](../architecture/service-placement.md)     |
+| 10    | kubeadm Stage A         | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
+| 11    | Argo CD bootstrap       | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)         |
 
 DNS VMs (AdGuard + Technitium) are ✅ — see [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 

@@ -81,7 +81,7 @@ Copy the template from this repo:
 
 ```bash
 mkdir -p ~/.lima
-cp ~/homelab/homelab-docs/lima/docker-prod.yaml ~/.lima/docker-prod.yaml
+cp ~/homelab/lima/docker-prod.yaml ~/.lima/docker-prod.yaml
 limactl start docker-prod --tty=false
 ```
 

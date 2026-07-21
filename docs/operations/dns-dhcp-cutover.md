@@ -36,11 +36,30 @@ Exact labels differ by firmware; look for **DHCP Server** or **LAN DNS**.
 
 1. Renew leases: reconnect Wi‑Fi, or `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder` on Mac, or renew DHCP on each device.
 2. Verify from a **DHCP** Mac and a phone:
+   - `scutil --dns | grep nameserver` lists AdGuard and no ISP/public resolver
    - `dig pve01.lab.nasraldin.com +short` → `192.168.68.13` (no `@` — uses system DNS)
    - Internet works (e.g. open a news site)
    - AdGuard **Query log** shows the client and blocked ads
 3. Devices with **static DNS** — point them at `192.168.68.10` or switch back to DHCP.
 4. Optional: DHCP reservations for `.10` / `.11` by MAC on the router so addresses stay fixed.
+
+## IPv6 bypass check
+
+Changing IPv4 DHCP does not override DNS servers advertised through IPv6 router
+advertisements. If `scutil --dns` still lists ISP IPv6 resolvers, clients can
+bypass AdGuard and `dig pve01.lab.nasraldin.com` may return the public wildcard.
+The cutover is not complete.
+
+Use one router-supported option:
+
+1. Configure TP-Link IPv6 DNS to a stable IPv6 address on `adguard-01`, after
+   explicitly making that address stable and allowing TCP/UDP 53 in the guest.
+2. Disable the router's IPv6 DNS advertisement if the firmware exposes that
+   setting.
+3. Disable IPv6 on the LAN only as a temporary fallback.
+
+Do not advertise a public IPv6 resolver as Secondary DNS. Renew the client lease
+and repeat the no-`@` query before declaring the cutover complete.
 
 ## Rollback
 

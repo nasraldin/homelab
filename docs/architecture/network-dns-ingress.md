@@ -17,23 +17,23 @@ Today the lab is a single Proxmox node on a flat LAN — no VLANs yet, remote UI
 
 ## DNS (decided)
 
-| Layer                  | Tool               | Role                                          | Status |
-| ---------------------- | ------------------ | --------------------------------------------- | ------ |
+| Layer                  | Tool               | Role                                           | Status |
+| ---------------------- | ------------------ | ---------------------------------------------- | ------ |
 | Filtering              | **AdGuard Home**   | LAN resolver — ads, trackers, forward lab zone | ✅     |
-| Authoritative internal | **Technitium DNS** | `lab.nasraldin.com` zone only                 | ✅     |
-| Public                 | **Cloudflare**     | Public names + Tunnel                         | ✅     |
-| In-cluster             | **ExternalDNS**    | K8s → DNS records                             | ⏳     |
-| Router DHCP DNS        | **TP-Link → .10**  | All Wi‑Fi/LAN clients use AdGuard             | ⏳     |
+| Authoritative internal | **Technitium DNS** | `lab.nasraldin.com` zone only                  | ✅     |
+| Public                 | **Cloudflare**     | Public names + Tunnel                          | ✅     |
+| In-cluster             | **ExternalDNS**    | K8s → DNS records                              | ⏳     |
+| Router DHCP DNS        | **TP-Link → .10**  | IPv4 set; remove ISP IPv6 DNS bypass           | ⏳     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
 **Topology:** Clients → AdGuard (`192.168.68.10`) → forward `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`.
 
-| Host            | IP               | Notes                          |
-| --------------- | ---------------- | ------------------------------ |
-| adguard-01      | `192.168.68.10`  | Debian 13 VM, UI `:3000`       |
-| technitium-01   | `192.168.68.11`  | Debian 13 VM, UI `:5380`       |
-| pve01 (seed A)  | `192.168.68.13`  | In Technitium zone             |
+| Host           | IP              | Notes                    |
+| -------------- | --------------- | ------------------------ |
+| adguard-01     | `192.168.68.10` | Debian 13 VM, UI `:3000` |
+| technitium-01  | `192.168.68.11` | Debian 13 VM, UI `:5380` |
+| pve01 (seed A) | `192.168.68.13` | In Technitium zone       |
 
 **Interim:** `/etc/hosts` on Mac + node for break-glass until [DHCP cutover](../operations/dns-dhcp-cutover.md) is verified, then remove lab duplicates DNS owns.
 
@@ -50,10 +50,10 @@ Example internal names: `gitlab.lab.nasraldin.com`, `grafana.lab.nasraldin.com`,
 
 ## Naming
 
-| Scope    | Pattern                | Example                    |
-| -------- | ---------------------- | -------------------------- |
-| Internal | `*.lab.nasraldin.com`  | `pve01.lab.nasraldin.com`  |
-| Public   | `*.nasraldin.com`      | (Cloudflare / Tunnel apps) |
+| Scope    | Pattern               | Example                    |
+| -------- | --------------------- | -------------------------- |
+| Internal | `*.lab.nasraldin.com` | `pve01.lab.nasraldin.com`  |
+| Public   | `*.nasraldin.com`     | (Cloudflare / Tunnel apps) |
 
 ## Cutover
 

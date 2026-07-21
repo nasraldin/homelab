@@ -1,0 +1,49 @@
+# Lima Docker learning VM — copy to ~/.lima/docker-prod.yaml
+#   limactl start docker-prod --tty=false
+#
+# Tuned for Apple Silicon + ~36 GB Mac RAM. Increase memory only if macOS stays responsive.
+
+minimumLimaVersion: 1.0.0
+
+vmType: vz
+rosetta:
+  enabled: false
+
+arch: aarch64
+cpus: 6
+memory: 12GiB
+disk: 150GiB
+
+mounts:
+  - location: "~"
+    writable: true
+  - location: /tmp/lima
+    writable: true
+
+images:
+  - location: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2"
+    arch: aarch64
+
+containerd:
+  system: false
+  user: false
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux
+      apt-get update
+      apt-get install -y curl git vim htop jq net-tools iproute2
+
+probes:
+  - description: docker ready
+    script: |
+      #!/bin/bash
+      set -eux
+      docker info >/dev/null 2>&1
+
+message: |
+  Lima docker-prod is ready.
+  export DOCKER_HOST=unix://${HOME}/.lima/docker-prod/sock/docker.sock
+  limactl shell docker-prod

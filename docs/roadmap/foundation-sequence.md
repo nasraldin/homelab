@@ -1,19 +1,24 @@
 # Finish the Foundation Before You Touch Kubernetes
 
-Ordered foundation checklist, corrected for X1 Pro hardware and the current repos. Do not start Kubernetes until steps **1–12** are ✅ (or ⏸️ with a documented hold). Read [current state](../current-state.md) for the live board; use [installation/next-steps.md](../installation/next-steps.md) for remaining commands.
+Ordered foundation checklist, corrected for X1 Pro hardware and the current
+repos. Do not start Kubernetes until steps **1–13** are ✅ (or ⏸️ with a
+documented hold). Read [current state](../current-state.md) for the live board;
+use [installation/next-steps.md](../installation/next-steps.md) for remaining
+commands.
 
-**Status:** Phase 0 ✅ closed · DNS VMs ✅ · `aux01` ⏸️ (no Slot 3 NVMe) · next = GitLab + TP-Link DHCP cutover.
+**Status:** Phase 0 ✅ closed · DNS VMs ✅ · `aux01` ⏸️ (no Slot 3 NVMe) ·
+next = finish TP-Link IPv6 DNS, then GitLab.
 
 ## What this page covers
 
-- Steps 1–12 that must be green before kubeadm
+- Steps 1–13 that must be green before kubeadm
 - Later steps (kubeadm, GitOps, platform) once the foundation holds
 - Phase 0 complete except deferred `aux01`
 - Planning corrections vs early drafts (slots, disks, kubeadm, updates)
 
 | #   | Step                                              | Status  | Where                                                                                                                                          |
 | --- | ------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Proxmox installation (990 PRO only)               | ✅      | USB                                                                                                                                            |
+| 1   | Proxmox installation (990 PRO only)               | ✅      | Official installer                                                                                                                             |
 | 2   | Host bootstrap                                    | ✅      | `proxmox-bootstrap`                                                                                                                            |
 | 3   | Daily update check                                | ✅      | `install-update-automation.sh`                                                                                                                 |
 | 4   | Storage `data01` (FURY 4 TB)                      | ✅      | `terraform apply`                                                                                                                              |
@@ -23,15 +28,18 @@ Ordered foundation checklist, corrected for X1 Pro hardware and the current repo
 | 8   | Host firewall                                     | ✅      | `enable-firewall.sh`                                                                                                                           |
 | 9   | Weekly restore drills                             | ✅      | First proof done — keep weekly cadence ([runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md)) |
 | 10  | Bootstrap drift check                             | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                       |
-| 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; dig proofs green — [cutover](../operations/dns-dhcp-cutover.md) still ⏳                            |
-| 12  | GitLab VM                                         | ⏳      | Phase 2 — **next**                                                                                                                             |
-| 13  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                               |
-| 14  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
-| 15  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                      |
+| 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; directed dig proofs green                                                                          |
+| 12  | TP-Link DNS cutover                               | ⏳      | IPv4 set; remove the ISP IPv6 DNS bypass — [runbook](../operations/dns-dhcp-cutover.md)                                                        |
+| 13  | GitLab VM                                         | ⏳      | Phase 2 — after DNS cutover                                                                                                                    |
+| 14  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                               |
+| 15  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
+| 16  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                      |
 
 ## Next (Phase 2–3)
 
-Apply [TP-Link DHCP DNS cutover](../operations/dns-dhcp-cutover.md) when ready, then build GitLab on `data01` via Terraform. See [phases.md](phases.md) and [service-placement.md](../architecture/service-placement.md).
+Finish the [TP-Link DHCP DNS cutover](../operations/dns-dhcp-cutover.md), then
+build GitLab on `data01` via Terraform. See [phases.md](phases.md) and
+[service-placement.md](../architecture/service-placement.md).
 
 When Slot 3 OEM disk is installed:
 

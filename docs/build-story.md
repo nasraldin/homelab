@@ -61,7 +61,7 @@ FURY via Terraform.
 
 1. Selected **Samsung 990 PRO by model**, not `nvme0`/`nvme1` order
 2. ZFS `rpool`, `ashift=12`, `lz4`, ~8 GB swap
-3. Static `192.168.1.10/24`, FQDN `pve01.lab.example.com`
+3. Static `192.168.68.13/22`, FQDN `pve01.lab.nasraldin.com`
 4. Fixed DNS trap: Cloudflare wildcard broke `*.lab` — interim `/etc/hosts`
 5. SSH keys from Mac, Terraform API user created
 
@@ -81,7 +81,7 @@ Repos created, pushed, and **applied** on `pve01` (July 2026):
 | 0     | `proxmox-bootstrap` | ✅      | Repos, ZFS, ARC, admin, updates, firewall, IOMMU   |
 | 1     | `terraform-lab`     | ✅ / ⏸️ | `data01` + Stage 1 vzdump ✅; `aux01` ⏸️ (no disk) |
 | Edge  | `cloudflare-tunnel` | ✅      | Public UI via Tunnel + Access                      |
-| Docs  | `homelab-docs`      | ✅      | This story, roadmap, architecture                  |
+| Docs  | `homelab`           | ✅      | This story, roadmap, architecture                  |
 
 **Hold:** Slot 3 OEM NVMe not installed → `aux01` / Stage 2 backup migrate deferred.
 

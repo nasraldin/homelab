@@ -13,7 +13,6 @@ export default defineConfig({
   lang: 'en-US',
   cleanUrls: true,
   lastUpdated: true,
-  ignoreDeadLinks: true,
   srcExclude: ['labs/**'],
 
   head: [
@@ -139,6 +138,8 @@ export default defineConfig({
           collapsed: true,
           items: [
             { text: 'Ops overview', link: '/operations/' },
+            { text: 'Deploy & rebuild order', link: '/operations/deploy-and-rebuild' },
+            { text: 'DNS DHCP cutover', link: '/operations/dns-dhcp-cutover' },
             { text: 'Safe Proxmox upgrades', link: '/operations/proxmox-updates' },
             { text: 'VM backup stages', link: '/operations/backups' },
             { text: 'PBS / Velero / MinIO', link: '/operations/backup-platform' },
