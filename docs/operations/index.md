@@ -10,13 +10,14 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
-| Doc                                            | Topic                                          |
-| ---------------------------------------------- | ---------------------------------------------- |
-| [deploy-and-rebuild.md](deploy-and-rebuild.md) | Canonical repo order, commands, and acceptance |
-| [proxmox-updates.md](proxmox-updates.md)       | Daily check, manual upgrade, n8n layer         |
-| [backups.md](backups.md)                       | vzdump stages, drills, migration               |
-| [backup-platform.md](backup-platform.md)       | PBS, Velero, MinIO — Veeam-equivalent          |
-| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)     | TP-Link DHCP DNS → AdGuard (all LAN clients)   |
+| Doc                                                  | Topic                                          |
+| ---------------------------------------------------- | ---------------------------------------------- |
+| [deploy-and-rebuild.md](deploy-and-rebuild.md)       | Canonical repo order, commands, and acceptance |
+| [infra01-remote-access.md](infra01-remote-access.md) | Secure remote shell and PVE administration     |
+| [proxmox-updates.md](proxmox-updates.md)             | Daily check, manual upgrade, n8n layer         |
+| [backups.md](backups.md)                             | vzdump stages, drills, migration               |
+| [backup-platform.md](backup-platform.md)             | PBS, Velero, MinIO — Veeam-equivalent          |
+| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)           | TP-Link DHCP DNS → AdGuard (all LAN clients)   |
 
 ## Repo runbooks
 

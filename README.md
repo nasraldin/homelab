@@ -45,6 +45,7 @@ make docs-build     # output: docs/.vitepress/dist
 
 - Platform guides live in [`docs/`](docs/) (committed).
 - Canonical execution order: [`docs/operations/deploy-and-rebuild.md`](docs/operations/deploy-and-rebuild.md).
+- Secure remote administration: [`docs/operations/infra01-remote-access.md`](docs/operations/infra01-remote-access.md).
 - Community labs (`docker-lab`, `camunda-lab`) keep their **own** MkDocs sites — linked from this hub.
 - Values that look like IPs or hostnames are **[placeholders](docs/conventions/placeholders.md)** — adapt them; never commit secrets.
 

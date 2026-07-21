@@ -12,7 +12,7 @@ Official Proxmox installer
         ↓
 proxmox-bootstrap     host identity, APT, SSH, ZFS tuning, firewall, updates
         ↓
-cloudflare-tunnel     optional remote Proxmox UI through Access
+cloudflare-tunnel     remote Proxmox UI + infra01 SSH through Access
         ↓
 terraform-lab         storage, images, VM hardware, cloud-init, backups
         ↓
@@ -41,11 +41,12 @@ Local secret files are intentionally gitignored:
 | Repository          | Create locally                                    | Contains                                |
 | ------------------- | ------------------------------------------------- | --------------------------------------- |
 | `proxmox-bootstrap` | `config.env` from `config.env.example`            | Node identity and notification settings |
-| `cloudflare-tunnel` | `config.env` plus exported `CLOUDFLARE_API_TOKEN` | Cloudflare account and Access allowlist |
+| `cloudflare-tunnel` | `config.env`; token exported for one command only | Cloudflare account and Access allowlist |
 | `terraform-lab`     | `credentials.auto.tfvars` from its example        | Proxmox API token                       |
 | `ansible-lab`       | `secrets.yml` from `secrets.example.yml`          | AdGuard and Technitium admin passwords  |
 
 Never copy these files into documentation, plans, commits, or terminal logs.
+The tunnel bootstrap rejects a token stored in `config.env`.
 
 ## 1. Bootstrap and verify Proxmox
 
@@ -74,8 +75,9 @@ Do not continue if SSH, `pveversion`, ZFS, or the API check fails.
 
 ## 2. Configure remote UI access
 
-This publishes only the Proxmox UI through Cloudflare Tunnel + Access. Terraform
-and Ansible continue to use the LAN address.
+This publishes the Proxmox UI through Cloudflare Tunnel + Access. The same
+configuration declares the `infra01` SSH route, which becomes healthy after
+Terraform and Ansible create `192.168.68.12`.
 
 ```bash
 cd ~/homelab/cloudflare-tunnel
@@ -84,7 +86,9 @@ export CLOUDFLARE_API_TOKEN='retrieve-from-password-manager'
 
 ./mac/bootstrap.sh --check
 ./mac/bootstrap.sh --yes
-./tests/test_cloudflare_api.sh
+bash tests/test_cloudflare_api.sh
+bash tests/test_ingress.sh
+unset CLOUDFLARE_API_TOKEN
 ```
 
 Verify `https://homelab.nasraldin.com` from cellular and confirm Access prompts
@@ -110,6 +114,7 @@ rm -f tfplan
 terraform output
 ssh nasr@192.168.68.10 hostname
 ssh nasr@192.168.68.11 hostname
+ssh nasr@192.168.68.12 hostname
 ```
 
 Important:
@@ -119,7 +124,7 @@ Important:
 - Never run `terraform destroy` as a routine cleanup command.
 - Confirm destructive plans explicitly, especially disk/ZFS changes.
 
-## 4. Configure DNS guests with Ansible
+## 4. Configure guests with Ansible
 
 Terraform must finish and both SSH checks must pass first.
 
@@ -135,12 +140,32 @@ ansible-playbook playbooks/dns.yml -e @secrets.yml
 
 # Idempotence proof: both hosts must report changed=0.
 ansible-playbook playbooks/dns.yml -e @secrets.yml
+
+ansible-playbook playbooks/infra.yml --syntax-check
+ansible-playbook playbooks/infra.yml
+ansible-playbook playbooks/infra.yml # expect changed=0
 ```
 
 The playbook uses application APIs for AdGuard and Technitium policy. Do not
 replace their generated configuration files directly. Permanent UI changes must
 also be represented in Ansible or the next run will intentionally restore the
 declared policy.
+
+Finish the remote operator path after `infra01` is configured:
+
+```bash
+cd ~/homelab/cloudflare-tunnel
+export CLOUDFLARE_API_TOKEN='retrieve-from-password-manager'
+./mac/bootstrap.sh --yes
+unset CLOUDFLARE_API_TOKEN
+./mac/install-ssh-client.sh
+
+ssh infra01 'hostname; sudo -n true'
+ssh infra01-admin 'ssh pve01 "hostname -f; pveversion"'
+```
+
+The first SSH command opens the Cloudflare Access email-OTP flow. See
+[infra01 remote access](infra01-remote-access.md).
 
 ## 5. DNS acceptance
 
@@ -156,6 +181,9 @@ dig @192.168.68.10 example.com +short
 
 dig @192.168.68.10 doubleclick.net +short
 # 0.0.0.0 (blocked)
+
+dig @fe80::ff:fe00:10%en0 doubleclick.net +short
+# 0.0.0.0 (blocked over IPv6)
 
 curl -I http://192.168.68.10:3000/
 curl -I http://192.168.68.11:5380/
@@ -188,6 +216,7 @@ Confirm client requests appear in the AdGuard query log.
 | Proxmox host drift                 | `proxmox-bootstrap/mac/bootstrap.sh --remote --check`       |
 | VM CPU, RAM, disk, image, or IP    | Review and apply `terraform-lab`                            |
 | DNS software or filtering policy   | Run `ansible-lab/playbooks/dns.yml`                         |
+| Infra01 OS or operator tools       | Run `ansible-lab/playbooks/infra.yml`                       |
 | Cloudflare Tunnel or Access policy | Run `cloudflare-tunnel/mac/bootstrap.sh --check` then apply |
 | Router DHCP DNS                    | Follow the cutover runbook manually                         |
 

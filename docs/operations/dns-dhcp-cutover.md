@@ -19,6 +19,12 @@ dig @192.168.68.10 example.com +short               # public names resolve
 
 3. UIs reachable on LAN only: `http://192.168.68.10:3000` · `http://192.168.68.11:5380`
 4. **Write down** the current TP-Link DHCP DNS values (rollback).
+5. IPv6 direct-query proof:
+
+```bash
+dig @fe80::ff:fe00:10%en0 doubleclick.net +short       # → 0.0.0.0
+dig @fe80::ff:fe00:10%en0 pve01.lab.nasraldin.com +short # → 192.168.68.13
+```
 
 ## TP-Link steps (Deco / Archer menus vary)
 
@@ -50,16 +56,29 @@ advertisements. If `scutil --dns` still lists ISP IPv6 resolvers, clients can
 bypass AdGuard and `dig pve01.lab.nasraldin.com` may return the public wildcard.
 The cutover is not complete.
 
-Use one router-supported option:
+AdGuard is ready for IPv6 DNS:
 
-1. Configure TP-Link IPv6 DNS to a stable IPv6 address on `adguard-01`, after
-   explicitly making that address stable and allowing TCP/UDP 53 in the guest.
-2. Disable the router's IPv6 DNS advertisement if the firmware exposes that
-   setting.
-3. Disable IPv6 on the LAN only as a temporary fallback.
+- Terraform pins MAC `02:00:00:00:00:10`.
+- Stable link-local DNS address: `fe80::ff:fe00:10`.
+- UFW permits TCP and UDP 53 from `fe80::/10` only.
+- IPv4 and link-local IPv6 filtering proofs pass.
+
+Use the first router-supported option:
+
+1. Set TP-Link **Primary IPv6 DNS** / **RDNSS** to
+   `fe80::ff:fe00:10`; leave Secondary empty.
+2. If the firmware rejects a link-local value, disable its IPv6 DNS
+   advertisement.
+3. If it cannot disable DNS advertisement separately, temporarily disable IPv6
+   on the LAN.
 
 Do not advertise a public IPv6 resolver as Secondary DNS. Renew the client lease
 and repeat the no-`@` query before declaring the cutover complete.
+
+**Current boundary (2026-07-21):** server-side automation and direct IPv6
+filtering are verified. The router still advertises `2a00:f28:2::2` and
+`2a00:f28:2::20`. Completing the final setting requires an authenticated owner
+TP-Link ID session; automation does not store or bypass that password.
 
 ## Rollback
 

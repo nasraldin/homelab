@@ -2,7 +2,8 @@
 
 Live status board for the lab. Read the [build story](build-story.md) first so the checkmarks mean something; next work is Phase 2–3 ([foundation sequence](roadmap/foundation-sequence.md)).
 
-**Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs ✅.
+**Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
+`infra01` ✅.
 **Next focus:** remove the ISP IPv6 DNS bypass, then Phase 2 (GitLab).
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
@@ -29,24 +30,25 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## What is done (✅)
 
-| Area           | Item                                                                  |
-| -------------- | --------------------------------------------------------------------- |
-| Install        | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)      |
-| Network        | Static IP, FQDN, `vmbr0`                                              |
-| DNS (lab)      | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅ |
-| DNS (interim)  | `/etc/hosts` still OK for break-glass until DHCP cutover              |
-| SSH            | Key auth Mac → `root@192.168.68.13` + admin user                      |
-| APT            | deb822, no-subscription enabled, enterprise disabled                  |
-| API            | `terraform@pve!provider` token                                        |
-| Host bootstrap | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`      |
-| Updates        | `pve-update-check.timer` enabled (daily check + notify)               |
-| Storage        | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool  |
-| Tunnel         | Cloudflare Tunnel active → Proxmox UI                                 |
-| Firewall       | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)     |
-| Drift check    | `bootstrap.sh --check` + `enable-firewall.sh --check` clean           |
-| Restore drill  | First proof done (weekly cadence continues)                           |
-| Documentation  | Split repos, roadmap, architecture, install journal                   |
-| Git            | Lab repos pushed to `nasraldin/*`                                     |
+| Area           | Item                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| Install        | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)        |
+| Network        | Static IP, FQDN, `vmbr0`                                                |
+| DNS (lab)      | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅   |
+| DNS (interim)  | `/etc/hosts` still OK for break-glass until DHCP cutover                |
+| SSH            | Key auth Mac → `root@192.168.68.13` + admin user                        |
+| APT            | deb822, no-subscription enabled, enterprise disabled                    |
+| API            | `terraform@pve!provider` token                                          |
+| Host bootstrap | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`        |
+| Updates        | `pve-update-check.timer` enabled (daily check + notify)                 |
+| Storage        | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool    |
+| Operator VM    | `infra01` `.12`: hardened management toolchain + PVE access             |
+| Tunnel         | Proxmox UI + `infra.nasraldin.com` SSH route; first off-LAN OTP pending |
+| Firewall       | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)       |
+| Drift check    | `bootstrap.sh --check` + `enable-firewall.sh --check` clean             |
+| Restore drill  | First proof done (weekly cadence continues)                             |
+| Documentation  | Split repos, roadmap, architecture, install journal                     |
+| Git            | Lab repos pushed to `nasraldin/*`                                       |
 
 ---
 
@@ -67,9 +69,11 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | 2   | GitLab VM                         | Phase 2  |
 | 3+  | kubeadm, Argo CD, platform        | Phase 6+ |
 
-**Active focus** — IPv4 DHCP points to AdGuard, but clients still receive ISP
-IPv6 DNS resolvers and can bypass filtering. Do **not** call the cutover complete
-until a no-`@` lab query returns the private address. Then continue with GitLab.
+**Active focus** — AdGuard now has stable link-local IPv6
+`fe80::ff:fe00:10`, scoped UFW rules, and passing filtering proofs. The TP-Link
+still advertises ISP IPv6 resolvers, so do **not** call the cutover complete
+until its authenticated RDNSS setting is changed and a no-`@` lab query returns
+the private address. Then continue with GitLab.
 Cutover runbook: [dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md).
 
 ---
@@ -96,13 +100,13 @@ Full log: [decisions/log.md](decisions/log.md)
 
 ## Repository status
 
-| Repo                | Role                       | Git    | Applied on node                                   |
-| ------------------- | -------------------------- | ------ | ------------------------------------------------- |
-| `homelab`           | Plans, story, architecture | synced | n/a                                               |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall)                                   |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ `data01` / Stage 1; ⏸️ `aux01`                 |
-| `cloudflare-tunnel` | Remote UI                  | synced | ✅                                                |
-| `ansible-lab`       | Guest config (DNS first)   | synced | ✅ DNS playbook; historical branch `host-install` |
+| Repo                | Role                       | Git    | Applied on node                                 |
+| ------------------- | -------------------------- | ------ | ----------------------------------------------- |
+| `homelab`           | Plans, story, architecture | synced | n/a                                             |
+| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall)                                 |
+| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ `data01`, DNS VMs, `infra01`; ⏸️ `aux01`     |
+| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                            |
+| `ansible-lab`       | Guest configuration        | synced | ✅ DNS and `infra01`; historical `host-install` |
 
 ---
 
