@@ -45,6 +45,14 @@ Both OPNsense virtual NICs must have their Proxmox firewall flags disabled
 during the pilot; the existing Proxmox datacenter and node firewall stay
 enabled. `vmbr0` and every live LAN address remain unchanged.
 
+Ownership is explicit: `terraform-lab` manages VMID `120` and NIC lifecycle,
+`proxmox-bootstrap` manages the addressless `vmbr1`, and `ansible-lab`
+manages OPNsense VLAN devices, assignments, Kea, aliases, firewall policy,
+service ownership, source NAT, verification, and encrypted backup after the
+minimal bootstrap. The only post-API UI exception is assigning static IPv4 to
+VLAN 20 and VLAN 30 because OPNsense 26.7 exposes no supported endpoint for
+those fields.
+
 OPNsense uses default-deny segmentation. Pilot clients may send TCP/UDP 53
 only to AdGuard `192.168.68.10`; direct external TCP/UDP 53 is rejected and
 tested from every segment. DNS-over-HTTPS and other tunneling controls are not
@@ -62,10 +70,11 @@ rollback path.
 
 VLAN 20 and VLAN 30 passed addressing, AdGuard resolution, direct TCP/UDP 53
 blocking, inter-VLAN/current-LAN isolation, and approved egress checks before
-and after an OPNsense reboot. Existing DNS, Proxmox firewall, `vmbr0`, and
-Cloudflare Tunnel checks remained green. The management proof used a temporary
-namespace on `pve01`; the physical Mac path must be rechecked because `nic1`
-was `NO-CARRIER` at closeout.
+and after an OPNsense reboot. The Ansible policy also passed a second run with
+`changed=0` and an encrypted-backup round trip. Existing DNS, Proxmox firewall,
+`vmbr0`, and Cloudflare Tunnel checks remained green. The management proof
+used a temporary namespace on `pve01` and left `vmbr1` without a host address;
+the physical Mac path must still be rechecked at closeout.
 
 ## DNS (decided)
 
