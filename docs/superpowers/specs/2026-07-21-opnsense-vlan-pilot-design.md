@@ -1,8 +1,8 @@
 # OPNsense VLAN pilot
 
 Date: 2026-07-21
-Status: approved/in progress; canonical design recorded; infrastructure not
-deployed
+Status: implemented; policy, reboot, DNS-enforcement, and regression proofs
+pass; final direct Mac-to-`nic1` carrier closeout remains pending
 
 ## Goal
 
@@ -142,6 +142,13 @@ The pilot is successful only when evidence records all of the following:
 
 Passing tests establish pilot behavior only. They do not mean OPNsense is the
 live edge or that existing services have migrated.
+
+The implemented pilot passed the tagged-client matrix before and after an
+OPNsense reboot. At closeout, however, physical `nic1` reported `NO-CARRIER`
+and the Mac Ethernet adapters were inactive. The direct Mac management proof
+must therefore be repeated before this bounded pilot is called fully complete.
+This does not invalidate the isolated policy proof performed from a temporary
+management namespace on `pve01`.
 
 ## Rollback boundary
 

@@ -1,10 +1,11 @@
 # Design Network, DNS, and Ingress for One Homelab Node
 
 The live lab remains a single Proxmox node on a flat LAN. The bounded OPNsense
-VLAN pilot is approved/in progress and documented, but its infrastructure is
-not deployed. Remote Proxmox UI and `infra01` SSH continue to use Cloudflare
-Tunnel + Access. This page separates the live state from the pilot so planned
-segmentation is not mistaken for a completed cutover.
+VLAN pilot is implemented and technically verified, with one final direct
+Mac-to-`nic1` carrier closeout pending. Remote Proxmox UI and `infra01` SSH
+continue to use Cloudflare Tunnel + Access. This page separates the isolated
+pilot from the live edge so proven segmentation is not mistaken for a
+completed cutover.
 
 ## What this page covers
 
@@ -21,7 +22,7 @@ segmentation is not mistaken for a completed cutover.
   Technitium remains `192.168.68.11`
 - Remote Proxmox UI and `infra01` SSH: Cloudflare Tunnel + Access (no WAN ports)
 
-## OPNsense VLAN pilot (approved, not deployed)
+## OPNsense VLAN pilot (implemented, isolated)
 
 The approved pilot attaches OPNsense WAN to unchanged `vmbr0`. Its LAN NIC
 attaches to VLAN-aware `vmbr1`, which is bound to spare physical `nic1` and has
@@ -58,6 +59,13 @@ IPv6, deploy Vault, or host Kubernetes/production workloads. Powering off the
 pilot VM and the two test VMs, then disconnecting the Mac from `nic1`, removes
 its data path while Wi-Fi, the existing LAN, and Cloudflare Tunnel remain the
 rollback path.
+
+VLAN 20 and VLAN 30 passed addressing, AdGuard resolution, direct TCP/UDP 53
+blocking, inter-VLAN/current-LAN isolation, and approved egress checks before
+and after an OPNsense reboot. Existing DNS, Proxmox firewall, `vmbr0`, and
+Cloudflare Tunnel checks remained green. The management proof used a temporary
+namespace on `pve01`; the physical Mac path must be rechecked because `nic1`
+was `NO-CARRIER` at closeout.
 
 ## DNS (decided)
 

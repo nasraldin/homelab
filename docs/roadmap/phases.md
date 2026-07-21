@@ -13,7 +13,8 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 The next sequence is:
 
-1. **OPNsense VLAN Pilot** — 🔄 approved/in progress; not deployed
+1. **OPNsense VLAN Pilot** — 🔄 implemented and technically verified; direct
+   Mac carrier closeout pending
 2. **DNS migration (AdGuard + Technitium)** — ⏳
 3. **NetBird remote access** — ⏳
 4. **Vault** — ⏳
@@ -45,7 +46,7 @@ unchanged.
 | Host firewall                       | ✅     | `enable-firewall.sh`                                      |
 | Restore drill (first proof)         | ✅     | weekly cadence ongoing                                    |
 | Bootstrap drift check               | ✅     | `bootstrap.sh --check`                                    |
-| OPNsense VLAN Pilot                 | 🔄     | approved/in progress; infrastructure not deployed         |
+| OPNsense VLAN Pilot                 | 🔄     | policy/reboot proofs pass; Mac carrier closeout pending   |
 | Stage 2 `aux-backup` migrate        | ⏸️     | blocked on `aux01`                                        |
 
 ---
@@ -77,15 +78,15 @@ GitLab and kubeadm nodes remain pending and are not the next deployment.
 
 ## Phase 3 — DNS & networking
 
-| Task                | Status | Note                                              |
-| ------------------- | ------ | ------------------------------------------------- |
-| AdGuard Home        | ✅     | Filtering and child-safety policy is Ansible      |
-| Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`                 |
-| Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22`     |
-| DNS migration       | ⏳     | after the OPNsense VLAN Pilot                     |
-| TP-Link IPv6 bypass | ⏳     | known live-edge issue; no change in pilot         |
-| OPNsense VLAN Pilot | 🔄     | approved/in progress; infrastructure not deployed |
-| VLAN segmentation   | 🔄     | pilot design only; live LAN remains flat          |
+| Task                | Status | Note                                          |
+| ------------------- | ------ | --------------------------------------------- |
+| AdGuard Home        | ✅     | Filtering and child-safety policy is Ansible  |
+| Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`             |
+| Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22` |
+| DNS migration       | ⏳     | after the OPNsense VLAN Pilot                 |
+| TP-Link IPv6 bypass | ⏳     | known live-edge issue; no change in pilot     |
+| OPNsense VLAN Pilot | 🔄     | implemented; direct Mac closeout pending      |
+| VLAN segmentation   | ✅     | bounded pilot proven; live LAN remains flat   |
 
 See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
@@ -93,8 +94,10 @@ See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
 ## Phase 4 — OPNsense VLAN pilot
 
-The bounded pilot is approved/in progress and its canonical documentation is
-recorded; no pilot infrastructure is deployed. It uses
+The bounded pilot is implemented and its policy, reboot, DNS-enforcement, and
+live-service regression proofs pass. A final physical Mac-to-`nic1` carrier
+and Wi-Fi default-route closeout remains before the pilot is marked complete.
+It uses
 VLAN 10 Management (`192.168.10.0/24`, untagged/native), VLAN 20
 Infrastructure (`192.168.20.0/24`), and VLAN 30 Kubernetes
 (`192.168.30.0/24`) behind OPNsense on VLAN-aware `vmbr1`. That bridge binds

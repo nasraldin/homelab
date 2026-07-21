@@ -5,10 +5,10 @@ the checkmarks mean something; the approved next sequence is tracked in the
 [foundation sequence](roadmap/foundation-sequence.md).
 
 **Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
-`infra01` ✅. OPNsense VLAN Pilot 🔄 approved/in progress; no pilot
-infrastructure is deployed.
-**Next focus:** OPNsense VLAN Pilot, then DNS migration (AdGuard +
-Technitium), NetBird remote access, and Vault.
+`infra01` ✅. The OPNsense VLAN Pilot is implemented and technically verified;
+its final direct Mac-to-`nic1` carrier closeout remains 🔄.
+**Next focus:** close the physical Mac pilot check, then DNS migration
+(AdGuard + Technitium), NetBird remote access, and Vault.
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
@@ -67,17 +67,17 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                                 | Status                    |
-| --- | ------------------------------------ | ------------------------- |
-| 1   | OPNsense VLAN Pilot                  | 🔄 approved; not deployed |
-| 2   | DNS migration (AdGuard + Technitium) | ⏳                        |
-| 3   | NetBird remote access                | ⏳                        |
-| 4   | Vault                                | ⏳                        |
+| #   | Task                                 | Status                               |
+| --- | ------------------------------------ | ------------------------------------ |
+| 1   | OPNsense VLAN Pilot                  | 🔄 implemented; Mac closeout pending |
+| 2   | DNS migration (AdGuard + Technitium) | ⏳                                   |
+| 3   | NetBird remote access                | ⏳                                   |
+| 4   | Vault                                | ⏳                                   |
 
-**Active focus** — review the canonical
-[OPNsense pilot design](superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md)
-and [runbook](operations/opnsense-vlan-pilot.md) before running the bounded
-pilot. The live TP-Link edge,
+**Active focus** — repeat the direct Mac-to-`nic1` carrier, static-address,
+OPNsense UI, and Wi-Fi default-route checks in the canonical
+[OPNsense pilot runbook](operations/opnsense-vlan-pilot.md). The policy,
+DNS-enforcement, reboot, and regression matrices are green. The live TP-Link edge,
 `192.168.68.0/22` LAN, DNS VMs, and Cloudflare Tunnel remain unchanged rollback
 paths. AdGuard's direct IPv6 filtering proof is green, but TP-Link still
 advertises ISP IPv6 resolvers; carry that known issue into the later DNS
@@ -111,8 +111,8 @@ Full log: [decisions/log.md](decisions/log.md)
 | Repo                | Role                       | Git    | Applied on node                                 |
 | ------------------- | -------------------------- | ------ | ----------------------------------------------- |
 | `homelab`           | Plans, story, architecture | synced | n/a                                             |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall)                                 |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ `data01`, DNS VMs, `infra01`; ⏸️ `aux01`     |
+| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)        |
+| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`        |
 | `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                            |
 | `ansible-lab`       | Guest configuration        | synced | ✅ DNS and `infra01`; historical `host-install` |
 

@@ -5,8 +5,43 @@ Use this runbook only after reviewing the
 It creates a bounded proof environment on spare `nic1`; it does not cut over
 the TP-Link edge, migrate DNS, or place production workloads behind OPNsense.
 
-**Current status:** approved/in progress; canonical runbook recorded;
-infrastructure not deployed.
+**Current status:** implemented and technically verified on 2026-07-21. The
+policy, reboot, DNS-enforcement, regression, and rollback-boundary checks pass.
+The pilot is not marked fully complete until the direct Mac-to-`nic1` carrier
+and no-Ethernet-default-route check is repeated at closeout.
+
+## Verified implementation record
+
+- OPNsense 26.7 is VMID `120`; `pilot-infra` is VMID `121` on VLAN 20 and
+  `pilot-k8s` is VMID `122` on VLAN 30.
+- `vmbr1` is VLAN-aware on physical `nic1`, has no Proxmox host address or
+  route, and passes the idempotent pilot bridge check.
+- OPNsense WAN uses TP-Link DHCP at `192.168.68.56/22`; private-WAN blocking
+  is disabled, WAN management remains closed, and the WAN DHCP client
+  supersedes resolver configuration with `1.1.1.1`.
+- LAN/VLAN gateways are `192.168.10.1`, `192.168.20.1`, and
+  `192.168.30.1`. Kea serves `.100-.199` on VLAN 20 and VLAN 30 with AdGuard
+  `192.168.68.10` as client DNS. Dnsmasq DHCP is disabled.
+- Both disposable clients received `.100`, resolve public and lab names
+  through AdGuard, reach approved HTTPS and ICMP destinations, and cannot
+  reach the other pilot VLAN, Proxmox, or unrelated current-LAN hosts.
+  Direct UDP and TCP port 53 to public resolvers fails.
+- The full client matrix passed before and after an orderly OPNsense reboot.
+  Proxmox bridge drift, host firewall, AdGuard, Technitium, and both
+  Cloudflare Tunnel endpoints remained green. Terraform subsequently reported
+  no changes.
+- OPNsense starts automatically after installation. Both disposable guests
+  have working QEMU guest agents.
+- The root credential is stored in macOS Keychain service
+  `homelab-opnsense-root`. The encrypted configuration backup is
+  `~/Downloads/config-OPNsense.internal-20260721170656.xml.enc`, with SHA-256
+  `73cc4eff1ce12267eb040a139c9a05b8611693d24091dd72895b0b2b0613215b`.
+  Its encryption password is stored in Keychain service
+  `homelab-opnsense-pilot-backup`; no plaintext XML remains.
+- Closeout currently reports `nic1` as `NO-CARRIER` and all Mac Ethernet
+  adapters inactive. Reconnect the direct cable and repeat the Mac checks in
+  sections 6 and 7 before changing this pilot from technically verified to
+  complete.
 
 ## Change record
 
@@ -183,13 +218,16 @@ If VLAN 10 DHCP is tested later:
 
 ## 5. Build aliases and firewall policy
 
-Create these aliases to make review and logs unambiguous:
+The implemented aliases are:
 
-- `APPROVED_DNS`: host `192.168.68.10`;
-- `PILOT_NETS`: networks `192.168.10.0/24`, `192.168.20.0/24`,
-  `192.168.30.0/24`;
-- `PRIVATE_NETS`: the three pilot networks plus `192.168.68.0/22` and the
-  RFC1918 ranges.
+- `ADGUARD`: host `192.168.68.10`;
+- `CURRENT_LAN`: network `192.168.68.0/22`;
+- `WEB_PORTS`: ports `80` and `443`.
+
+VLAN 20 and VLAN 30 explicitly allow OPNsense NTP, DNS to `ADGUARD`, web
+egress to `WEB_PORTS`, and ICMP. They reject direct DNS to any other
+destination, the other pilot VLAN, and `CURRENT_LAN` except the earlier
+AdGuard exception. VLAN 10 remains the management-only administration path.
 
 On each pilot interface, remove the default broad LAN allow rule and apply
 rules in this order:
