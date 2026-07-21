@@ -9,7 +9,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 - Phase overview table (0 → 11) with status and links
 - Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
 - Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
-- Where to look next for Phase 2–3 (GitLab + DNS; `aux01` ⏸️)
+- Approved order: OPNsense VLAN Pilot → DNS migration → NetBird → Vault
 
 ---
 
@@ -19,9 +19,9 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | ----- | -------------------- | ------- | ---------------------------------------------------------------------------- |
 | 0     | Proxmox foundation   | ✅ / ⏸️ | [phases.md §0](phases.md#phase-0--proxmox-foundation) — closed; `aux01` hold |
 | 1     | Control plane & IaC  | ✅ / ⏸️ | [phases.md §1](phases.md#phase-1--control-plane--iac) — `aux01` hold         |
-| 2     | Source control       | ⏳      | [phases.md §2](phases.md#phase-2--source-control)                            |
-| 3     | DNS & networking     | ⏳      | [phases.md §3](phases.md#phase-3--dns--networking)                           |
-| 4     | Edge firewall        | ⏸️      | deferred                                                                     |
+| 2     | Source control       | ⏳      | later; GitLab is not the next deployment                                     |
+| 3     | DNS & networking     | ⏳ / 🔄 | DNS migration waits for the documented VLAN pilot                            |
+| 4     | OPNsense VLAN pilot  | 🔄      | approved/in progress; infrastructure not deployed                            |
 | 5     | Monitoring           | ⏳      | needs k8s                                                                    |
 | 6     | Kubernetes (kubeadm) | ⏳      | [kubernetes/](../kubernetes/index.md)                                        |
 | 7     | GitOps               | ⏳      | Argo CD                                                                      |
@@ -30,9 +30,13 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 10    | AI platform          | ⏳      |                                                                              |
 | 11    | Developer platform   | ⏳      |                                                                              |
 
-**🔄 = next focus** (Phase 0 ✅; `aux01` ⏸️; Phase 2–3 GitLab + DNS).
+**🔄 = next focus:** review the canonical OPNsense VLAN Pilot documentation,
+then run the bounded pilot. The live TP-Link edge and Cloudflare Tunnel remain
+unchanged.
 
-**Before Kubernetes:** [foundation-sequence.md](foundation-sequence.md) steps 11–12.
+**Approved sequence:** OPNsense VLAN Pilot → DNS migration (AdGuard +
+Technitium) → NetBird remote access → Vault. See the
+[foundation sequence](foundation-sequence.md).
 
 ---
 
@@ -50,7 +54,9 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 
 ## What to do next
 
-See [current-state.md](../current-state.md) — live board; next = Phase 2–3 (`aux01` ⏸️).
+See [current-state.md](../current-state.md) for the live board. Do not infer
+deployment from an approved design: the OPNsense pilot is not yet live, and
+GitLab/Kubernetes are not next.
 
 ---
 

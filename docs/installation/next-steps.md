@@ -11,24 +11,27 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 - Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
 - Cloudflare Tunnel — ✅ applied
 - Host firewall — ✅ applied
-- Remaining: finish IPv6 DNS cutover, then GitLab; `aux01` when Slot 3 disk arrives
+- Remaining: OPNsense VLAN Pilot → DNS migration → NetBird → Vault; `aux01`
+  when Slot 3 disk arrives
 
 ---
 
 ## Status snapshot
 
-| Step | Item                              | Status                |
-| ---- | --------------------------------- | --------------------- |
-| 1    | Host bootstrap                    | ✅                    |
-| 2    | Update automation                 | ✅                    |
-| 3    | `data01` + Stage 1 `local-backup` | ✅                    |
-| 4    | Cloudflare Tunnel                 | ✅                    |
-| 5    | Host firewall                     | ✅                    |
-| 6    | Restore drill (first proof)       | ✅                    |
-| 7    | Drift check                       | ✅                    |
-| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
-| —    | DNS VMs                           | ✅                    |
-| —    | Router IPv6 DNS / GitLab VM       | ⏳ Phase 2–3 **next** |
+| Step | Item                              | Status                    |
+| ---- | --------------------------------- | ------------------------- |
+| 1    | Host bootstrap                    | ✅                        |
+| 2    | Update automation                 | ✅                        |
+| 3    | `data01` + Stage 1 `local-backup` | ✅                        |
+| 4    | Cloudflare Tunnel                 | ✅                        |
+| 5    | Host firewall                     | ✅                        |
+| 6    | Restore drill (first proof)       | ✅                        |
+| 7    | Drift check                       | ✅                        |
+| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed     |
+| —    | DNS VMs                           | ✅                        |
+| —    | OPNsense VLAN Pilot               | 🔄 approved; not deployed |
+| —    | DNS migration / NetBird / Vault   | ⏳ approved sequence      |
+| —    | GitLab VM                         | ⏳ later; not next        |
 
 ---
 
@@ -124,14 +127,17 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 ## 8. Later phases (do not skip ahead)
 
-| Order | Phase                   | Doc                                                              |
-| ----- | ----------------------- | ---------------------------------------------------------------- |
-| 8     | Finish TP-Link IPv6 DNS | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)         |
-| 9     | GitLab VM               | [service-placement.md](../architecture/service-placement.md)     |
-| 10    | kubeadm Stage A         | [kubeadm-architecture.md](../kubernetes/kubeadm-architecture.md) |
-| 11    | Argo CD bootstrap       | [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)         |
+| Order | Phase                                | Status / boundary                                                                                                                                                                           |
+| ----- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | OPNsense VLAN Pilot                  | 🔄 approved/in progress; canonical [design](../superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md) and [runbook](../operations/opnsense-vlan-pilot.md); infrastructure not deployed |
+| 2     | DNS migration (AdGuard + Technitium) | ⏳ separate later change; live `.10` and `.11` remain unchanged during the pilot — [network design](../architecture/network-dns-ingress.md)                                                 |
+| 3     | NetBird remote access                | ⏳ separate later change; Cloudflare Tunnel remains the rollback path — [foundation sequence](../roadmap/foundation-sequence.md)                                                            |
+| 4     | Vault                                | ⏳ separate later change; no secrets-platform work during the pilot — [foundation sequence](../roadmap/foundation-sequence.md)                                                              |
 
-DNS VMs (AdGuard + Technitium) are ✅ — see [network-dns-ingress.md](../architecture/network-dns-ingress.md).
+DNS VMs (AdGuard + Technitium) are ✅ on the unchanged live LAN. The pilot
+does not authorize DNS migration, TP-Link edge cutover, NetBird, IPv6, Vault,
+GitLab, Kubernetes, Argo CD, or production workloads. GitLab and Kubernetes
+remain later work, not the next deployment.
 
 ---
 

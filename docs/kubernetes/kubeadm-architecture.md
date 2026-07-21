@@ -175,7 +175,8 @@ Install these **before** Harbor, GitLab-in-cluster, or Argo CD app-of-apps. This
 | **NGINX Ingress**  | HTTP routing             | Ingress, Services               |
 | **KEDA**           | Event-driven autoscaling | ScaledObject (platform pattern) |
 
-**Defer to Phase 7–9:** Argo CD, Longhorn, Velero, Kyverno, ExternalDNS, ESO, Vault, Prometheus stack.
+**Defer to Phase 7–9:** Argo CD, Longhorn, Velero, Kyverno, ExternalDNS, ESO,
+and the Prometheus stack. Vault is earlier foundation work.
 
 **Optional later:** MetalLB (only if you skip HAProxy for apps), Gateway API (Cilium), Tempo.
 
@@ -260,7 +261,7 @@ VMs from Terraform; **kubeadm join tokens and upgrades** by hand (or Ansible) un
 
 ## What we are **not** doing yet
 
-- Platform services (Harbor, Keycloak, Vault in-cluster)
+- Platform services (Harbor and Keycloak in-cluster)
 - GitOps (Argo CD)
 - Full observability stack
 - Wazuh / Falco / Kyverno

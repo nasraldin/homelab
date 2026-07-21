@@ -145,8 +145,9 @@ push:
   script: docker push $IMAGE:$CI_COMMIT_SHA
 ```
 
-**Secrets:** `COSIGN_PRIVATE_KEY`, `COSIGN_PASSWORD`, Harbor robot creds in
-GitLab variables or Vault → ESO (Phase 9).
+**Secrets:** `COSIGN_PRIVATE_KEY`, `COSIGN_PASSWORD`, and Harbor robot
+credentials in GitLab variables. The separate pre-Kubernetes Vault bootstrap
+precedes any later in-cluster ESO integration.
 
 **Mac/local test** (before CI):
 
@@ -221,6 +222,12 @@ Store `cosign.pub` in Git (public key is fine) or ConfigMap synced by Argo CD.
 Flip policies to `Enforce`. Add **PolicyExceptions** for `kube-system`, Kyverno,
 Argo CD, Cilium — signed platform images only.
 
+### Phase 9 — ESO integration
+
+After the separately designed pre-Kubernetes Vault bootstrap, integrate
+in-cluster ESO for Cosign keys and Harbor credentials. This does not decide
+Vault's placement or imply that Vault is deployed now.
+
 ### Phase 9 — Observability
 
 - Kyverno metrics → Prometheus (ServiceMonitor)
@@ -232,7 +239,6 @@ Argo CD, Cilium — signed platform images only.
 | Tool              | When                                    |
 | ----------------- | --------------------------------------- |
 | Trivy Operator    | Continuous scan of running workloads    |
-| ESO + Vault       | Cosign keys, Harbor creds               |
 | Falco             | Runtime threats (after baseline stable) |
 | Provenance (SLSA) | `cosign attest` with build metadata     |
 
@@ -310,14 +316,18 @@ Estimated effort after Phase 7: **2–3 focused sessions**.
 
 ---
 
-## Next actions (today)
+## Prerequisites before this security stack
 
-You are past **Phase 0** (`aux01` ⏸️ until Slot 3 NVMe). Security stack still comes **after** kubeadm + Argo CD:
+You are past **Phase 0** (`aux01` ⏸️ until Slot 3 NVMe), but this security stack
+is not next. Complete the approved foundation sequence first:
 
-1. Phase 2–3 (GitLab, DNS); install `aux01` when Slot 3 disk is available
-2. Bootstrap Argo CD
-3. Deploy Harbor
-4. Add one CI pipeline with Cosign
-5. Install Kyverno audit → enforce
+1. OPNsense VLAN Pilot
+2. DNS migration (AdGuard + Technitium)
+3. NetBird remote access
+4. Vault
+5. Later, bootstrap kubeadm + Argo CD
+6. Deploy Harbor
+7. Add one CI pipeline with Cosign
+8. Install Kyverno audit → enforce
 
 See [foundation-sequence.md](../roadmap/foundation-sequence.md) · [current-state.md](../current-state.md).

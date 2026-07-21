@@ -35,7 +35,7 @@ Do **not** run your homelab Kubernetes on Lima. CKA and platform engineering pra
 | 6a    | VMs + Debian + kubeadm cluster                                     |
 | 6b    | Cluster addons (Cilium, cert-manager, metrics-server, NGINX, KEDA) |
 | 7     | Argo CD + GitOps                                                   |
-| 8+    | Platform services (Harbor, Vault, …)                               |
+| 8+    | Platform services (Harbor, Keycloak, …)                            |
 
 ## Related
 

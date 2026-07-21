@@ -190,6 +190,9 @@ Kubernetes platform: **Terraform** creates nodes → **Argo CD** owns cluster ap
 | Host firewall                                | ✅ done                      |
 | AdGuard + Technitium guests                  | ✅ done                      |
 | Router DNS cutover                           | ⏳ IPv6 DNS bypass remains   |
+| OPNsense VLAN Pilot                          | 🔄 approved; not deployed    |
+| DNS migration → NetBird → Vault              | ⏳ approved sequence         |
 | kubeadm + Argo CD                            | ⏳ Phase 6–7                 |
 
-Next: [current-state.md](../current-state.md) · finish DNS cutover, then GitLab
+Next: [current-state.md](../current-state.md) · run the bounded OPNsense VLAN
+Pilot only after its canonical design and runbook are reviewed

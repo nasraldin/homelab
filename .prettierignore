@@ -3,6 +3,17 @@ node_modules/
 **/.git/
 **/node_modules/
 .superpowers/
+.impeccable/
+
+# Nested sibling repositories — each owns its formatter
+ansible-lab/
+camunda-lab/
+cloudflare-tunnel/
+docker-lab/
+proxmox-bootstrap/
+terraform-lab/
+homebrew/
+homelab-docs/
 
 # Terraform
 **/.terraform/
@@ -29,10 +40,6 @@ node_modules/
 **/docs/.vitepress/cache/
 **/docs/.vitepress/dist/
 **/coverage/
-
-# Camunda UI — own npm package / own formatters; root Prettier must not
-# reformat src without regenerating committed embed (CI: make ui-check)
-camunda-lab/internal/ui/web/
 
 # Lockfiles and binary-ish
 **/*.min.js

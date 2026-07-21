@@ -9,7 +9,7 @@ Read this first if you’re new. Then use [current state](current-state.md) for 
 - Why the lab exists and the principles locked early
 - Hardware / storage design and install lessons
 - Phase 0a–0b: install + host automation applied (`aux01` deferred — no Slot 3 disk)
-- What comes next (Phase 2–3 DNS + GitLab, then kubeadm / GitOps)
+- What comes next (OPNsense VLAN Pilot → DNS migration → NetBird → Vault)
 
 ---
 
@@ -85,7 +85,9 @@ Repos created, pushed, and **applied** on `pve01` (July 2026):
 
 **Hold:** Slot 3 OEM NVMe not installed → `aux01` / Stage 2 backup migrate deferred.
 
-**Next:** Phase 2–3 (GitLab + DNS) → kubeadm.
+**Next:** OPNsense VLAN Pilot (approved, not deployed) → DNS migration
+(AdGuard + Technitium) → NetBird remote access → Vault. GitLab and Kubernetes
+remain later work.
 
 → [current-state.md](current-state.md)  
 → [installation/next-steps.md](installation/next-steps.md)  
@@ -93,13 +95,17 @@ Repos created, pushed, and **applied** on `pve01` (July 2026):
 
 ---
 
-## Chapter 5 — DNS and GitLab (Phase 2–3) ⏳
+## Chapter 5 — DNS foundation and network pilot 🔄
 
-**Planned:**
+**Current and next:**
 
-- AdGuard + Technitium VMs — replace `/etc/hosts` hacks
-- **GitLab CE on dedicated VM** (`data01`) — Git for GitOps; survives k8s outages
-- GitHub repos remain; GitLab is self-hosted source of truth for cluster config
+- AdGuard `192.168.68.10` + Technitium `192.168.68.11` are live on the
+  unchanged `192.168.68.0/22` LAN.
+- The bounded OPNsense VLAN pilot is approved/in progress and documented; its
+  infrastructure is not deployed.
+- DNS migration, NetBird, and Vault follow as separate changes.
+- **GitLab CE on a dedicated VM** (`data01`) remains a later recoverability
+  choice, not the next deployment.
 
 → [architecture/network-dns-ingress.md](architecture/network-dns-ingress.md)
 
@@ -131,8 +137,8 @@ Longhorn (extra vdisk per worker).
 
 **Git repo layout:** `homelab-gitops` with app-of-apps.
 
-**Core services (via Argo):** Harbor, Keycloak, Vault, MinIO, Postgres, Redis,
-RabbitMQ.
+**Core services (via Argo):** Harbor, Keycloak, MinIO, Postgres, Redis,
+RabbitMQ. Vault is earlier foundation work with its own design.
 
 → [kubernetes/gitops-bootstrap.md](kubernetes/gitops-bootstrap.md)  
 → [platform/harbor-registry.md](platform/harbor-registry.md)

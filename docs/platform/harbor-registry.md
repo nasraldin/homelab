@@ -175,7 +175,7 @@ Details: [supply-chain-and-policies.md](../security/supply-chain-and-policies.md
 | Client          | Auth                                                 |
 | --------------- | ---------------------------------------------------- |
 | GitLab CI       | Robot account per project — push `apps/*`            |
-| Kubernetes      | `imagePullSecret` from ESO/Vault — read-only robot   |
+| Kubernetes      | `imagePullSecret` from later ESO — read-only robot   |
 | Your Mac (Lima) | `docker login harbor.lab.example.com` for push tests |
 
 Create robots in Harbor UI: Project → Robot Accounts.

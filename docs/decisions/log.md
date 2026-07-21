@@ -35,7 +35,7 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | 2026-07 | Talos for immutable k8s (later)                   | Not day-one; after kubeadm + Argo CD                              |
 | 2026-07 | Mac as control plane                              | `infra-01` optional later                                         |
 | 2026-07 | Kyverno over Gatekeeper for k8s admission         | Kubernetes-native; built-in Cosign verify; Rego optional later    |
-| 2026-07 | Cosign keyed signing in CI (not keyless v1)       | Simpler homelab; Vault/ESO for keys in Phase 9                    |
+| 2026-07 | Cosign keyed signing in CI (not keyless v1)       | Simpler; pre-k8s Vault bootstrap, then Phase 9 ESO integration    |
 | 2026-07 | AMD GPU PT: `iommu=pt` only (no `amd_iommu=on`)   | Official Proxmox; AMD IOMMU default-on; 890M AI VMs later         |
 | 2026-07 | Cmdline via `/etc/kernel/cmdline` + boot-tool     | ZFS+UEFI uses proxmox-boot-tool; GRUB alone would not apply       |
 | 2026-07 | Guest agent via cloud-init/Ansible only           | No Proxmox VMID host script; TF enables agent, guest installs pkg |

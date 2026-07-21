@@ -183,7 +183,8 @@ Root `@pam` ticket auth verified separately (wrong password was the only failure
 ✅ host firewall enabled
 ✅ restore drill (first proof) + drift check clean
 ⏸️ aux01 — OEM NVMe not installed in Slot 3
-⏳ Phase 2–3 (GitLab + DNS) → kubeadm
+🔄 OPNsense VLAN Pilot docs (not deployed)
+⏳ DNS migration → NetBird → Vault; GitLab and kubeadm later
 ```
 
 → [verified-state.md](verified-state.md) · [next-steps.md](next-steps.md) · [build-story.md](../build-story.md)

@@ -1,10 +1,14 @@
 # See Where the Homelab Stands Right Now
 
-Live status board for the lab. Read the [build story](build-story.md) first so the checkmarks mean something; next work is Phase 2–3 ([foundation sequence](roadmap/foundation-sequence.md)).
+Live status board for the lab. Read the [build story](build-story.md) first so
+the checkmarks mean something; the approved next sequence is tracked in the
+[foundation sequence](roadmap/foundation-sequence.md).
 
 **Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
-`infra01` ✅.
-**Next focus:** remove the ISP IPv6 DNS bypass, then Phase 2 (GitLab).
+`infra01` ✅. OPNsense VLAN Pilot 🔄 approved/in progress; no pilot
+infrastructure is deployed.
+**Next focus:** OPNsense VLAN Pilot, then DNS migration (AdGuard +
+Technitium), NetBird remote access, and Vault.
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
@@ -61,20 +65,24 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ---
 
-## Next (⏳ Phase 2+)
+## Next (approved order)
 
-| #   | Task                              | Where    |
-| --- | --------------------------------- | -------- |
-| 1   | Finish TP-Link IPv6 DNS → AdGuard | Phase 3  |
-| 2   | GitLab VM                         | Phase 2  |
-| 3+  | kubeadm, Argo CD, platform        | Phase 6+ |
+| #   | Task                                 | Status                    |
+| --- | ------------------------------------ | ------------------------- |
+| 1   | OPNsense VLAN Pilot                  | 🔄 approved; not deployed |
+| 2   | DNS migration (AdGuard + Technitium) | ⏳                        |
+| 3   | NetBird remote access                | ⏳                        |
+| 4   | Vault                                | ⏳                        |
 
-**Active focus** — AdGuard now has stable link-local IPv6
-`fe80::ff:fe00:10`, scoped UFW rules, and passing filtering proofs. The TP-Link
-still advertises ISP IPv6 resolvers, so do **not** call the cutover complete
-until its authenticated RDNSS setting is changed and a no-`@` lab query returns
-the private address. Then continue with GitLab.
-Cutover runbook: [dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md).
+**Active focus** — review the canonical
+[OPNsense pilot design](superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md)
+and [runbook](operations/opnsense-vlan-pilot.md) before running the bounded
+pilot. The live TP-Link edge,
+`192.168.68.0/22` LAN, DNS VMs, and Cloudflare Tunnel remain unchanged rollback
+paths. AdGuard's direct IPv6 filtering proof is green, but TP-Link still
+advertises ISP IPv6 resolvers; carry that known issue into the later DNS
+migration rather than treating it as completed or changing it during this
+pilot.
 
 ---
 

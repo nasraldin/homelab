@@ -63,7 +63,7 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **MongoDB / CouchDB / etc.**              | ☸ k8s                         | app      | When an app needs it                                                                                                 |
 | **RabbitMQ**                              | ☸ k8s                         | 8        |                                                                                                                      |
 | **Keycloak**                              | ☸ k8s                         | 8        |                                                                                                                      |
-| **Vault**                                 | ☸ k8s                         | 9        | ESO for secrets                                                                                                      |
+| **Vault**                                 | TBD                           | pre-k8s  | Separate design; ESO integration comes later                                                                         |
 | **Infisical**                             | ☸ k8s                         | alt      | Pick Vault **or** Infisical                                                                                          |
 | **MinIO / AIStor**                        | ☸ k8s                         | 8        | Object storage                                                                                                       |
 | **ExternalDNS**                           | ☸ k8s                         | 9        | When AdGuard API stable                                                                                              |

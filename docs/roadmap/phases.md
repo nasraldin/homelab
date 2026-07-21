@@ -5,8 +5,23 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 ## What this page covers
 
 - Phase 0 — Proxmox foundation (install → bootstrap → storage → tunnel)
-- Phases 1–3 — IaC, source control, DNS
-- Deferred / later phases — edge firewall, monitoring, kubeadm, GitOps, platform
+- Phases 1–3 — IaC, source control, and DNS
+- Approved OPNsense VLAN pilot before DNS migration
+- Later phases — monitoring, kubeadm, GitOps, and platform
+
+## Approved execution order
+
+The next sequence is:
+
+1. **OPNsense VLAN Pilot** — 🔄 approved/in progress; not deployed
+2. **DNS migration (AdGuard + Technitium)** — ⏳
+3. **NetBird remote access** — ⏳
+4. **Vault** — ⏳
+
+The historical phase numbers below remain unchanged, but this approved order
+controls what happens next. It authorizes only the bounded pilot; the TP-Link
+edge, live `192.168.68.0/22` LAN, DNS VMs, and Cloudflare Tunnel remain
+unchanged.
 
 ---
 
@@ -30,7 +45,7 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 | Host firewall                       | ✅     | `enable-firewall.sh`                                      |
 | Restore drill (first proof)         | ✅     | weekly cadence ongoing                                    |
 | Bootstrap drift check               | ✅     | `bootstrap.sh --check`                                    |
-| VLANs                               | ⏸️     | deferred                                                  |
+| OPNsense VLAN Pilot                 | 🔄     | approved/in progress; infrastructure not deployed         |
 | Stage 2 `aux-backup` migrate        | ⏸️     | blocked on `aux01`                                        |
 
 ---
@@ -44,9 +59,10 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 | VM / LXC modules                    | ✅      | Git                                      |
 | Retire legacy k3s cloud-init module | ✅      | Kubernetes uses ordinary VMs + kubeadm   |
 | Mac control plane                   | ✅      | bootstrap applied                        |
-| `infra-01` VM                       | ⏳      | optional                                 |
+| `infra01` VM                        | ✅      | operator VM on `192.168.68.12`           |
 
-**First VMs:** `adguard-01`, `technitium-01` (Phase 3), `gitlab-01` (Phase 2), kubeadm nodes (Phase 6).
+**Existing foundation VMs:** `adguard-01`, `technitium-01`, and `infra01`.
+GitLab and kubeadm nodes remain pending and are not the next deployment.
 
 ---
 
@@ -61,21 +77,35 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 ## Phase 3 — DNS & networking
 
-| Task                 | Status | Note                                            |
-| -------------------- | ------ | ----------------------------------------------- |
-| AdGuard Home         | ✅     | Filtering and child-safety policy is Ansible    |
-| Technitium DNS       | ✅     | Authoritative `lab.nasraldin.com`               |
-| Router DNS → AdGuard | ⏳     | IPv4 set; ISP IPv6 DNS still bypasses filtering |
-| OPNsense             | ⏸️     |                                                 |
-| VLANs                | ⏸️     |                                                 |
+| Task                | Status | Note                                              |
+| ------------------- | ------ | ------------------------------------------------- |
+| AdGuard Home        | ✅     | Filtering and child-safety policy is Ansible      |
+| Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`                 |
+| Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22`     |
+| DNS migration       | ⏳     | after the OPNsense VLAN Pilot                     |
+| TP-Link IPv6 bypass | ⏳     | known live-edge issue; no change in pilot         |
+| OPNsense VLAN Pilot | 🔄     | approved/in progress; infrastructure not deployed |
+| VLAN segmentation   | 🔄     | pilot design only; live LAN remains flat          |
 
 See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
 ---
 
-## Phase 4 — Edge firewall (deferred)
+## Phase 4 — OPNsense VLAN pilot
 
-OPNsense optional. Current edge: Cloudflare Tunnel + host firewall.
+The bounded pilot is approved/in progress and its canonical documentation is
+recorded; no pilot infrastructure is deployed. It uses
+VLAN 10 Management (`192.168.10.0/24`, untagged/native), VLAN 20
+Infrastructure (`192.168.20.0/24`), and VLAN 30 Kubernetes
+(`192.168.30.0/24`) behind OPNsense on VLAN-aware `vmbr1`. That bridge binds
+spare physical `nic1` without a Proxmox host IP or gateway: the admin Mac
+connects directly for untagged VLAN 10, while two disposable VMs carry tags 20
+and 30.
+
+This is not an edge cutover. TP-Link remains the live edge, and Cloudflare
+Tunnel remains the remote rollback path. See the
+[design](../superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md) and
+[runbook](../operations/opnsense-vlan-pilot.md).
 
 ---
 
@@ -106,7 +136,7 @@ Argo CD bootstrap, app-of-apps, no permanent manual `kubectl` (⏳).
 
 ## Phase 8 — Core platform services
 
-Harbor, Keycloak, Vault, MinIO, PostgreSQL, Redis, RabbitMQ — in k8s via Argo CD (⏳).
+Harbor, Keycloak, MinIO, PostgreSQL, Redis, RabbitMQ — in k8s via Argo CD (⏳).
 
 ---
 
