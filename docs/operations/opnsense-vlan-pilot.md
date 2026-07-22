@@ -5,8 +5,9 @@ Use this runbook only after reviewing the
 It creates a bounded proof environment on spare `nic1`; it does not cut over
 the TP-Link edge, migrate DNS, or place production workloads behind OPNsense.
 
-**Current status:** implemented and technically verified on 2026-07-21. The
-policy, reboot, DNS-enforcement, regression, and rollback-boundary checks pass.
+**Current status:** implemented and technically verified on 2026-07-22. The
+Ansible-managed policy, reboot, DNS-enforcement, regression, encrypted-backup,
+and rollback-boundary checks pass.
 The pilot is not marked fully complete until the direct Mac-to-`nic1` carrier
 and no-Ethernet-default-route check is repeated at closeout.
 
@@ -14,6 +15,9 @@ and no-Ethernet-default-route check is repeated at closeout.
 
 - OPNsense 26.7 is VMID `120`; `pilot-infra` is VMID `121` on VLAN 20 and
   `pilot-k8s` is VMID `122` on VLAN 30.
+- `terraform-lab` owns VMID `120` and its NICs, `proxmox-bootstrap` owns
+  `vmbr1`, and `ansible-lab` owns configuration inside OPNsense after the
+  documented minimal bootstrap.
 - `vmbr1` is VLAN-aware on physical `nic1`, has no Proxmox host address or
   route, and passes the idempotent pilot bridge check.
 - OPNsense WAN uses TP-Link DHCP at `192.168.68.56/22`; private-WAN blocking
@@ -33,15 +37,17 @@ and no-Ethernet-default-route check is repeated at closeout.
 - OPNsense starts automatically after installation. Both disposable guests
   have working QEMU guest agents.
 - The root credential is stored in macOS Keychain service
-  `homelab-opnsense-root`. The encrypted configuration backup is
-  `~/Downloads/config-OPNsense.internal-20260721170656.xml.enc`, with SHA-256
-  `73cc4eff1ce12267eb040a139c9a05b8611693d24091dd72895b0b2b0613215b`.
-  Its encryption password is stored in Keychain service
-  `homelab-opnsense-pilot-backup`; no plaintext XML remains.
-- Closeout currently reports `nic1` as `NO-CARRIER` and all Mac Ethernet
-  adapters inactive. Reconnect the direct cable and repeat the Mac checks in
-  sections 6 and 7 before changing this pilot from technically verified to
-  complete.
+  `homelab-opnsense-root`. Ansible exported and independently verified the
+  post-convergence encrypted configuration backup. Its encryption password is
+  stored in Keychain service `homelab-opnsense-pilot-backup`; the path and
+  SHA-256 are recorded outside Git, and no plaintext XML remains.
+- The Ansible playbook passed lint, syntax, policy tests, check mode, live
+  convergence, and a second run with `changed=0`.
+- Physical closeout remains pending: the latest Mac route check sent
+  `192.168.10.1` over Wi-Fi and direct HTTPS timed out. Configure the direct
+  Ethernet service as `192.168.10.2/24` with no router, then repeat the Mac
+  checks in sections 6 and 7 before changing this pilot from technically
+  verified to complete.
 
 ## Change record
 
@@ -158,18 +164,23 @@ below describe the required state; do not repurpose `vmbr0`.
 8. Replace the default administrator password with a unique stored credential,
    set the timezone, and install current stable updates. Reboot if the update
    requires it.
-9. Under **Interfaces → Other Types → VLAN**, create:
-   - tag 20 on the LAN parent, description `VLAN 20 Infrastructure`;
-   - tag 30 on the LAN parent, description `VLAN 30 Kubernetes`.
-10. Assign and enable the new interfaces:
-    - VLAN 20 Infrastructure: `192.168.20.1/24`;
-    - VLAN 30 Kubernetes: `192.168.30.1/24`.
-11. Rename the LAN description to `VLAN 10 Management`.
+9. Stop making policy changes in the UI and follow
+   [`ansible-lab/docs/opnsense.md`](https://github.com/nasraldin/ansible-lab/blob/main/docs/opnsense.md).
+   The first Ansible run creates and assigns VLAN 20 and VLAN 30, then stops
+   until their static addresses are set.
+10. Set the two API-unsupported address fields only:
+    - VLAN 20 Infrastructure: enabled, Static IPv4 `192.168.20.1/24`, no
+      gateway, IPv6 None;
+    - VLAN 30 Kubernetes: enabled, Static IPv4 `192.168.30.1/24`, no gateway,
+      IPv6 None.
+11. Rerun Ansible to converge DHCP, aliases, firewall policy, service
+    ownership, and NAT. A second successful run must report `changed=0`.
 
-## 4. Configure addressing and NAT
+## 4. Converge addressing and NAT with Ansible
 
-Keep the Mac static initially. The two tagged VMs may use static addresses or
-bounded DHCP scopes. Do not overlap the existing `192.168.68.0/22`.
+Keep the Mac static initially. Ansible configures the tagged clients' bounded
+Kea DHCP scopes and automatic source NAT. Do not add or edit those objects in
+the UI, and do not overlap the existing `192.168.68.0/22`.
 
 | Client        | Network                | Example address     | Gateway        | DNS                    |
 | ------------- | ---------------------- | ------------------- | -------------- | ---------------------- |
@@ -177,14 +188,14 @@ bounded DHCP scopes. Do not overlap the existing `192.168.68.0/22`.
 | `pilot-infra` | VLAN 20 Infrastructure | `192.168.20.100/24` | `192.168.20.1` | `192.168.68.10`        |
 | `pilot-k8s`   | VLAN 30 Kubernetes     | `192.168.30.100/24` | `192.168.30.1` | `192.168.68.10`        |
 
-If DHCP is enabled, advertise only the interface `.1` gateway and AdGuard
-`192.168.68.10` as DNS. Do not advertise OPNsense, Technitium, an ISP resolver,
-or a public resolver.
+The managed scopes advertise only the interface `.1` gateway and AdGuard
+`192.168.68.10` as DNS. They do not advertise OPNsense, Technitium, an ISP
+resolver, or a public resolver.
 
-Keep automatic outbound NAT enabled for all three `/24` pilot networks. This
+Ansible keeps automatic outbound NAT enabled for the pilot networks. This
 lets AdGuard see requests from the OPNsense WAN address on its existing
 `192.168.68.0/22` trust boundary; it does not migrate or reconfigure AdGuard.
-Verify that automatic rules cover all three networks before continuing.
+The playbook verifies source-NAT mode before continuing.
 
 ### Guard the Mac rollback route
 
@@ -218,7 +229,11 @@ If VLAN 10 DHCP is tested later:
 
 ## 5. Build aliases and firewall policy
 
-The implemented aliases are:
+Ansible owns the aliases and ordered rules below. Change
+`roles/opnsense_pilot/defaults/main.yml` and rerun the playbook; do not create
+parallel UI-only rules.
+
+The managed aliases are:
 
 - `ADGUARD`: host `192.168.68.10`;
 - `CURRENT_LAN`: network `192.168.68.0/22`;
@@ -229,27 +244,24 @@ egress to `WEB_PORTS`, and ICMP. They reject direct DNS to any other
 destination, the other pilot VLAN, and `CURRENT_LAN` except the earlier
 AdGuard exception. VLAN 10 remains the management-only administration path.
 
-On each pilot interface, remove the default broad LAN allow rule and apply
-rules in this order:
+The role disables the default broad LAN allow and legacy pilot rules, then
+applies managed rules in this order:
 
-1. allow required DHCP client traffic if that interface runs DHCP;
-2. allow TCP/UDP 53 from that interface network to `APPROVED_DNS`;
-3. reject and log TCP/UDP 53 from that interface network to any destination;
-4. on VLAN 10 Management only, allow HTTPS to that interface's OPNsense
-   address (and SSH only if explicitly enabled for the pilot);
-5. reject and log traffic from that interface network to `PILOT_NETS`;
-6. reject and log traffic to `192.168.68.0/22` except the approved DNS rule
-   already matched above;
-7. allow non-DNS traffic from that interface network to destinations not in
-   `PRIVATE_NETS` for update and Internet verification;
-8. end with a logged reject/deny.
+1. on VLAN 10 Management, allow access to VLAN 20 and VLAN 30, then default-deny;
+2. on each tagged VLAN, allow OPNsense NTP;
+3. allow TCP/UDP 53 from that interface network to `ADGUARD`;
+4. reject and log TCP/UDP 53 from that interface network to any other destination;
+5. deny the other pilot VLAN and `CURRENT_LAN` except the AdGuard exception;
+6. allow HTTPS/HTTP egress to `WEB_PORTS` and ICMP diagnostics;
+7. end with a logged default deny.
 
 Do not add floating pass rules or a broad inter-interface allow. Keep WAN
-default deny with no inbound management rule. Apply changes from the console
-or VLAN 10 so a policy error cannot strand the operator.
+default deny with no inbound management rule. Run Ansible from the direct Mac
+management path so a policy error cannot strand the operator.
 
-Export the OPNsense configuration after the rules are reviewed. Store it
-encrypted outside Git and record its checksum.
+After review, use the playbook's `backup` tag to validate, encrypt, immediately
+decrypt-check, and clean up the XML export. Store only the encrypted artifact
+outside Git and record its checksum.
 
 ## 6. Verify before reboot
 
@@ -346,18 +358,23 @@ Cloudflare Tunnel routes. Existing clients must still use TP-Link
 
 ## 7. Reboot and repeat
 
-1. Re-export and checksum the reviewed OPNsense configuration.
-2. Reboot OPNsense normally from its UI or console.
-3. Confirm WAN, VLAN 10 Management, VLAN 20 Infrastructure, and VLAN 30
+1. Export and checksum the reviewed OPNsense configuration with the Ansible
+   `backup` tag.
+2. Run `ansible-playbook` again and require `changed=0`.
+3. Run `ansible-lab/scripts/validate-opnsense-pilot.sh`.
+4. Reboot OPNsense normally with `ssh pve01 'qm reboot 120'`.
+5. Run `validate-opnsense-pilot.sh --wait`; its readiness check uses the VLAN
+   20 guest agent and does not add a Proxmox address to `vmbr1`.
+6. Confirm WAN, VLAN 10 Management, VLAN 20 Infrastructure, and VLAN 30
    Kubernetes return with the same assignments.
-4. Repeat the complete matrix:
+7. Repeat the complete matrix:
    - Mac `192.168.10.2/24`, no Ethernet default gateway, Wi-Fi still default;
    - VLAN 20 and VLAN 30 VM address, tag, and `.1` gateway;
    - approved DNS and rejected UDP/TCP DNS bypass from all three networks;
    - segmentation in every direction and VLAN 10-only management;
    - Internet egress from both tagged VMs;
    - unchanged existing-LAN and Cloudflare Tunnel checks.
-5. Mark the pilot verified only if both pre-reboot and post-reboot matrices
+8. Mark the pilot verified only if both pre-reboot and post-reboot matrices
    pass. “Verified” still means bounded pilot, not deployed edge.
 
 ## 8. Roll back

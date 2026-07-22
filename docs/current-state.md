@@ -77,12 +77,12 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 **Active focus** — repeat the direct Mac-to-`nic1` carrier, static-address,
 OPNsense UI, and Wi-Fi default-route checks in the canonical
 [OPNsense pilot runbook](operations/opnsense-vlan-pilot.md). The policy,
-DNS-enforcement, reboot, and regression matrices are green. The live TP-Link edge,
-`192.168.68.0/22` LAN, DNS VMs, and Cloudflare Tunnel remain unchanged rollback
-paths. AdGuard's direct IPv6 filtering proof is green, but TP-Link still
-advertises ISP IPv6 resolvers; carry that known issue into the later DNS
-migration rather than treating it as completed or changing it during this
-pilot.
+DNS-enforcement, encrypted backup, Ansible `changed=0`, reboot, and regression
+matrices are green. The live TP-Link edge, `192.168.68.0/22` LAN, DNS VMs, and
+Cloudflare Tunnel remain unchanged rollback paths. AdGuard's direct IPv6
+filtering proof is green, but TP-Link still advertises ISP IPv6 resolvers;
+carry that known issue into the later DNS migration rather than treating it
+as completed or changing it during this pilot.
 
 ---
 
@@ -108,13 +108,13 @@ Full log: [decisions/log.md](decisions/log.md)
 
 ## Repository status
 
-| Repo                | Role                       | Git    | Applied on node                                 |
-| ------------------- | -------------------------- | ------ | ----------------------------------------------- |
-| `homelab`           | Plans, story, architecture | synced | n/a                                             |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)        |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`        |
-| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                            |
-| `ansible-lab`       | Guest configuration        | synced | ✅ DNS and `infra01`; historical `host-install` |
+| Repo                | Role                       | Git    | Applied on node                              |
+| ------------------- | -------------------------- | ------ | -------------------------------------------- |
+| `homelab`           | Plans, story, architecture | synced | n/a                                          |
+| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)     |
+| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`     |
+| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                         |
+| `ansible-lab`       | Guest/appliance policy     | synced | ✅ DNS, `infra01`, and OPNsense pilot policy |
 
 ---
 
