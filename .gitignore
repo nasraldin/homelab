@@ -33,3 +33,6 @@ node_modules/
 # package-lock.json is committed for reproducible Prettier installs
 
 .history
+
+# Git worktrees (local isolation)
+.worktrees/
