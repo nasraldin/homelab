@@ -24,7 +24,7 @@ SH_FILES := $(shell find $(LABS) -type f \( -name '*.sh' \) \
 help:
 	@echo "Homelab workspace"
 	@echo ""
-	@echo "  make clone           Clone all labs from repos.conf (missing only)"
+	@echo "  make clone           Clone all labs from repos.json (missing only)"
 	@echo "  make clone-pull      Clone missing + ff-only pull existing"
 	@echo "  make install         npm install (Prettier)"
 	@echo "  make format          Prettier write + terraform fmt"

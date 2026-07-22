@@ -25,13 +25,14 @@ own remote. Clone them as siblings for local development and docs aggregation.
 ```bash
 git clone git@github.com:nasraldin/homelab.git ~/homelab
 cd ~/homelab
-./clone-labs.sh              # clone everything in repos.conf
+./clone-labs.sh              # clone everything in repos.json
 ./clone-labs.sh --pull       # also fast-forward update existing clones
 ./clone-labs.sh --protocol https
 ```
 
-Add a future lab: one line in [`repos.conf`](repos.conf) (`path` + tab + `owner/repo`),
+Add a future lab: one entry in [`repos.json`](repos.json) (`"local/path": "owner/repo"`),
 then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are supported.
+Requires [`jq`](https://jqlang.org/) (`brew install jq`).
 
 ## Documentation site
 
