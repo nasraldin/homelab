@@ -45,6 +45,7 @@ Every configuration here is intended as a reference, not a copy-and-paste soluti
 - **Hypervisor** — Proxmox VE on its own NVMe; VMs on a separate data pool
 - **Automation** — bootstrap scripts, Terraform for IaC, Ansible for guest configuration
 - **Edge** — Cloudflare Tunnel + Access for UI; no raw `:8006` on the WAN
+- **OpsHub** — sibling [`opshub`](https://github.com/nasraldin/opshub) repo (clone as `dashboard/` via [`clone-labs.sh`](https://github.com/nasraldin/homelab/blob/main/clone-labs.sh)); design spec: [OpsHub](/superpowers/specs/2026-07-22-homelab-dashboard-design)
 - **Cluster (planned)** — kubeadm, Argo CD, Harbor, observability
 - **Public tooling** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/) for Mac day-to-day work
 

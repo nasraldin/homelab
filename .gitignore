@@ -1,5 +1,6 @@
 # Nested lab repos — each has its own git remote; do not track as files here
 ansible-lab/
+dashboard/
 camunda-lab/
 cloudflare-tunnel/
 docker-lab/
