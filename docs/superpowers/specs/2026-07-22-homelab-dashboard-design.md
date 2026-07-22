@@ -29,7 +29,7 @@ Replace Grafana, Pulse, full Uptime Kuma, or SIEM. Deep metrics stay linked out.
 
 ## Architecture summary
 
-Next.js (latest) BFF + Node WebSocket gateway + SQLite (Drizzle). Secrets stay server-side. See the [OpsHub `docs/ARCHITECTURE.md`](https://github.com/nasraldin/opshub/blob/main/docs/ARCHITECTURE.md) in the sibling repository (local path `~/homelab/dashboard` after `clone-labs.sh`).
+Next.js (latest) BFF + Node WebSocket gateway + SQLite (Drizzle). Secrets stay server-side. See the [OpsHub `docs/ARCHITECTURE.md`](https://github.com/nasraldin/opshub/blob/main/docs/ARCHITECTURE.md) in the sibling repository (local path `~/homelab/opshub` after `clone-labs.sh`).
 
 ## Framework
 
@@ -53,6 +53,6 @@ Dedicated Proxmox API token; SSH keys only on LXC; inventory allowlist; audit op
 
 ## Success criteria (Phase 0)
 
-- OpsHub repo (`nasraldin/opshub`, cloned as `dashboard/`) installs and `pnpm dev` serves the ops shell
+- OpsHub repo (`nasraldin/opshub`, cloned as `opshub/`) installs and `pnpm dev` serves the ops shell
 - PRODUCT.md / DESIGN.md / agent docs present in that repo
 - Homelab README + docs hub link to the GitHub project

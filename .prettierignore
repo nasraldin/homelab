@@ -7,7 +7,7 @@ node_modules/
 
 # Nested sibling repositories — each owns its formatter
 ansible-lab/
-dashboard/
+opshub/
 camunda-lab/
 cloudflare-tunnel/
 docker-lab/
