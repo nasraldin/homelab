@@ -1,8 +1,9 @@
 # OPNsense VLAN pilot
 
 Date: 2026-07-21
-Status: implemented; policy, reboot, DNS-enforcement, and regression proofs
-pass; final direct Mac-to-`nic1` carrier closeout remains pending
+Status: implemented and Ansible-reproducible; policy, reboot, DNS-enforcement,
+encrypted backup, and regression proofs pass; final direct Mac-to-`nic1`
+carrier closeout remains pending
 
 ## Goal
 

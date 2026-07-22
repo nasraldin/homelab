@@ -247,17 +247,13 @@ AdGuard exception. VLAN 10 remains the management-only administration path.
 The role disables the default broad LAN allow and legacy pilot rules, then
 applies managed rules in this order:
 
-1. allow required DHCP client traffic if that interface runs DHCP;
-2. allow TCP/UDP 53 from that interface network to `APPROVED_DNS`;
-3. reject and log TCP/UDP 53 from that interface network to any destination;
-4. on VLAN 10 Management only, allow HTTPS to that interface's OPNsense
-   address (and SSH only if explicitly enabled for the pilot);
-5. reject and log traffic from that interface network to `PILOT_NETS`;
-6. reject and log traffic to `192.168.68.0/22` except the approved DNS rule
-   already matched above;
-7. allow non-DNS traffic from that interface network to destinations not in
-   `PRIVATE_NETS` for update and Internet verification;
-8. end with a logged reject/deny.
+1. on VLAN 10 Management, allow access to VLAN 20 and VLAN 30, then default-deny;
+2. on each tagged VLAN, allow OPNsense NTP;
+3. allow TCP/UDP 53 from that interface network to `ADGUARD`;
+4. reject and log TCP/UDP 53 from that interface network to any other destination;
+5. deny the other pilot VLAN and `CURRENT_LAN` except the AdGuard exception;
+6. allow HTTPS/HTTP egress to `WEB_PORTS` and ICMP diagnostics;
+7. end with a logged default deny.
 
 Do not add floating pass rules or a broad inter-interface allow. Keep WAN
 default deny with no inbound management rule. Run Ansible from the direct Mac
