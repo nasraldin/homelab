@@ -1,0 +1,10 @@
+{
+  "ansible-lab": "nasraldin/ansible-lab",
+  "camunda-lab": "nasraldin/camunda-lab",
+  "cloudflare-tunnel": "nasraldin/cloudflare-tunnel",
+  "docker-lab": "nasraldin/docker-lab",
+  "proxmox-bootstrap": "nasraldin/proxmox-bootstrap",
+  "terraform-lab": "nasraldin/terraform-lab",
+  "homebrew/homebrew-tools": "nasraldin/homebrew-tools",
+  "opshub": "nasraldin/opshub"
+}
