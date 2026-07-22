@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Clone (or update) all sibling lab repos listed in repos.conf.
+# Clone (or update) all sibling lab repos listed in repos.json.
 #
 #   ./clone-labs.sh              # clone missing only
 #   ./clone-labs.sh --pull       # clone missing + ff-only pull existing
 #   ./clone-labs.sh --protocol ssh|https
 #
-# Add future labs by appending a line to repos.conf (see that file).
+# Add future labs by adding a key/value in repos.json (see that file).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONF="${HOMELAB_REPOS_CONF:-$ROOT/repos.conf}"
+CONF="${HOMELAB_REPOS_CONF:-$ROOT/repos.json}"
 PROTOCOL="${HOMELAB_GIT_PROTOCOL:-}"
 DO_PULL=0
 
@@ -39,6 +39,18 @@ done
 
 if [[ ! -f "$CONF" ]]; then
   echo "ERROR: repos list not found: $CONF" >&2
+  exit 1
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "ERROR: jq is required to read $CONF" >&2
+  echo "Install: brew install jq" >&2
+  exit 1
+fi
+
+conf_type="$(jq -r 'type' "$CONF" 2>/dev/null || true)"
+if [[ "$conf_type" != "object" ]]; then
+  echo "ERROR: $CONF must be a JSON object (path → repo), got: ${conf_type:-invalid JSON}" >&2
   exit 1
 fi
 
@@ -86,7 +98,7 @@ while IFS=$'\t' read -r path spec || [[ -n "${path:-}" ]]; do
   path="$(echo "$path" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
   spec="$(echo "$spec" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
 
-  [[ -z "$path" || "$path" =~ ^# ]] && continue
+  [[ -z "$path" ]] && continue
   if [[ -z "$spec" ]]; then
     echo "WARN: skipping line with path but no repo: $path" >&2
     continue
@@ -125,7 +137,7 @@ while IFS=$'\t' read -r path spec || [[ -n "${path:-}" ]]; do
     echo "FAIL: clone $path" >&2
     failed=$((failed + 1))
   fi
-done < <(grep -v '^[[:space:]]*$' "$CONF" || true)
+done < <(jq -r 'to_entries[] | "\(.key)\t\(.value)"' "$CONF")
 
 echo
 echo "clone-labs: cloned=$cloned skipped=$skipped pulled=$pulled failed=$failed (protocol=$PROTOCOL)"
