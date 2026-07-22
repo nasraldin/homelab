@@ -5,6 +5,11 @@
 #   ./clone-labs.sh --pull       # clone missing + ff-only pull existing
 #   ./clone-labs.sh --protocol ssh|https
 #
+# Protocol: --protocol / HOMELAB_GIT_PROTOCOL override auto-detect.
+# Auto-detect probes git@github.com over SSH; falls back to https if
+# SSH keys exist but are not authorized for GitHub (common when the
+# agent only holds lab/host keys). Both protocols are always supported.
+#
 # Add future labs by adding a key/value in repos.json (see that file).
 set -euo pipefail
 
@@ -12,6 +17,14 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONF="${HOMELAB_REPOS_CONF:-$ROOT/repos.json}"
 PROTOCOL="${HOMELAB_GIT_PROTOCOL:-}"
 DO_PULL=0
+
+# True when an SSH key can authenticate to GitHub (BatchMode: no prompts).
+# GitHub often exits 1 even on success, so match the greeting, not exit code.
+github_ssh_ok() {
+  local out
+  out="$(ssh -o BatchMode=yes -o ConnectTimeout=5 -T git@github.com 2>&1 || true)"
+  [[ "$out" == *"successfully authenticated"* || "$out" == *"Hi "* ]]
+}
 
 usage() {
   sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
@@ -54,9 +67,9 @@ if [[ "$conf_type" != "object" ]]; then
   exit 1
 fi
 
-# Default protocol: ssh if an agent key exists, else https
+# Default protocol: ssh only if GitHub accepts a key; else https
 if [[ -z "$PROTOCOL" ]]; then
-  if [[ -n "${SSH_AUTH_SOCK:-}" ]] || [[ -f "$HOME/.ssh/id_ed25519" ]] || [[ -f "$HOME/.ssh/id_rsa" ]]; then
+  if github_ssh_ok; then
     PROTOCOL=ssh
   else
     PROTOCOL=https
