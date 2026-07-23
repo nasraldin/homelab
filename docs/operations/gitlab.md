@@ -17,6 +17,25 @@ Registry lives under the main GitLab URL (no extra hostname).
 No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a
 Personal Access Token.
 
+## Web IDE
+
+Keep Web IDE on GitLab’s default multi-origin CDN (do **not** rely on single-origin
+fallback):
+
+| Setting | Value |
+| ------- | ----- |
+| Extension host domain | `cdn.web-ide.gitlab-static.net` (default) |
+| Enable single origin fallback | **off** |
+
+Browsers load VS Code assets from `*.cdn.web-ide.gitlab-static.net`. That CDN is
+reachable from this network, so the secure multi-origin mode works without a
+custom wildcard hostname.
+
+If the Admin banner returns after an upgrade, clear **Enable single origin
+fallback** again under **Admin → Settings → General → Web IDE**. Only set a
+custom extension host domain if that CDN is blocked (air-gapped); then you need a
+wildcard DNS + TLS path into Omnibus (see [GitLab docs](https://docs.gitlab.com/administration/settings/web_ide/)).
+
 ## Container Registry / Package Registry
 
 - Push images to `gregistry.nasraldin.com/<project>/…` after enabling the
