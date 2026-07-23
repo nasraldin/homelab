@@ -7,8 +7,8 @@ the checkmarks mean something; the approved next sequence is tracked in the
 **Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
 `infra01` ✅. OPNsense VLAN pilot **archived** (2026-07-23) — code on
 `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
-**Next focus:** DNS polish (TP-Link IPv6 RDNSS / AdGuard), then optional
-NetBird / Vault, then kubeadm Stage A when ready.
+**Next focus:** optional NetBird / Vault, then kubeadm Stage A when ready.
+DNS: IPv4 DHCP → AdGuard ✅; Deco has no IPv6 DNS UI — Mac pinned to AdGuard ✅.
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
@@ -40,6 +40,7 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Network         | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                          |
 | DNS (lab)       | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅ |
 | DNS (IPv4 DHCP) | TP-Link primary DNS = AdGuard `192.168.68.10`                         |
+| DNS (Mac path)  | Wi-Fi DNS pinned to `192.168.68.10` (Deco has no IPv6 DNS controls)   |
 | SSH             | Key auth Mac → `root@192.168.68.13` + admin user                      |
 | APT             | deb822, no-subscription enabled, enterprise disabled                  |
 | API             | `terraform@pve!provider` token                                        |
@@ -69,17 +70,16 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                              | Status                                     |
-| --- | --------------------------------- | ------------------------------------------ |
-| 1   | DNS polish (TP-Link IPv6 / RDNSS) | ⏳ ISP IPv6 resolvers still bypass AdGuard |
-| 2   | NetBird remote access (optional)  | ⏳                                         |
-| 3   | Vault (optional)                  | ⏳                                         |
-| 4   | kubeadm Stage A                   | ⏳ when ready for Kubernetes practice      |
+| #   | Task                             | Status                                |
+| --- | -------------------------------- | ------------------------------------- |
+| 1   | NetBird remote access (optional) | ⏳                                    |
+| 2   | Vault (optional)                 | ⏳                                    |
+| 3   | kubeadm Stage A                  | ⏳ when ready for Kubernetes practice |
 
-**Active focus** — finish IPv6 DNS so system queries use AdGuard only (see
-[dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md)). Keep the flat LAN:
-TP-Link edge, `192.168.68.0/22`, AdGuard `.10`, Technitium `.11`, Cloudflare
-Tunnel. Mac stays Wi-Fi only.
+**Active focus** — kubeadm Stage A when you want Kubernetes practice; NetBird /
+Vault remain optional. Keep the flat LAN: TP-Link edge, AdGuard `.10`,
+Technitium `.11`, Cloudflare Tunnel. Mac stays Wi-Fi only with DNS pinned to
+AdGuard ([dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md)).
 
 ---
 

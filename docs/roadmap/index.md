@@ -20,7 +20,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 0     | Proxmox foundation   | ✅ / ⏸️ | [phases.md §0](phases.md#phase-0--proxmox-foundation) — closed; `aux01` hold |
 | 1     | Control plane & IaC  | ✅ / ⏸️ | [phases.md §1](phases.md#phase-1--control-plane--iac) — `aux01` hold         |
 | 2     | Source control       | ⏳      | later; GitLab is not the next deployment                                     |
-| 3     | DNS & networking     | 🔄      | IPv4 DHCP → AdGuard ✅; IPv6 RDNSS polish ⏳                                 |
+| 3     | DNS & networking     | ✅      | IPv4 DHCP → AdGuard; Deco no IPv6 DNS UI — Mac pinned to AdGuard            |
 | 4     | OPNsense VLAN pilot  | ⏸️      | archived on `archive/opnsense-vlan-pilot` (2026-07-23)                       |
 | 5     | Monitoring           | ⏳      | needs k8s                                                                    |
 | 6     | Kubernetes (kubeadm) | ⏳      | [kubernetes/](../kubernetes/index.md)                                        |
@@ -30,12 +30,12 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 10    | AI platform          | ⏳      |                                                                              |
 | 11    | Developer platform   | ⏳      |                                                                              |
 
-**🔄 = next focus:** finish TP-Link IPv6 DNS so clients cannot bypass AdGuard.
+**🔄 = next focus:** kubeadm Stage A when ready (NetBird / Vault optional).
 The live TP-Link edge and Cloudflare Tunnel remain unchanged. OPNsense/VLANs
 are deferred until segmentation is actually needed.
 
-**Approved sequence:** DNS polish (IPv6) → NetBird (optional) → Vault
-(optional) → kubeadm Stage A. See the [foundation sequence](foundation-sequence.md).
+**Approved sequence:** NetBird (optional) → Vault (optional) → kubeadm Stage A.
+See the [foundation sequence](foundation-sequence.md).
 
 ---
 

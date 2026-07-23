@@ -82,7 +82,8 @@ GitLab and kubeadm nodes remain pending and are not the next deployment.
 | Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`             |
 | Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22` |
 | IPv4 DHCP → AdGuard | ✅     | TP-Link primary DNS = `192.168.68.10`         |
-| TP-Link IPv6 RDNSS  | ⏳     | ISP resolvers still bypass AdGuard            |
+| TP-Link IPv6 RDNSS  | ⏸️     | Deco UI has no IPv6 DNS controls              |
+| Mac DNS pin         | ✅     | Wi-Fi DNS = AdGuard (bypasses ISP IPv6 RA)    |
 | OPNsense VLAN Pilot | ⏸️     | archived; live LAN stays flat                 |
 | VLAN segmentation   | ⏸️     | deferred until needed (e.g. with kubeadm)     |
 

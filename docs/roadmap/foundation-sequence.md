@@ -31,7 +31,7 @@ ready.
 | 10  | Bootstrap drift check                             | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                       |
 | 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; directed dig proofs green                                                                          |
 | 12  | IPv4 DHCP → AdGuard                               | ✅      | TP-Link primary DNS = `192.168.68.10`                                                                                                          |
-| 13  | IPv6 DNS polish (TP-Link RDNSS)                   | ⏳      | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                                                                       |
+| 13  | IPv6 DNS polish (Deco has no RDNSS UI)            | ✅      | Mac Wi-Fi DNS pinned to AdGuard; see [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                                  |
 | 14  | OPNsense VLAN Pilot                               | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                     |
 | 15  | NetBird remote access                             | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                        |
 | 16  | Vault                                             | ⏳      | optional                                                                                                                                       |

@@ -49,12 +49,11 @@ Exact labels differ by firmware; look for **DHCP Server** or **LAN DNS**.
 3. Devices with **static DNS** — point them at `192.168.68.10` or switch back to DHCP.
 4. Optional: DHCP reservations for `.10` / `.11` by MAC on the router so addresses stay fixed.
 
-## IPv6 bypass check
+## IPv6 bypass (Deco limitation)
 
 Changing IPv4 DHCP does not override DNS servers advertised through IPv6 router
 advertisements. If `scutil --dns` still lists ISP IPv6 resolvers, clients can
 bypass AdGuard and `dig pve01.lab.nasraldin.com` may return the public wildcard.
-The cutover is not complete.
 
 AdGuard is ready for IPv6 DNS:
 
@@ -63,22 +62,48 @@ AdGuard is ready for IPv6 DNS:
 - UFW permits TCP and UDP 53 from `fe80::/10` only.
 - IPv4 and link-local IPv6 filtering proofs pass.
 
-Use the first router-supported option:
+### Router options (when the UI exposes them)
 
-1. Set TP-Link **Primary IPv6 DNS** / **RDNSS** to
-   `fe80::ff:fe00:10`; leave Secondary empty.
+1. Set **Primary IPv6 DNS** / **RDNSS** to `fe80::ff:fe00:10`; leave Secondary
+   empty.
 2. If the firmware rejects a link-local value, disable its IPv6 DNS
    advertisement.
 3. If it cannot disable DNS advertisement separately, temporarily disable IPv6
    on the LAN.
 
-Do not advertise a public IPv6 resolver as Secondary DNS. Renew the client lease
-and repeat the no-`@` query before declaring the cutover complete.
+Do not advertise a public IPv6 resolver as Secondary DNS.
 
-**Current boundary (2026-07-21):** server-side automation and direct IPv6
-filtering are verified. The router still advertises `2a00:f28:2::2` and
-`2a00:f28:2::20`. Completing the final setting requires an authenticated owner
-TP-Link ID session; automation does not store or bypass that password.
+### Accepted workaround when Deco has no IPv6 DNS controls (2026-07-23)
+
+TP-Link Deco cloud portal / app on this mesh **does not expose** IPv6 DNS /
+RDNSS settings. Whole-LAN RDNSS cutover is therefore blocked by firmware, not
+by AdGuard.
+
+For the admin Mac (and any other client you care about), pin DNS to AdGuard so
+system queries ignore the ISP IPv6 resolvers:
+
+```bash
+# Pin Wi-Fi DNS to AdGuard (IPv4). Leaves DHCP for address/router.
+networksetup -setdnsservers Wi-Fi 192.168.68.10
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+
+scutil --dns | grep nameserver          # expect only 192.168.68.10
+dig pve01.lab.nasraldin.com +short      # → 192.168.68.13
+dig doubleclick.net +short              # → 0.0.0.0
+```
+
+Revert to DHCP DNS later with:
+
+```bash
+networksetup -setdnsservers Wi-Fi Empty
+```
+
+**Boundary:** phones / IoT that stay on Deco DHCP may still learn ISP IPv6
+resolvers until Deco gains IPv6 DNS controls or the edge is replaced. Lab
+admin path (Mac → AdGuard) is complete with the pin above.
+
+If pinning DNS is not enough on a given OS, fall back to disabling IPv6 on that
+client only (`networksetup -setv6off Wi-Fi` on macOS).
 
 ## Rollback
 
