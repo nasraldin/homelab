@@ -34,26 +34,26 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## What is done (✅)
 
-| Area           | Item                                                                    |
-| -------------- | ----------------------------------------------------------------------- |
-| Install        | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)        |
-| Network        | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                            |
-| DNS (lab)      | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅   |
-| DNS (IPv4 DHCP)| TP-Link primary DNS = AdGuard `192.168.68.10`                           |
-| SSH            | Key auth Mac → `root@192.168.68.13` + admin user                        |
-| APT            | deb822, no-subscription enabled, enterprise disabled                    |
-| API            | `terraform@pve!provider` token                                          |
-| Host bootstrap | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`        |
-| Updates        | `pve-update-check.timer` enabled (daily check + notify)                 |
-| Storage        | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool    |
-| Operator VM    | `infra01` `.12`: hardened management toolchain + PVE access             |
-| Tunnel         | Proxmox UI + `infra.nasraldin.com` SSH route                            |
-| OpsHub         | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅   |
-| Firewall       | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)       |
-| Drift check    | `bootstrap.sh --check` + `enable-firewall.sh --check` clean             |
-| Restore drill  | First proof done (weekly cadence continues)                             |
-| Documentation  | Split repos, roadmap, architecture, install journal                     |
-| Git            | Lab repos pushed to `nasraldin/*`                                       |
+| Area            | Item                                                                  |
+| --------------- | --------------------------------------------------------------------- |
+| Install         | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)      |
+| Network         | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                          |
+| DNS (lab)       | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅ |
+| DNS (IPv4 DHCP) | TP-Link primary DNS = AdGuard `192.168.68.10`                         |
+| SSH             | Key auth Mac → `root@192.168.68.13` + admin user                      |
+| APT             | deb822, no-subscription enabled, enterprise disabled                  |
+| API             | `terraform@pve!provider` token                                        |
+| Host bootstrap  | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`      |
+| Updates         | `pve-update-check.timer` enabled (daily check + notify)               |
+| Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool  |
+| Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access           |
+| Tunnel          | Proxmox UI + `infra.nasraldin.com` SSH route                          |
+| OpsHub          | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅ |
+| Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)     |
+| Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean           |
+| Restore drill   | First proof done (weekly cadence continues)                           |
+| Documentation   | Split repos, roadmap, architecture, install journal                   |
+| Git             | Lab repos pushed to `nasraldin/*`                                     |
 
 ---
 
@@ -69,12 +69,12 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                                      | Status                                      |
-| --- | ----------------------------------------- | ------------------------------------------- |
-| 1   | DNS polish (TP-Link IPv6 / RDNSS)         | ⏳ ISP IPv6 resolvers still bypass AdGuard  |
-| 2   | NetBird remote access (optional)          | ⏳                                          |
-| 3   | Vault (optional)                          | ⏳                                          |
-| 4   | kubeadm Stage A                           | ⏳ when ready for Kubernetes practice       |
+| #   | Task                              | Status                                     |
+| --- | --------------------------------- | ------------------------------------------ |
+| 1   | DNS polish (TP-Link IPv6 / RDNSS) | ⏳ ISP IPv6 resolvers still bypass AdGuard |
+| 2   | NetBird remote access (optional)  | ⏳                                         |
+| 3   | Vault (optional)                  | ⏳                                         |
+| 4   | kubeadm Stage A                   | ⏳ when ready for Kubernetes practice      |
 
 **Active focus** — finish IPv6 DNS so system queries use AdGuard only (see
 [dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md)). Keep the flat LAN:
@@ -85,20 +85,20 @@ Tunnel. Mac stays Wi-Fi only.
 
 ## Decisions locked (won’t redo)
 
-| Topic       | Choice                                                        |
-| ----------- | ------------------------------------------------------------- |
-| Hypervisor  | Proxmox VE 9.x on ZFS                                         |
-| VM disks    | **`data01` (FURY) only** — not `rpool`                        |
-| Kubernetes  | **kubeadm** on Debian VMs (CKA) — not k3s for primary cluster |
-| Ingress     | **NGINX** — not Traefik                                       |
-| GitOps      | Argo CD after cluster exists                                  |
-| Registry    | Harbor (proxy cache + CI push)                                |
-| GitLab      | **Dedicated VM** — not inside k8s                             |
-| Public UI   | Tunnel → Proxmox — not WAN `:8006`                            |
-| GPU / IOMMU | AMD: `iommu=pt` only (no `amd_iommu=on`); VFIO later for 890M |
-| Updates     | Check + notify; **manual** hypervisor upgrade                 |
-| ITSM        | Zammad for customer tickets; **n8n automates only**           |
-| Edge / VLANs| Flat TP-Link for now; OPNsense pilot archived                 |
+| Topic        | Choice                                                        |
+| ------------ | ------------------------------------------------------------- |
+| Hypervisor   | Proxmox VE 9.x on ZFS                                         |
+| VM disks     | **`data01` (FURY) only** — not `rpool`                        |
+| Kubernetes   | **kubeadm** on Debian VMs (CKA) — not k3s for primary cluster |
+| Ingress      | **NGINX** — not Traefik                                       |
+| GitOps       | Argo CD after cluster exists                                  |
+| Registry     | Harbor (proxy cache + CI push)                                |
+| GitLab       | **Dedicated VM** — not inside k8s                             |
+| Public UI    | Tunnel → Proxmox — not WAN `:8006`                            |
+| GPU / IOMMU  | AMD: `iommu=pt` only (no `amd_iommu=on`); VFIO later for 890M |
+| Updates      | Check + notify; **manual** hypervisor upgrade                 |
+| ITSM         | Zammad for customer tickets; **n8n automates only**           |
+| Edge / VLANs | Flat TP-Link for now; OPNsense pilot archived                 |
 
 Full log: [decisions/log.md](decisions/log.md)
 
@@ -106,14 +106,14 @@ Full log: [decisions/log.md](decisions/log.md)
 
 ## Repository status
 
-| Repo                | Role                       | Git    | Applied on node                          |
-| ------------------- | -------------------------- | ------ | ---------------------------------------- |
-| `homelab`           | Plans, story, architecture | synced | n/a                                      |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ firewall; pilot `vmbr1` removed       |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ DNS + `infra01`; ⏸️ `aux01`           |
-| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                     |
-| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac)                       |
-| `ansible-lab`       | Guest policy               | synced | ✅ DNS and `infra01`                     |
+| Repo                | Role                         | Git    | Applied on node                    |
+| ------------------- | ---------------------------- | ------ | ---------------------------------- |
+| `homelab`           | Plans, story, architecture   | synced | n/a                                |
+| `proxmox-bootstrap` | Layer 0 host                 | synced | ✅ firewall; pilot `vmbr1` removed |
+| `terraform-lab`     | Layer 1–2 infra              | synced | ✅ DNS + `infra01`; ⏸️ `aux01`     |
+| `cloudflare-tunnel` | Remote UI + operator SSH     | synced | ✅ UI and SSH routes               |
+| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac)                   |
+| `ansible-lab`       | Guest policy                 | synced | ✅ DNS and `infra01`               |
 
 ---
 

@@ -18,22 +18,22 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 
 ## Status snapshot
 
-| Step | Item                              | Status                    |
-| ---- | --------------------------------- | ------------------------- |
-| 1    | Host bootstrap                    | ✅                        |
-| 2    | Update automation                 | ✅                        |
-| 3    | `data01` + Stage 1 `local-backup` | ✅                        |
-| 4    | Cloudflare Tunnel                 | ✅                        |
-| 5    | Host firewall                     | ✅                        |
-| 6    | Restore drill (first proof)       | ✅                        |
-| 7    | Drift check                       | ✅                        |
-| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed     |
-| —    | DNS VMs                           | ✅                        |
-| —    | IPv4 DHCP → AdGuard               | ✅                        |
-| —    | IPv6 DNS polish                   | ⏳                        |
-| —    | OPNsense VLAN Pilot               | ⏸️ archived               |
-| —    | NetBird / Vault                   | ⏳ optional               |
-| —    | GitLab VM                         | ⏳ later; not next        |
+| Step | Item                              | Status                |
+| ---- | --------------------------------- | --------------------- |
+| 1    | Host bootstrap                    | ✅                    |
+| 2    | Update automation                 | ✅                    |
+| 3    | `data01` + Stage 1 `local-backup` | ✅                    |
+| 4    | Cloudflare Tunnel                 | ✅                    |
+| 5    | Host firewall                     | ✅                    |
+| 6    | Restore drill (first proof)       | ✅                    |
+| 7    | Drift check                       | ✅                    |
+| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
+| —    | DNS VMs                           | ✅                    |
+| —    | IPv4 DHCP → AdGuard               | ✅                    |
+| —    | IPv6 DNS polish                   | ⏳                    |
+| —    | OPNsense VLAN Pilot               | ⏸️ archived           |
+| —    | NetBird / Vault                   | ⏳ optional           |
+| —    | GitLab VM                         | ⏳ later; not next    |
 
 ---
 
@@ -129,12 +129,12 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 ## 8. Later phases (do not skip ahead)
 
-| Order | Phase                         | Status / boundary                                                                                      |
-| ----- | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1     | DNS IPv6 polish (TP-Link)     | ⏳ [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                            |
-| 2     | NetBird remote access         | ⏳ optional; Cloudflare Tunnel remains primary                                                         |
-| 3     | Vault                         | ⏳ optional                                                                                            |
-| 4     | kubeadm Stage A               | ⏳ when ready — [foundation sequence](../roadmap/foundation-sequence.md)                               |
+| Order | Phase                     | Status / boundary                                                        |
+| ----- | ------------------------- | ------------------------------------------------------------------------ |
+| 1     | DNS IPv6 polish (TP-Link) | ⏳ [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)              |
+| 2     | NetBird remote access     | ⏳ optional; Cloudflare Tunnel remains primary                           |
+| 3     | Vault                     | ⏳ optional                                                              |
+| 4     | kubeadm Stage A           | ⏳ when ready — [foundation sequence](../roadmap/foundation-sequence.md) |
 
 DNS VMs (AdGuard + Technitium) are ✅ on the flat live LAN. OPNsense/VLANs are
 archived on `archive/opnsense-vlan-pilot`. Keep Mac on Wi-Fi; do not treat
