@@ -1,53 +1,54 @@
 # Finish the Foundation Before You Touch Kubernetes
 
 Ordered foundation checklist, corrected for X1 Pro hardware and the current
-repos. Do not start Kubernetes until steps **1–15** are ✅ (or ⏸️ with a
-documented hold). Read [current state](../current-state.md) for the live board;
-use [installation/next-steps.md](../installation/next-steps.md) for remaining
-commands.
+repos. Do not start Kubernetes until the core foundation steps are ✅ (or ⏸️
+with a documented hold). Read [current state](../current-state.md) for the live
+board; use [installation/next-steps.md](../installation/next-steps.md) for
+remaining commands.
 
-**Status:** Phase 0 ✅ closed · DNS VMs ✅ · `aux01` ⏸️ (no Slot 3 NVMe) ·
-next = OPNsense VLAN Pilot (🔄 approved/in progress; not deployed).
+**Status:** Phase 0 ✅ closed · DNS VMs ✅ · IPv4 DHCP → AdGuard ✅ ·
+`aux01` ⏸️ · OPNsense ⏸️ archived · next = DNS IPv6 polish, then kubeadm when
+ready.
 
 ## What this page covers
 
-- Steps 1–15 that must be green before kubeadm
+- Steps that must be green before kubeadm
 - Later steps (kubeadm, GitOps, platform) once the foundation holds
 - Phase 0 complete except deferred `aux01`
 - Planning corrections vs early drafts (slots, disks, kubeadm, updates)
 
-| #   | Step                                              | Status  | Where                                                                                                                                                         |
-| --- | ------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Proxmox installation (990 PRO only)               | ✅      | Official installer                                                                                                                                            |
-| 2   | Host bootstrap                                    | ✅      | `proxmox-bootstrap`                                                                                                                                           |
-| 3   | Daily update check                                | ✅      | `install-update-automation.sh`                                                                                                                                |
-| 4   | Storage `data01` (FURY 4 TB)                      | ✅      | `terraform apply`                                                                                                                                             |
-| 5   | Storage `aux01` (OEM 2 TB, Slot 3)                | ⏸️      | **Hold** — OEM NVMe not installed; resume when Slot 3 is populated                                                                                            |
-| 6   | Backup jobs (`local-backup` → `aux-backup` later) | ✅ / ⏸️ | Stage 1 `local-backup` ✅; Stage 2 migrate ⏸️ blocked on `aux01`                                                                                              |
-| 7   | Cloudflare Tunnel                                 | ✅      | `cloudflare-tunnel`                                                                                                                                           |
-| 8   | Host firewall                                     | ✅      | `enable-firewall.sh`                                                                                                                                          |
-| 9   | Weekly restore drills                             | ✅      | First proof done — keep weekly cadence ([runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md))                |
-| 10  | Bootstrap drift check                             | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                                      |
-| 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; directed dig proofs green                                                                                         |
-| 12  | OPNsense VLAN Pilot                               | 🔄      | approved; canonical [design](../superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md) and [runbook](../operations/opnsense-vlan-pilot.md); not deployed |
-| 13  | DNS migration (AdGuard + Technitium)              | ⏳      | separate later change; live `.10` and `.11` stay unchanged during pilot                                                                                       |
-| 14  | NetBird remote access                             | ⏳      | after DNS migration; Cloudflare Tunnel remains rollback path                                                                                                  |
-| 15  | Vault                                             | ⏳      | after NetBird; no secrets platform work in the pilot                                                                                                          |
-| 16  | GitLab VM                                         | ⏳      | later foundation work; not next                                                                                                                               |
-| 17  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md); no workloads in pilot                                                                                       |
-| 18  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                                       |
-| 19  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                                     |
+| #   | Step                                              | Status  | Where                                                                                                                                          |
+| --- | ------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Proxmox installation (990 PRO only)               | ✅      | Official installer                                                                                                                             |
+| 2   | Host bootstrap                                    | ✅      | `proxmox-bootstrap`                                                                                                                            |
+| 3   | Daily update check                                | ✅      | `install-update-automation.sh`                                                                                                                 |
+| 4   | Storage `data01` (FURY 4 TB)                      | ✅      | `terraform apply`                                                                                                                              |
+| 5   | Storage `aux01` (OEM 2 TB, Slot 3)                | ⏸️      | **Hold** — OEM NVMe not installed; resume when Slot 3 is populated                                                                             |
+| 6   | Backup jobs (`local-backup` → `aux-backup` later) | ✅ / ⏸️ | Stage 1 `local-backup` ✅; Stage 2 migrate ⏸️ blocked on `aux01`                                                                               |
+| 7   | Cloudflare Tunnel                                 | ✅      | `cloudflare-tunnel`                                                                                                                            |
+| 8   | Host firewall                                     | ✅      | `enable-firewall.sh`                                                                                                                           |
+| 9   | Weekly restore drills                             | ✅      | First proof done — keep weekly cadence ([runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md)) |
+| 10  | Bootstrap drift check                             | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                       |
+| 11  | DNS VMs (AdGuard, Technitium)                     | ✅      | Debian 13 on `data01`; Ansible guest roles; directed dig proofs green                                                                          |
+| 12  | IPv4 DHCP → AdGuard                               | ✅      | TP-Link primary DNS = `192.168.68.10`                                                                                                          |
+| 13  | IPv6 DNS polish (TP-Link RDNSS)                   | ⏳      | [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                                                                       |
+| 14  | OPNsense VLAN Pilot                               | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                     |
+| 15  | NetBird remote access                             | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                        |
+| 16  | Vault                                             | ⏳      | optional                                                                                                                                       |
+| 17  | GitLab VM                                         | ⏳      | later foundation work; not next                                                                                                                |
+| 18  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                               |
+| 19  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
+| 20  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                      |
 
 ## Next approved sequence
 
-Run only the bounded OPNsense VLAN Pilot after its documentation is reviewed.
-Then plan separate changes in this order: DNS migration (AdGuard +
-Technitium), NetBird remote access, and Vault. GitLab and Kubernetes remain
-later work, not the next deployment. See [phases.md](phases.md).
+Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. Finish
+IPv6 DNS polish so clients cannot bypass AdGuard. NetBird and Vault are
+optional. Kubernetes (kubeadm) is the main next platform skill when you are
+ready. See [phases.md](phases.md).
 
-Throughout the pilot, preserve the TP-Link edge, live `192.168.68.0/22`,
-`pve01` `.13`, AdGuard `.10`, Technitium `.11`, and Cloudflare Tunnel as the
-unchanged rollback path.
+Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.13`,
+AdGuard `.10`, Technitium `.11`, and Cloudflare Tunnel.
 
 When Slot 3 OEM disk is installed:
 
@@ -68,5 +69,6 @@ terraform apply
 | Kubernetes         | k3s / Talos first     | **kubeadm** on Debian ([kubernetes](../kubernetes/index.md)) |
 | Updates            | n8n or cron primary   | **systemd + scripts**; n8n optional                          |
 | Automation applied | Implied done          | **✅ applied** (except `aux01` ⏸️)                           |
+| OPNsense / VLANs   | Required early        | **Archived** until segmentation is needed                    |
 
 See [build-story.md](../build-story.md) for the full narrative.

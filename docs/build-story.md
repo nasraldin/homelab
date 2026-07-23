@@ -9,7 +9,7 @@ Read this first if you’re new. Then use [current state](current-state.md) for 
 - Why the lab exists and the principles locked early
 - Hardware / storage design and install lessons
 - Phase 0a–0b: install + host automation applied (`aux01` deferred — no Slot 3 disk)
-- What comes next (OPNsense VLAN Pilot → DNS migration → NetBird → Vault)
+- What comes next (DNS IPv6 polish → optional NetBird/Vault → kubeadm)
 
 ---
 
@@ -85,9 +85,8 @@ Repos created, pushed, and **applied** on `pve01` (July 2026):
 
 **Hold:** Slot 3 OEM NVMe not installed → `aux01` / Stage 2 backup migrate deferred.
 
-**Next:** OPNsense VLAN Pilot (approved, not deployed) → DNS migration
-(AdGuard + Technitium) → NetBird remote access → Vault. GitLab and Kubernetes
-remain later work.
+**Next:** DNS IPv6 polish → optional NetBird / Vault → kubeadm Stage A when
+ready. OPNsense/VLANs archived on `archive/opnsense-vlan-pilot`.
 
 → [current-state.md](current-state.md)  
 → [installation/next-steps.md](installation/next-steps.md)  
@@ -95,15 +94,15 @@ remain later work.
 
 ---
 
-## Chapter 5 — DNS foundation and network pilot 🔄
+## Chapter 5 — DNS foundation (flat LAN) ✅ / ⏳
 
 **Current and next:**
 
 - AdGuard `192.168.68.10` + Technitium `192.168.68.11` are live on the
   unchanged `192.168.68.0/22` LAN.
-- The bounded OPNsense VLAN pilot is approved/in progress and documented; its
-  infrastructure is not deployed.
-- DNS migration, NetBird, and Vault follow as separate changes.
+- IPv4 DHCP already points clients at AdGuard; IPv6 RDNSS polish remains.
+- OPNsense VLAN pilot was proven then archived (2026-07-23) to keep the lab
+  simple for Wi-Fi-only Mac admin and kubeadm practice.
 - **GitLab CE on a dedicated VM** (`data01`) remains a later recoverability
   choice, not the next deployment.
 

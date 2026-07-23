@@ -1,6 +1,6 @@
 # Follow the Homelab Roadmap from Foundation to Platform
 
-Forward path after Phase 0: phases, repo ownership, and what comes before Kubernetes. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) so the phases match what you already have. Status symbols: [status legend](../conventions/status-legend.md). Last reviewed: 2026-07-21.
+Forward path after Phase 0: phases, repo ownership, and what comes before Kubernetes. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) so the phases match what you already have. Status symbols: [status legend](../conventions/status-legend.md). Last reviewed: 2026-07-23.
 
 Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, GitOps, observability, security), automation over click-ops, clear ownership ([platform tooling](../platform-tooling.md)), safe ops (backups, notify-only update checks, manual hypervisor upgrades), and DNS that scales (AdGuard + Technitium + Cloudflare).
 
@@ -9,7 +9,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 - Phase overview table (0 → 11) with status and links
 - Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
 - Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
-- Approved order: OPNsense VLAN Pilot → DNS migration → NetBird → Vault
+- Approved order: DNS polish → optional NetBird/Vault → kubeadm
 
 ---
 
@@ -20,8 +20,8 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 0     | Proxmox foundation   | ✅ / ⏸️ | [phases.md §0](phases.md#phase-0--proxmox-foundation) — closed; `aux01` hold |
 | 1     | Control plane & IaC  | ✅ / ⏸️ | [phases.md §1](phases.md#phase-1--control-plane--iac) — `aux01` hold         |
 | 2     | Source control       | ⏳      | later; GitLab is not the next deployment                                     |
-| 3     | DNS & networking     | ⏳ / 🔄 | DNS migration waits for the documented VLAN pilot                            |
-| 4     | OPNsense VLAN pilot  | 🔄      | approved/in progress; infrastructure not deployed                            |
+| 3     | DNS & networking     | 🔄      | IPv4 DHCP → AdGuard ✅; IPv6 RDNSS polish ⏳                                 |
+| 4     | OPNsense VLAN pilot  | ⏸️      | archived on `archive/opnsense-vlan-pilot` (2026-07-23)                       |
 | 5     | Monitoring           | ⏳      | needs k8s                                                                    |
 | 6     | Kubernetes (kubeadm) | ⏳      | [kubernetes/](../kubernetes/index.md)                                        |
 | 7     | GitOps               | ⏳      | Argo CD                                                                      |
@@ -30,13 +30,12 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 10    | AI platform          | ⏳      |                                                                              |
 | 11    | Developer platform   | ⏳      |                                                                              |
 
-**🔄 = next focus:** review the canonical OPNsense VLAN Pilot documentation,
-then run the bounded pilot. The live TP-Link edge and Cloudflare Tunnel remain
-unchanged.
+**🔄 = next focus:** finish TP-Link IPv6 DNS so clients cannot bypass AdGuard.
+The live TP-Link edge and Cloudflare Tunnel remain unchanged. OPNsense/VLANs
+are deferred until segmentation is actually needed.
 
-**Approved sequence:** OPNsense VLAN Pilot → DNS migration (AdGuard +
-Technitium) → NetBird remote access → Vault. See the
-[foundation sequence](foundation-sequence.md).
+**Approved sequence:** DNS polish (IPv6) → NetBird (optional) → Vault
+(optional) → kubeadm Stage A. See the [foundation sequence](foundation-sequence.md).
 
 ---
 
@@ -54,9 +53,9 @@ Technitium) → NetBird remote access → Vault. See the
 
 ## What to do next
 
-See [current-state.md](../current-state.md) for the live board. Do not infer
-deployment from an approved design: the OPNsense pilot is not yet live, and
-GitLab/Kubernetes are not next.
+See [current-state.md](../current-state.md) for the live board. Keep the lab
+simple: flat LAN + AdGuard + Technitium. Do not reintroduce OPNsense until you
+need real VLAN segmentation (typically with Kubernetes).
 
 ---
 

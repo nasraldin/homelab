@@ -140,7 +140,6 @@ export default defineConfig({
             { text: 'Ops overview', link: '/operations/' },
             { text: 'Deploy & rebuild order', link: '/operations/deploy-and-rebuild' },
             { text: 'Infra01 remote access', link: '/operations/infra01-remote-access' },
-            { text: 'OPNsense VLAN pilot', link: '/operations/opnsense-vlan-pilot' },
             { text: 'DNS DHCP cutover', link: '/operations/dns-dhcp-cutover' },
             { text: 'Safe Proxmox upgrades', link: '/operations/proxmox-updates' },
             { text: 'VM backup stages', link: '/operations/backups' },

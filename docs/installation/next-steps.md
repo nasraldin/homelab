@@ -11,7 +11,7 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 - Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
 - Cloudflare Tunnel — ✅ applied
 - Host firewall — ✅ applied
-- Remaining: OPNsense VLAN Pilot → DNS migration → NetBird → Vault; `aux01`
+- Remaining: DNS IPv6 polish → optional NetBird/Vault → kubeadm; `aux01`
   when Slot 3 disk arrives
 
 ---
@@ -29,8 +29,10 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 | 7    | Drift check                       | ✅                        |
 | —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed     |
 | —    | DNS VMs                           | ✅                        |
-| —    | OPNsense VLAN Pilot               | 🔄 approved; not deployed |
-| —    | DNS migration / NetBird / Vault   | ⏳ approved sequence      |
+| —    | IPv4 DHCP → AdGuard               | ✅                        |
+| —    | IPv6 DNS polish                   | ⏳                        |
+| —    | OPNsense VLAN Pilot               | ⏸️ archived               |
+| —    | NetBird / Vault                   | ⏳ optional               |
 | —    | GitLab VM                         | ⏳ later; not next        |
 
 ---
@@ -127,17 +129,16 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 ## 8. Later phases (do not skip ahead)
 
-| Order | Phase                                | Status / boundary                                                                                                                                                                           |
-| ----- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | OPNsense VLAN Pilot                  | 🔄 approved/in progress; canonical [design](../superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md) and [runbook](../operations/opnsense-vlan-pilot.md); infrastructure not deployed |
-| 2     | DNS migration (AdGuard + Technitium) | ⏳ separate later change; live `.10` and `.11` remain unchanged during the pilot — [network design](../architecture/network-dns-ingress.md)                                                 |
-| 3     | NetBird remote access                | ⏳ separate later change; Cloudflare Tunnel remains the rollback path — [foundation sequence](../roadmap/foundation-sequence.md)                                                            |
-| 4     | Vault                                | ⏳ separate later change; no secrets-platform work during the pilot — [foundation sequence](../roadmap/foundation-sequence.md)                                                              |
+| Order | Phase                         | Status / boundary                                                                                      |
+| ----- | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 1     | DNS IPv6 polish (TP-Link)     | ⏳ [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                            |
+| 2     | NetBird remote access         | ⏳ optional; Cloudflare Tunnel remains primary                                                         |
+| 3     | Vault                         | ⏳ optional                                                                                            |
+| 4     | kubeadm Stage A               | ⏳ when ready — [foundation sequence](../roadmap/foundation-sequence.md)                               |
 
-DNS VMs (AdGuard + Technitium) are ✅ on the unchanged live LAN. The pilot
-does not authorize DNS migration, TP-Link edge cutover, NetBird, IPv6, Vault,
-GitLab, Kubernetes, Argo CD, or production workloads. GitLab and Kubernetes
-remain later work, not the next deployment.
+DNS VMs (AdGuard + Technitium) are ✅ on the flat live LAN. OPNsense/VLANs are
+archived on `archive/opnsense-vlan-pilot`. Keep Mac on Wi-Fi; do not treat
+edge cutover or VLANs as required for kubeadm practice.
 
 ---
 

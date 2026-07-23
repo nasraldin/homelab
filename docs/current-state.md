@@ -5,10 +5,10 @@ the checkmarks mean something; the approved next sequence is tracked in the
 [foundation sequence](roadmap/foundation-sequence.md).
 
 **Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
-`infra01` ✅. The OPNsense VLAN Pilot is implemented and technically verified;
-its final direct Mac-to-`nic1` carrier closeout remains 🔄.
-**Next focus:** close the physical Mac pilot check, then DNS migration
-(AdGuard + Technitium), NetBird remote access, and Vault.
+`infra01` ✅. OPNsense VLAN pilot **archived** (2026-07-23) — code on
+`archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
+**Next focus:** DNS polish (TP-Link IPv6 RDNSS / AdGuard), then optional
+NetBird / Vault, then kubeadm Stage A when ready.
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
@@ -37,9 +37,9 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Area           | Item                                                                    |
 | -------------- | ----------------------------------------------------------------------- |
 | Install        | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)        |
-| Network        | Static IP, FQDN, `vmbr0`                                                |
+| Network        | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                            |
 | DNS (lab)      | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅   |
-| DNS (interim)  | `/etc/hosts` still OK for break-glass until DHCP cutover                |
+| DNS (IPv4 DHCP)| TP-Link primary DNS = AdGuard `192.168.68.10`                           |
 | SSH            | Key auth Mac → `root@192.168.68.13` + admin user                        |
 | APT            | deb822, no-subscription enabled, enterprise disabled                    |
 | API            | `terraform@pve!provider` token                                          |
@@ -47,7 +47,7 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Updates        | `pve-update-check.timer` enabled (daily check + notify)                 |
 | Storage        | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool    |
 | Operator VM    | `infra01` `.12`: hardened management toolchain + PVE access             |
-| Tunnel         | Proxmox UI + `infra.nasraldin.com` SSH route; first off-LAN OTP pending |
+| Tunnel         | Proxmox UI + `infra.nasraldin.com` SSH route                            |
 | OpsHub         | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅   |
 | Firewall       | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)       |
 | Drift check    | `bootstrap.sh --check` + `enable-firewall.sh --check` clean             |
@@ -63,27 +63,23 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | ---------------------------- | ------------------------------------ | ---------------------------------------------------------- |
 | Storage `aux01` (OEM Slot 3) | OEM NVMe **not installed** in Slot 3 | Install disk → `terraform apply` for `aux01`               |
 | Stage 2 `aux-backup` migrate | Blocked on `aux01`                   | After `aux01` exists — [backups.md](operations/backups.md) |
+| OPNsense / VLANs             | Intentionally simplified for stage   | Restore from `archive/opnsense-vlan-pilot` when needed     |
 
 ---
 
 ## Next (approved order)
 
-| #   | Task                                 | Status                               |
-| --- | ------------------------------------ | ------------------------------------ |
-| 1   | OPNsense VLAN Pilot                  | 🔄 implemented; Mac closeout pending |
-| 2   | DNS migration (AdGuard + Technitium) | ⏳                                   |
-| 3   | NetBird remote access                | ⏳                                   |
-| 4   | Vault                                | ⏳                                   |
+| #   | Task                                      | Status                                      |
+| --- | ----------------------------------------- | ------------------------------------------- |
+| 1   | DNS polish (TP-Link IPv6 / RDNSS)         | ⏳ ISP IPv6 resolvers still bypass AdGuard  |
+| 2   | NetBird remote access (optional)          | ⏳                                          |
+| 3   | Vault (optional)                          | ⏳                                          |
+| 4   | kubeadm Stage A                           | ⏳ when ready for Kubernetes practice       |
 
-**Active focus** — repeat the direct Mac-to-`nic1` carrier, static-address,
-OPNsense UI, and Wi-Fi default-route checks in the canonical
-[OPNsense pilot runbook](operations/opnsense-vlan-pilot.md). The policy,
-DNS-enforcement, encrypted backup, Ansible `changed=0`, reboot, and regression
-matrices are green. The live TP-Link edge, `192.168.68.0/22` LAN, DNS VMs, and
-Cloudflare Tunnel remain unchanged rollback paths. AdGuard's direct IPv6
-filtering proof is green, but TP-Link still advertises ISP IPv6 resolvers;
-carry that known issue into the later DNS migration rather than treating it
-as completed or changing it during this pilot.
+**Active focus** — finish IPv6 DNS so system queries use AdGuard only (see
+[dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md)). Keep the flat LAN:
+TP-Link edge, `192.168.68.0/22`, AdGuard `.10`, Technitium `.11`, Cloudflare
+Tunnel. Mac stays Wi-Fi only.
 
 ---
 
@@ -102,6 +98,7 @@ as completed or changing it during this pilot.
 | GPU / IOMMU | AMD: `iommu=pt` only (no `amd_iommu=on`); VFIO later for 890M |
 | Updates     | Check + notify; **manual** hypervisor upgrade                 |
 | ITSM        | Zammad for customer tickets; **n8n automates only**           |
+| Edge / VLANs| Flat TP-Link for now; OPNsense pilot archived                 |
 
 Full log: [decisions/log.md](decisions/log.md)
 
@@ -109,14 +106,14 @@ Full log: [decisions/log.md](decisions/log.md)
 
 ## Repository status
 
-| Repo                | Role                       | Git    | Applied on node                                     |
-| ------------------- | -------------------------- | ------ | --------------------------------------------------- |
-| `homelab`           | Plans, story, architecture | synced | n/a                                                 |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)            |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`            |
-| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                                |
-| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac; remote Proxmox needs Service Auth) |
-| `ansible-lab`       | Guest/appliance policy     | synced | ✅ DNS, `infra01`, and OPNsense pilot policy        |
+| Repo                | Role                       | Git    | Applied on node                          |
+| ------------------- | -------------------------- | ------ | ---------------------------------------- |
+| `homelab`           | Plans, story, architecture | synced | n/a                                      |
+| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ firewall; pilot `vmbr1` removed       |
+| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ DNS + `infra01`; ⏸️ `aux01`           |
+| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                     |
+| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac)                       |
+| `ansible-lab`       | Guest policy               | synced | ✅ DNS and `infra01`                     |
 
 ---
 

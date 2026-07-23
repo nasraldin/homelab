@@ -7,7 +7,6 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 ## What this page covers
 
 - Index of updates, vzdump stages, and backup-platform docs
-- Bounded OPNsense VLAN pilot procedure and rollback
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
@@ -19,7 +18,6 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | [backups.md](backups.md)                             | vzdump stages, drills, migration               |
 | [backup-platform.md](backup-platform.md)             | PBS, Velero, MinIO — Veeam-equivalent          |
 | [dns-dhcp-cutover.md](dns-dhcp-cutover.md)           | TP-Link DHCP DNS → AdGuard (all LAN clients)   |
-| [opnsense-vlan-pilot.md](opnsense-vlan-pilot.md)     | Bounded VLAN, firewall, DNS, and rollback test |
 
 ## OpsHub (sibling repo)
 

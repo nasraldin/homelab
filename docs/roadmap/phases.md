@@ -6,23 +6,21 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 - Phase 0 — Proxmox foundation (install → bootstrap → storage → tunnel)
 - Phases 1–3 — IaC, source control, and DNS
-- Approved OPNsense VLAN pilot before DNS migration
+- Phase 4 OPNsense VLAN pilot archived (simplified lab)
 - Later phases — monitoring, kubeadm, GitOps, and platform
 
 ## Approved execution order
 
 The next sequence is:
 
-1. **OPNsense VLAN Pilot** — 🔄 implemented and technically verified; direct
-   Mac carrier closeout pending
-2. **DNS migration (AdGuard + Technitium)** — ⏳
-3. **NetBird remote access** — ⏳
-4. **Vault** — ⏳
+1. **DNS polish (TP-Link IPv6 / RDNSS)** — ⏳ IPv4 DHCP → AdGuard is done
+2. **NetBird remote access** — ⏳ optional
+3. **Vault** — ⏳ optional
+4. **kubeadm Stage A** — ⏳ when ready
 
 The historical phase numbers below remain unchanged, but this approved order
-controls what happens next. It authorizes only the bounded pilot; the TP-Link
-edge, live `192.168.68.0/22` LAN, DNS VMs, and Cloudflare Tunnel remain
-unchanged.
+controls what happens next. The TP-Link edge, live `192.168.68.0/22` LAN, DNS
+VMs, and Cloudflare Tunnel remain the daily path. OPNsense/VLANs are archived.
 
 ---
 
@@ -46,7 +44,7 @@ unchanged.
 | Host firewall                       | ✅     | `enable-firewall.sh`                                      |
 | Restore drill (first proof)         | ✅     | weekly cadence ongoing                                    |
 | Bootstrap drift check               | ✅     | `bootstrap.sh --check`                                    |
-| OPNsense VLAN Pilot                 | 🔄     | policy/reboot proofs pass; Mac carrier closeout pending   |
+| OPNsense VLAN Pilot                 | ⏸️     | archived 2026-07-23 — `archive/opnsense-vlan-pilot`       |
 | Stage 2 `aux-backup` migrate        | ⏸️     | blocked on `aux01`                                        |
 
 ---
@@ -83,32 +81,22 @@ GitLab and kubeadm nodes remain pending and are not the next deployment.
 | AdGuard Home        | ✅     | Filtering and child-safety policy is Ansible  |
 | Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`             |
 | Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22` |
-| DNS migration       | ⏳     | after the OPNsense VLAN Pilot                 |
-| TP-Link IPv6 bypass | ⏳     | known live-edge issue; no change in pilot     |
-| OPNsense VLAN Pilot | 🔄     | implemented; direct Mac closeout pending      |
-| VLAN segmentation   | ✅     | bounded pilot proven; live LAN remains flat   |
+| IPv4 DHCP → AdGuard | ✅     | TP-Link primary DNS = `192.168.68.10`         |
+| TP-Link IPv6 RDNSS  | ⏳     | ISP resolvers still bypass AdGuard            |
+| OPNsense VLAN Pilot | ⏸️     | archived; live LAN stays flat                 |
+| VLAN segmentation   | ⏸️     | deferred until needed (e.g. with kubeadm)     |
 
 See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
 ---
 
-## Phase 4 — OPNsense VLAN pilot
+## Phase 4 — OPNsense VLAN pilot (archived)
 
-The bounded pilot is implemented and its policy, reboot, DNS-enforcement, and
-live-service regression proofs pass. A final physical Mac-to-`nic1` carrier
-and Wi-Fi default-route closeout remains before the pilot is marked complete.
-It uses
-VLAN 10 Management (`192.168.10.0/24`, untagged/native), VLAN 20
-Infrastructure (`192.168.20.0/24`), and VLAN 30 Kubernetes
-(`192.168.30.0/24`) behind OPNsense on VLAN-aware `vmbr1`. That bridge binds
-spare physical `nic1` without a Proxmox host IP or gateway: the admin Mac
-connects directly for untagged VLAN 10, while two disposable VMs carry tags 20
-and 30.
-
-This is not an edge cutover. TP-Link remains the live edge, and Cloudflare
-Tunnel remains the remote rollback path. See the
-[design](../superpowers/specs/2026-07-21-opnsense-vlan-pilot-design.md) and
-[runbook](../operations/opnsense-vlan-pilot.md).
+The bounded pilot was proven in July 2026, then **removed from the live lab**
+on 2026-07-23 to keep the stage simple (flat TP-Link + AdGuard + Technitium).
+Code and docs live on branch `archive/opnsense-vlan-pilot` in `homelab`,
+`terraform-lab`, `ansible-lab`, and `proxmox-bootstrap`. Restore from that
+branch only when real VLAN / edge firewall practice is needed.
 
 ---
 
