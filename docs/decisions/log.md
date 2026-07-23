@@ -40,3 +40,4 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | 2026-07 | Cmdline via `/etc/kernel/cmdline` + boot-tool     | ZFS+UEFI uses proxmox-boot-tool; GRUB alone would not apply       |
 | 2026-07 | Guest agent via cloud-init/Ansible only           | No Proxmox VMID host script; TF enables agent, guest installs pkg |
 | 2026-07 | GPU attach per VM via Terraform when needed       | Host IOMMU first; VFIO + hostpci for one AI VM at a time          |
+| 2026-07 | Archive OPNsense VLAN pilot; keep flat LAN        | Stage too early for second firewall; Mac Wi-Fi only; DNS enough   |
