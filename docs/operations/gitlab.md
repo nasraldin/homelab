@@ -27,16 +27,16 @@ Personal Access Token.
 
 ## Runners
 
-| Host | Specs | Concurrent | Role / tags |
-| ---- | ----- | ---------- | ----------- |
-| `runner-01` | 4 vCPU / 4 GiB | **4** | light CI (`docker`, `homelab`) |
-| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | monorepo (`docker`, `homelab`, `monorepo`) |
+| Host | Specs | Concurrent | Tag |
+| ---- | ----- | ---------- | --- |
+| `runner-01` | 4 vCPU / 4 GiB | **4** | `runner-01` (light CI) |
+| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | `runner-02` (monorepo) |
 
-Pin monorepo pipelines with:
+Pin jobs to a VM with:
 
 ```yaml
 tags:
-  - monorepo
+  - runner-02
 ```
 
 ## First login
