@@ -6,5 +6,6 @@
   "opshub": "nasraldin/opshub",
   "docker-lab": "nasraldin/docker-lab",
   "camunda-lab": "nasraldin/camunda-lab",
-  "homebrew/homebrew-tools": "nasraldin/homebrew-tools"
+  "homebrew/homebrew-tools": "nasraldin/homebrew-tools",
+  "homelab-docs": "nasraldin/homelab-docs"
 }
