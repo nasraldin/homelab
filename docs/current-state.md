@@ -49,8 +49,8 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Updates         | `pve-update-check.timer` enabled (daily check + notify)               |
 | Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool  |
 | Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access           |
-| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access) |
-| GitLab          | Omnibus `gitlab-01` `.14` + Docker runner `runner-01` `.15` ✅   |
+| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access)     |
+| GitLab          | Omnibus `gitlab-01` `.14` + Docker runner `runner-01` `.15` ✅        |
 | OpsHub          | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅ |
 | Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)     |
 | Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean           |
@@ -72,12 +72,12 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                                        | Status                                              |
-| --- | ------------------------------------------- | --------------------------------------------------- |
-| 1   | GitLab Omnibus + Docker runner VM           | ✅ — `https://gitlab.nasraldin.com` + `runner-01` |
-| 2   | NetBird remote access (optional)            | ⏳                                                  |
-| 3   | Vault (optional)                            | ⏳                                                  |
-| 4   | kubeadm Stage A                             | ⏳ after GitLab CI path is usable                   |
+| #   | Task                              | Status                                            |
+| --- | --------------------------------- | ------------------------------------------------- |
+| 1   | GitLab Omnibus + Docker runner VM | ✅ — `https://gitlab.nasraldin.com` + `runner-01` |
+| 2   | NetBird remote access (optional)  | ⏳                                                |
+| 3   | Vault (optional)                  | ⏳                                                |
+| 4   | kubeadm Stage A                   | ⏳ after GitLab CI path is usable                 |
 
 **Active focus** — Terraform CI on GitLab next (optional), then kubeadm Stage A.
 GitLab: Tunnel HTTPS, no Access; Docker runner hello-world ✅. Keep flat LAN +

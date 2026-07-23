@@ -11,25 +11,25 @@ starting with a hello-world job, then Terraform pipelines later.
 
 ## Locked decisions
 
-| Topic | Choice |
-| ----- | ------ |
-| Public URL | `https://gitlab.nasraldin.com` via existing Cloudflare Tunnel |
-| Edge auth | **GitLab login only** — no Cloudflare Access on this hostname |
+| Topic             | Choice                                                         |
+| ----------------- | -------------------------------------------------------------- |
+| Public URL        | `https://gitlab.nasraldin.com` via existing Cloudflare Tunnel  |
+| Edge auth         | **GitLab login only** — no Cloudflare Access on this hostname  |
 | Git protocol (v1) | HTTPS + Personal Access Token (SSH later / LAN-only if needed) |
-| GitLab install | Omnibus CE on dedicated Debian 13 VM (not Docker, not in k8s) |
-| Runner | Separate VM, Docker executor, privileged off |
-| Bootstrap | Mac / `infra01` Terraform + Ansible once |
-| Order | GitLab before kubeadm so CI can provision later VMs |
+| GitLab install    | Omnibus CE on dedicated Debian 13 VM (not Docker, not in k8s)  |
+| Runner            | Separate VM, Docker executor, privileged off                   |
+| Bootstrap         | Mac / `infra01` Terraform + Ansible once                       |
+| Order             | GitLab before kubeadm so CI can provision later VMs            |
 
 ## Guests
 
-| Property | `gitlab-01` | `runner-01` |
-| -------- | ----------- | ----------- |
-| VMID | `113` | `114` |
-| Address | `192.168.68.14/22` | `192.168.68.15/22` |
-| Compute | 4 vCPU, 8 GiB | 4 vCPU, 4 GiB |
-| Disk | 100 GiB on `data01` | 60 GiB on `data01` |
-| Tags | `gitlab`, `core`, `debian` | `ci`, `core`, `debian` |
+| Property | `gitlab-01`                | `runner-01`            |
+| -------- | -------------------------- | ---------------------- |
+| VMID     | `113`                      | `114`                  |
+| Address  | `192.168.68.14/22`         | `192.168.68.15/22`     |
+| Compute  | 4 vCPU, 8 GiB              | 4 vCPU, 4 GiB          |
+| Disk     | 100 GiB on `data01`        | 60 GiB on `data01`     |
+| Tags     | `gitlab`, `core`, `debian` | `ci`, `core`, `debian` |
 
 ## TLS and tunnel
 
@@ -50,19 +50,19 @@ Proxied CNAME `gitlab` on `nasraldin.com` → `<tunnel-id>.cfargotunnel.com`.
 
 ## Automation ownership
 
-| Layer | Repo | Owns |
-| ----- | ---- | ---- |
-| VMs | `terraform-lab` | Create/start guests on `data01` |
-| Guest OS + Omnibus + Runner | `ansible-lab` | Packages, `gitlab.rb`, Docker, runner register |
-| Public hostname | `cloudflare-tunnel` | Ingress + DNS; no Access for GitLab |
-| Docs / board | `homelab` | Spec, runbook, roadmap |
+| Layer                       | Repo                | Owns                                           |
+| --------------------------- | ------------------- | ---------------------------------------------- |
+| VMs                         | `terraform-lab`     | Create/start guests on `data01`                |
+| Guest OS + Omnibus + Runner | `ansible-lab`       | Packages, `gitlab.rb`, Docker, runner register |
+| Public hostname             | `cloudflare-tunnel` | Ingress + DNS; no Access for GitLab            |
+| Docs / board                | `homelab`           | Spec, runbook, roadmap                         |
 
 ## Secrets (ansible-lab)
 
-| Key | Purpose |
-| --- | ------- |
-| `vault_gitlab_root_password` | Initial Omnibus root password (≥16 chars) |
-| `vault_gitlab_runner_token` | Runner authentication token (`glrt-…`) from GitLab Admin |
+| Key                          | Purpose                                                  |
+| ---------------------------- | -------------------------------------------------------- |
+| `vault_gitlab_root_password` | Initial Omnibus root password (≥16 chars)                |
+| `vault_gitlab_runner_token`  | Runner authentication token (`glrt-…`) from GitLab Admin |
 
 ## Acceptance
 

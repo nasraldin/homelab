@@ -9,12 +9,12 @@ or UI clicks.
 
 ## Addresses
 
-| Guest | VMID | LAN | Public |
-| ----- | ---- | --- | ------ |
-| `gitlab-01` | 113 | `192.168.68.14` | `https://gitlab.nasraldin.com` |
-| Container Registry | (same VM) | `:5050` | `https://gregistry.nasraldin.com` |
-| `runner-01` | 114 | `192.168.68.15` | — (talks to GitLab over HTTPS) |
-| `runner-02` | 115 | `192.168.68.16` | — |
+| Guest              | VMID      | LAN             | Public                            |
+| ------------------ | --------- | --------------- | --------------------------------- |
+| `gitlab-01`        | 113       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
+| Container Registry | (same VM) | `:5050`         | `https://gregistry.nasraldin.com` |
+| `runner-01`        | 114       | `192.168.68.15` | — (talks to GitLab over HTTPS)    |
+| `runner-02`        | 115       | `192.168.68.16` | —                                 |
 
 `registry.nasraldin.com` is reserved for a later registry (e.g. Harbor). Package
 Registry lives under the main GitLab URL (no separate hostname).
@@ -27,15 +27,15 @@ Personal Access Token.
 `playbooks/gitlab.yml` ends with a reconcile on `gitlab-01` so registration
 order cannot leave wrong tags:
 
-| Concern | Enforced value | Where |
-| ------- | -------------- | ----- |
-| Root password | `vault_gitlab_root_password` | `application_settings.rb.j2` |
-| Open signup | **off** | `gitlab_signup_enabled: false` |
-| Web IDE extension host | `cdn.web-ide.gitlab-static.net` | `gitlab_web_ide_extension_host_domain` |
-| Web IDE single-origin fallback | **off** | `gitlab_web_ide_single_origin_fallback` |
-| Runner tags / untagged | from `host_vars` (`runner-01`, `runner-02`) | `reconcile_runners.rb.j2` |
-| Runner concurrent | `host_vars` | `config.toml` on each runner |
-| Omnibus URL / registry / HTTP | `gitlab.rb.j2` | Omnibus reconfigure |
+| Concern                        | Enforced value                              | Where                                   |
+| ------------------------------ | ------------------------------------------- | --------------------------------------- |
+| Root password                  | `vault_gitlab_root_password`                | `application_settings.rb.j2`            |
+| Open signup                    | **off**                                     | `gitlab_signup_enabled: false`          |
+| Web IDE extension host         | `cdn.web-ide.gitlab-static.net`             | `gitlab_web_ide_extension_host_domain`  |
+| Web IDE single-origin fallback | **off**                                     | `gitlab_web_ide_single_origin_fallback` |
+| Runner tags / untagged         | from `host_vars` (`runner-01`, `runner-02`) | `reconcile_runners.rb.j2`               |
+| Runner concurrent              | `host_vars`                                 | `config.toml` on each runner            |
+| Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                              | Omnibus reconfigure                     |
 
 `glrt-…` tokens still come from Admin → Runners (GitLab does not mint those in
 Omnibus config). After register, Ansible **overwrites** tag list and
@@ -58,10 +58,10 @@ wildcard DNS + TLS path into Omnibus (see
 
 ## Runners
 
-| Host | Specs | Concurrent | Tag | Untagged jobs |
-| ---- | ----- | ---------- | --- | ------------- |
-| `runner-01` | 4 vCPU / 4 GiB | **4** | `runner-01` | **yes** (default pool) |
-| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | `runner-02` | no (tag-only) |
+| Host        | Specs                      | Concurrent | Tag         | Untagged jobs          |
+| ----------- | -------------------------- | ---------- | ----------- | ---------------------- |
+| `runner-01` | 4 vCPU / 4 GiB             | **4**      | `runner-01` | **yes** (default pool) |
+| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40**     | `runner-02` | no (tag-only)          |
 
 Jobs with no `tags:` run on `runner-01`. Pin heavy/monorepo work to `runner-02`:
 

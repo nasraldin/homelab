@@ -18,23 +18,23 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 
 ## Status snapshot
 
-| Step | Item                              | Status                |
-| ---- | --------------------------------- | --------------------- |
-| 1    | Host bootstrap                    | ✅                    |
-| 2    | Update automation                 | ✅                    |
-| 3    | `data01` + Stage 1 `local-backup` | ✅                    |
-| 4    | Cloudflare Tunnel                 | ✅                    |
-| 5    | Host firewall                     | ✅                    |
-| 6    | Restore drill (first proof)       | ✅                    |
-| 7    | Drift check                       | ✅                    |
-| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
-| —    | DNS VMs                           | ✅                    |
-| —    | IPv4 DHCP → AdGuard               | ✅                    |
+| Step | Item                              | Status                            |
+| ---- | --------------------------------- | --------------------------------- |
+| 1    | Host bootstrap                    | ✅                                |
+| 2    | Update automation                 | ✅                                |
+| 3    | `data01` + Stage 1 `local-backup` | ✅                                |
+| 4    | Cloudflare Tunnel                 | ✅                                |
+| 5    | Host firewall                     | ✅                                |
+| 6    | Restore drill (first proof)       | ✅                                |
+| 7    | Drift check                       | ✅                                |
+| —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed             |
+| —    | DNS VMs                           | ✅                                |
+| —    | IPv4 DHCP → AdGuard               | ✅                                |
 | —    | IPv6 DNS polish                   | ✅ Mac pin (Deco has no RDNSS UI) |
-| —    | OPNsense VLAN Pilot               | ⏸️ archived           |
-| —    | GitLab Omnibus + runner           | ✅                    |
-| —    | NetBird / Vault                   | ⏳ optional           |
-| —    | kubeadm Stage A                   | ⏳ after GitLab       |
+| —    | OPNsense VLAN Pilot               | ⏸️ archived                       |
+| —    | GitLab Omnibus + runner           | ✅                                |
+| —    | NetBird / Vault                   | ⏳ optional                       |
+| —    | kubeadm Stage A                   | ⏳ after GitLab                   |
 
 ---
 
