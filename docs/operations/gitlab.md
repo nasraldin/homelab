@@ -25,18 +25,19 @@ Personal Access Token.
   `https://gitlab.nasraldin.com` — no separate hostname.
 - Dependency Proxy is enabled at the instance level (Admin).
 
-## Runners on `runner-01`
+## Runners
 
-Today: **1** registered runner (`runner-01-docker`, Docker executor).
+| Host | Specs | Concurrent | Role / tags |
+| ---- | ----- | ---------- | ----------- |
+| `runner-01` | 4 vCPU / 4 GiB | **4** | light CI (`docker`, `homelab`) |
+| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | monorepo (`docker`, `homelab`, `monorepo`) |
 
-| Limit | Practical value on this VM |
-| ----- | -------------------------- |
-| Registered runners in `config.toml` | No hard GitLab max; keep **1–2** on this VM |
-| Concurrent jobs (`concurrent =`) | **5** |
-| Absolute max | CPU/RAM/disk — not a license count |
+Pin monorepo pipelines with:
 
-Add more runners only if you need different tags/executors; otherwise raise
-`concurrent` carefully. In-cluster runners come later after kubeadm.
+```yaml
+tags:
+  - monorepo
+```
 
 ## First login
 
