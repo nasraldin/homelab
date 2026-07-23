@@ -8,10 +8,35 @@ Day-2 notes for `gitlab-01` / `runner-01` after Terraform + Ansible. Design:
 | Guest | VMID | LAN | Public |
 | ----- | ---- | --- | ------ |
 | `gitlab-01` | 113 | `192.168.68.14` | `https://gitlab.nasraldin.com` |
+| Container Registry | (same VM) | `:5050` | `https://gregistry.nasraldin.com` |
 | `runner-01` | 114 | `192.168.68.15` | — (talks to GitLab over HTTPS) |
 
-No Cloudflare Access on `gitlab.nasraldin.com` — GitLab login + HTTPS git with
-a Personal Access Token.
+`registry.nasraldin.com` is reserved for a later registry (e.g. Harbor). Package
+Registry lives under the main GitLab URL (no extra hostname).
+
+No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a
+Personal Access Token.
+
+## Container Registry / Package Registry
+
+- Push images to `gregistry.nasraldin.com/<project>/…` after enabling the
+  project’s Container Registry in GitLab.
+- Package Registry (npm/PyPI/Maven/…) is under
+  `https://gitlab.nasraldin.com` — no separate hostname.
+- Dependency Proxy is enabled at the instance level (Admin).
+
+## Runners on `runner-01`
+
+Today: **1** registered runner (`runner-01-docker`, Docker executor).
+
+| Limit | Practical value on this VM |
+| ----- | -------------------------- |
+| Registered runners in `config.toml` | No hard GitLab max; keep **1–2** on this VM |
+| Concurrent jobs (`concurrent =`) | **2** (4 vCPU / 4 GiB) |
+| Absolute max | CPU/RAM/disk — not a license count |
+
+Add more runners only if you need different tags/executors; otherwise raise
+`concurrent` carefully. In-cluster runners come later after kubeadm.
 
 ## First login
 
