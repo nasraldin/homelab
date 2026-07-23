@@ -32,7 +32,7 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **Proxmox VE**                            | Host                          | 0        | Only hypervisor                                                                                                      |
 | **Terraform**                             | Mac + Git                     | 1        | Not a server — IaC in repos                                                                                          |
 | **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`) | 2        | Source of truth; **not** inside k8s                                                                                  |
-| **GitLab Runner**                         | ☸ k8s (preferred)             | 8        | Scales with cluster; VM runner optional for outage builds                                                            |
+| **GitLab Runner**                         | 🖥 **VM** (`runner-01`) then ☸ | 2 / 8    | Docker executor VM pre-k8s; in-cluster runners later for scale                                                       |
 | **GitHub Runner**                         | ☸ k8s                         | 11       | `actions-runner-controller` when needed                                                                              |
 | **HAProxy**                               | 🖥 VM                          | 6        | API VIP `:6443` for kubeadm HA                                                                                       |
 | **PBS**                                   | 🖥 Dedicated VM                | backup   | Stage 3 — Dell or separate disk                                                                                      |
@@ -110,9 +110,13 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | GitLab in Docker on utility VM  | OK for learning — more moving parts                     |
 | GitLab inside Kubernetes        | ❌ **Avoid** — if k8s dies, you lose Git + Argo source  |
 
-**Sizing:** 4 vCPU, **8 GB RAM**, 100 GB disk on `data01`. Add **GitLab Runner in k8s** later for CI.
+**Sizing:** 4 vCPU, **8 GB RAM**, 100 GB disk on `data01` (`gitlab-01`, VMID 113,
+`192.168.68.14`). Public URL: `https://gitlab.nasraldin.com` (Tunnel, no Access).
 
-**Companion on same VM:** only lightweight items (e.g. one runner). Not Portainer, not Mealie.
+**Runner:** dedicated `runner-01` (VMID 114, `192.168.68.15`, 4 vCPU / 4 GB /
+60 GB) with Docker executor. In-cluster runners come later after kubeadm.
+
+**Companion on GitLab VM:** none — keep Omnibus alone. Not Portainer, not Mealie.
 
 ---
 

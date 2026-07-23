@@ -7,7 +7,8 @@ the checkmarks mean something; the approved next sequence is tracked in the
 **Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
 `infra01` ✅. OPNsense VLAN pilot **archived** (2026-07-23) — code on
 `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
-**Next focus:** optional NetBird / Vault, then kubeadm Stage A when ready.
+**Next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
+NetBird / Vault remain optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
 DNS: IPv4 DHCP → AdGuard ✅; Deco has no IPv6 DNS UI — Mac pinned to AdGuard ✅.
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
@@ -48,7 +49,8 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Updates         | `pve-update-check.timer` enabled (daily check + notify)               |
 | Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool  |
 | Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access           |
-| Tunnel          | Proxmox UI + `infra.nasraldin.com` SSH route                          |
+| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access) |
+| GitLab          | Omnibus `gitlab-01` `.14` + Docker runner `runner-01` `.15` ✅   |
 | OpsHub          | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅ |
 | Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)     |
 | Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean           |
@@ -70,16 +72,16 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                             | Status                                |
-| --- | -------------------------------- | ------------------------------------- |
-| 1   | NetBird remote access (optional) | ⏳                                    |
-| 2   | Vault (optional)                 | ⏳                                    |
-| 3   | kubeadm Stage A                  | ⏳ when ready for Kubernetes practice |
+| #   | Task                                        | Status                                              |
+| --- | ------------------------------------------- | --------------------------------------------------- |
+| 1   | GitLab Omnibus + Docker runner VM           | ✅ — `https://gitlab.nasraldin.com` + `runner-01` |
+| 2   | NetBird remote access (optional)            | ⏳                                                  |
+| 3   | Vault (optional)                            | ⏳                                                  |
+| 4   | kubeadm Stage A                             | ⏳ after GitLab CI path is usable                   |
 
-**Active focus** — kubeadm Stage A when you want Kubernetes practice; NetBird /
-Vault remain optional. Keep the flat LAN: TP-Link edge, AdGuard `.10`,
-Technitium `.11`, Cloudflare Tunnel. Mac stays Wi-Fi only with DNS pinned to
-AdGuard ([dns-dhcp-cutover.md](operations/dns-dhcp-cutover.md)).
+**Active focus** — Terraform CI on GitLab next (optional), then kubeadm Stage A.
+GitLab: Tunnel HTTPS, no Access; Docker runner hello-world ✅. Keep flat LAN +
+AdGuard. See [gitlab.md](operations/gitlab.md).
 
 ---
 

@@ -42,3 +42,5 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | 2026-07 | GPU attach per VM via Terraform when needed       | Host IOMMU first; VFIO + hostpci for one AI VM at a time          |
 | 2026-07 | Archive OPNsense VLAN pilot; keep flat LAN        | Stage too early for second firewall; Mac Wi-Fi only; DNS enough   |
 | 2026-07 | Mac DNS pin when Deco lacks IPv6 DNS UI           | Firmware cannot set RDNSS; pin Wi-Fi DNS to AdGuard `.10`         |
+| 2026-07 | GitLab before kubeadm; HTTPS git via Tunnel       | CI owns Terraform for later VMs; no Access so PAT clone works     |
+| 2026-07 | Omnibus + separate Docker runner VM               | Recoverability outside k8s; Docker executor for clean CI jobs     |

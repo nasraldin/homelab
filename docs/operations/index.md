@@ -18,6 +18,7 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | [backups.md](backups.md)                             | vzdump stages, drills, migration               |
 | [backup-platform.md](backup-platform.md)             | PBS, Velero, MinIO — Veeam-equivalent          |
 | [dns-dhcp-cutover.md](dns-dhcp-cutover.md)           | TP-Link DHCP DNS → AdGuard (all LAN clients)   |
+| [gitlab.md](gitlab.md)                               | Omnibus + runner: login, PAT, hello-world CI   |
 
 ## OpsHub (sibling repo)
 

@@ -13,7 +13,7 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 The next sequence is:
 
-1. **DNS polish (TP-Link IPv6 / RDNSS)** — ⏳ IPv4 DHCP → AdGuard is done
+1. **GitLab Omnibus + Docker runner** — ✅ `gitlab.nasraldin.com`
 2. **NetBird remote access** — ⏳ optional
 3. **Vault** — ⏳ optional
 4. **kubeadm Stage A** — ⏳ when ready
@@ -61,16 +61,18 @@ VMs, and Cloudflare Tunnel remain the daily path. OPNsense/VLANs are archived.
 | `infra01` VM                        | ✅      | operator VM on `192.168.68.12`           |
 
 **Existing foundation VMs:** `adguard-01`, `technitium-01`, and `infra01`.
-GitLab and kubeadm nodes remain pending and are not the next deployment.
+GitLab Omnibus + Docker runner is the next deployment; kubeadm follows.
 
 ---
 
 ## Phase 2 — Source control
 
-| Task                 | Status      |
-| -------------------- | ----------- |
-| GitHub `nasraldin/*` | ✅          |
-| Self-hosted GitLab   | ⏳ optional |
+| Task                          | Status |
+| ----------------------------- | ------ |
+| GitHub `nasraldin/*`          | ✅     |
+| GitLab Omnibus (`gitlab-01`)  | ✅     |
+| Docker runner (`runner-01`)   | ✅     |
+| Public `gitlab.nasraldin.com` | ✅     |
 
 ---
 

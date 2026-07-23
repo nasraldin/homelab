@@ -9,7 +9,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 - Phase overview table (0 → 11) with status and links
 - Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
 - Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
-- Approved order: DNS polish → optional NetBird/Vault → kubeadm
+- Approved order: GitLab Omnibus + runner → optional NetBird/Vault → kubeadm
 
 ---
 
@@ -19,7 +19,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | ----- | -------------------- | ------- | ---------------------------------------------------------------------------- |
 | 0     | Proxmox foundation   | ✅ / ⏸️ | [phases.md §0](phases.md#phase-0--proxmox-foundation) — closed; `aux01` hold |
 | 1     | Control plane & IaC  | ✅ / ⏸️ | [phases.md §1](phases.md#phase-1--control-plane--iac) — `aux01` hold         |
-| 2     | Source control       | ⏳      | later; GitLab is not the next deployment                                     |
+| 2     | Source control       | ✅      | GitLab Omnibus + runner — [gitlab.md](../operations/gitlab.md) |
 | 3     | DNS & networking     | ✅      | IPv4 DHCP → AdGuard; Deco no IPv6 DNS UI — Mac pinned to AdGuard             |
 | 4     | OPNsense VLAN pilot  | ⏸️      | archived on `archive/opnsense-vlan-pilot` (2026-07-23)                       |
 | 5     | Monitoring           | ⏳      | needs k8s                                                                    |
@@ -30,12 +30,11 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 10    | AI platform          | ⏳      |                                                                              |
 | 11    | Developer platform   | ⏳      |                                                                              |
 
-**🔄 = next focus:** kubeadm Stage A when ready (NetBird / Vault optional).
-The live TP-Link edge and Cloudflare Tunnel remain unchanged. OPNsense/VLANs
-are deferred until segmentation is actually needed.
+**🔄 = next focus:** kubeadm Stage A when ready (or Terraform CI on GitLab first).
+NetBird / Vault optional. OPNsense/VLANs stay deferred.
 
-**Approved sequence:** NetBird (optional) → Vault (optional) → kubeadm Stage A.
-See the [foundation sequence](foundation-sequence.md).
+**Approved sequence:** GitLab + runner ✅ → NetBird (optional) → Vault (optional)
+→ kubeadm Stage A. See the [foundation sequence](foundation-sequence.md).
 
 ---
 

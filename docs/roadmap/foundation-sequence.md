@@ -7,8 +7,8 @@ board; use [installation/next-steps.md](../installation/next-steps.md) for
 remaining commands.
 
 **Status:** Phase 0 ✅ closed · DNS VMs ✅ · IPv4 DHCP → AdGuard ✅ ·
-`aux01` ⏸️ · OPNsense ⏸️ archived · next = DNS IPv6 polish, then kubeadm when
-ready.
+GitLab Omnibus + runner ✅ · `aux01` ⏸️ · OPNsense ⏸️ archived · next =
+kubeadm (optional NetBird/Vault).
 
 ## What this page covers
 
@@ -35,17 +35,16 @@ ready.
 | 14  | OPNsense VLAN Pilot                               | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                     |
 | 15  | NetBird remote access                             | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                        |
 | 16  | Vault                                             | ⏳      | optional                                                                                                                                       |
-| 17  | GitLab VM                                         | ⏳      | later foundation work; not next                                                                                                                |
-| 18  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                               |
+| 17  | GitLab Omnibus + runner VM                        | ✅      | `gitlab-01` `.14` + `runner-01` `.15`; [spec](../superpowers/specs/2026-07-23-gitlab-omnibus-design.md)                                        |
+| 18  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | after GitLab CI path; [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                         |
 | 19  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
 | 20  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                      |
 
 ## Next approved sequence
 
-Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. Finish
-IPv6 DNS polish so clients cannot bypass AdGuard. NetBird and Vault are
-optional. Kubernetes (kubeadm) is the main next platform skill when you are
-ready. See [phases.md](phases.md).
+Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. Stand up
+GitLab next so CI can drive Terraform. NetBird and Vault are optional. Then
+kubeadm Stage A. See [phases.md](phases.md).
 
 Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.13`,
 AdGuard `.10`, Technitium `.11`, and Cloudflare Tunnel.

@@ -11,8 +11,8 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 - Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
 - Cloudflare Tunnel — ✅ applied
 - Host firewall — ✅ applied
-- Remaining: DNS IPv6 polish → optional NetBird/Vault → kubeadm; `aux01`
-  when Slot 3 disk arrives
+- Remaining: GitLab Omnibus + runner → optional NetBird/Vault → kubeadm;
+  `aux01` when Slot 3 disk arrives
 
 ---
 
@@ -30,10 +30,11 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 | —    | `aux01` (OEM Slot 3)              | ⏸️ disk not installed |
 | —    | DNS VMs                           | ✅                    |
 | —    | IPv4 DHCP → AdGuard               | ✅                    |
-| —    | IPv6 DNS polish                   | ⏳                    |
+| —    | IPv6 DNS polish                   | ✅ Mac pin (Deco has no RDNSS UI) |
 | —    | OPNsense VLAN Pilot               | ⏸️ archived           |
+| —    | GitLab Omnibus + runner           | ✅                    |
 | —    | NetBird / Vault                   | ⏳ optional           |
-| —    | GitLab VM                         | ⏳ later; not next    |
+| —    | kubeadm Stage A                   | ⏳ after GitLab       |
 
 ---
 
