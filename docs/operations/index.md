@@ -25,10 +25,10 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 
 Browser hub + Terminal. Remote Proxmox API needs Cloudflare Access **Service Auth**:
 
-| Doc | Topic |
-| --- | ----- |
+| Doc                                                                                                                           | Topic                               |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | [Proxmox via Cloudflare Access](https://github.com/nasraldin/opshub/blob/main/docs/runbooks/proxmox-via-cloudflare-access.md) | Service Token setup, Console vs SSH |
-| [Tunnel Service Auth pointer](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md) | Lab-side summary |
+| [Tunnel Service Auth pointer](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md)               | Lab-side summary                    |
 
 ## Repo runbooks
 

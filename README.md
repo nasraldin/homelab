@@ -8,17 +8,17 @@ tooling. Documentation is published as a searchable GitHub Pages site.
 Each lab under this directory is its own repository (gitignored here) with its
 own remote. Clone them as siblings for local development and docs aggregation.
 
-| Lab                                | Repo                                           | Notes                               |
-| ---------------------------------- | ---------------------------------------------- | ----------------------------------- |
-| Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages           |
+| Lab                                | Repo                                           | Notes                                |
+| ---------------------------------- | ---------------------------------------------- | ------------------------------------ |
+| Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages            |
 | OpsHub (homelab dashboard)         | https://github.com/nasraldin/opshub            | Public — service hub, notes, plugins |
-| Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private implementation              |
-| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private implementation              |
-| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private implementation              |
-| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private implementation              |
-| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public community project            |
-| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public community project            |
-| Homebrew taps (nested tap repos)   | local `homebrew/` only                         | Not a single git repo               |
+| Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private implementation               |
+| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private implementation               |
+| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private implementation               |
+| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private implementation               |
+| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public community project             |
+| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public community project             |
+| Homebrew taps (nested tap repos)   | local `homebrew/` only                         | Not a single git repo                |
 
 ## Clone all labs (fresh machine)
 

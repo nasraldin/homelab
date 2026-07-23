@@ -22,24 +22,26 @@
 
 ## File map
 
-| File | Role |
-|------|------|
-| `repos.json` | Source of truth for sibling labs |
-| `clone-labs.sh` | Load JSON via jq; clone/pull loop |
+| File                       | Role                                  |
+| -------------------------- | ------------------------------------- |
+| `repos.json`               | Source of truth for sibling labs      |
+| `clone-labs.sh`            | Load JSON via jq; clone/pull loop     |
 | `tests/clone-labs-json.sh` | Fixture-based parse/validation checks |
-| `README.md`, `Makefile` | User-facing references |
-| `repos.conf` | Delete |
+| `README.md`, `Makefile`    | User-facing references                |
+| `repos.conf`               | Delete                                |
 
 ---
 
 ### Task 1: Add `repos.json` and parse/validation tests
 
 **Files:**
+
 - Create: `repos.json`
 - Create: `tests/clone-labs-json.sh`
 - Delete: (none yet — delete `repos.conf` in Task 3 after script cutover)
 
 **Interfaces:**
+
 - Consumes: none
 - Produces: `repos.json` shape `{ "<rel-path>": "<owner/repo|url>", ... }`; test helper asserts jq extraction emits `path\tspec` lines
 
@@ -165,10 +167,12 @@ EOF
 ### Task 2: Teach `clone-labs.sh` to read JSON via jq
 
 **Files:**
+
 - Modify: `clone-labs.sh`
 - Test: `tests/clone-labs-json.sh` (unchanged; manual smoke for script errors)
 
 **Interfaces:**
+
 - Consumes: `repos.json` / `$HOMELAB_REPOS_CONF` as JSON object
 - Produces: same clone/skip/pull counters and CLI flags as before
 
@@ -269,11 +273,13 @@ EOF
 ### Task 3: Remove `repos.conf` and update docs
 
 **Files:**
+
 - Delete: `repos.conf`
 - Modify: `README.md` (clone section ~lines 26–34)
 - Modify: `Makefile` (help line for `make clone`)
 
 **Interfaces:**
+
 - Consumes: Task 2 script defaults to `repos.json`
 - Produces: docs/help that only mention `repos.json`
 
@@ -281,7 +287,7 @@ EOF
 
 Replace the clone instructions block with:
 
-```markdown
+````markdown
 ## Clone all labs (fresh machine)
 
 ```bash
@@ -295,7 +301,7 @@ cd ~/homelab
 Add a future lab: one entry in [`repos.json`](repos.json) (`"local/path": "owner/repo"`),
 then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are supported.
 Requires [`jq`](https://jqlang.org/) (`brew install jq`).
-```
+````
 
 (Ensure nested fences are valid Markdown — use indented code or adjust if the outer fence conflicts; prefer matching existing README fence style.)
 
@@ -351,16 +357,16 @@ EOF
 
 ## Spec coverage checklist
 
-| Spec requirement | Task |
-|------------------|------|
-| Flat path→repo JSON map | Task 1 |
-| File `repos.json`; delete `repos.conf` | Tasks 1, 3 |
-| `jq` required + brew hint | Task 2 |
-| Reject non-object top-level | Task 2 |
-| `HOMELAB_REPOS_CONF` override | Task 2 (keep env name, new default path) |
-| Existing clone/pull/`--protocol` behavior | Task 2 |
-| README / Makefile updates | Task 3 |
-| Nested paths | Task 1 data + existing mkdir -p |
+| Spec requirement                          | Task                                     |
+| ----------------------------------------- | ---------------------------------------- |
+| Flat path→repo JSON map                   | Task 1                                   |
+| File `repos.json`; delete `repos.conf`    | Tasks 1, 3                               |
+| `jq` required + brew hint                 | Task 2                                   |
+| Reject non-object top-level               | Task 2                                   |
+| `HOMELAB_REPOS_CONF` override             | Task 2 (keep env name, new default path) |
+| Existing clone/pull/`--protocol` behavior | Task 2                                   |
+| README / Makefile updates                 | Task 3                                   |
+| Nested paths                              | Task 1 data + existing mkdir -p          |
 
 ## Self-review notes
 

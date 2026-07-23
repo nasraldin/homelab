@@ -109,14 +109,14 @@ Full log: [decisions/log.md](decisions/log.md)
 
 ## Repository status
 
-| Repo                | Role                       | Git    | Applied on node                              |
-| ------------------- | -------------------------- | ------ | -------------------------------------------- |
-| `homelab`           | Plans, story, architecture | synced | n/a                                          |
-| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)     |
-| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`     |
-| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                         |
+| Repo                | Role                       | Git    | Applied on node                                     |
+| ------------------- | -------------------------- | ------ | --------------------------------------------------- |
+| `homelab`           | Plans, story, architecture | synced | n/a                                                 |
+| `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)            |
+| `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`            |
+| `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                                |
 | `opshub` (sibling)  | Ops shell / Terminal       | synced | n/a (dev on Mac; remote Proxmox needs Service Auth) |
-| `ansible-lab`       | Guest/appliance policy     | synced | ✅ DNS, `infra01`, and OPNsense pilot policy |
+| `ansible-lab`       | Guest/appliance policy     | synced | ✅ DNS, `infra01`, and OPNsense pilot policy        |
 
 ---
 

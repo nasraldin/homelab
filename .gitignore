@@ -36,3 +36,6 @@ node_modules/
 
 # Git worktrees (local isolation)
 .worktrees/
+
+# Local scratch (not a sibling lab repo)
+dashboard/
