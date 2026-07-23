@@ -27,12 +27,12 @@ Personal Access Token.
 
 ## Runners
 
-| Host | Specs | Concurrent | Tag |
-| ---- | ----- | ---------- | --- |
-| `runner-01` | 4 vCPU / 4 GiB | **4** | `runner-01` (light CI) |
-| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | `runner-02` (monorepo) |
+| Host | Specs | Concurrent | Tag | Untagged jobs |
+| ---- | ----- | ---------- | --- | ------------- |
+| `runner-01` | 4 vCPU / 4 GiB | **4** | `runner-01` | **yes** (default pool) |
+| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40** | `runner-02` | no (tag-only) |
 
-Pin jobs to a VM with:
+Jobs with no `tags:` run on `runner-01`. Pin heavy/monorepo work to `runner-02`:
 
 ```yaml
 tags:
@@ -68,11 +68,12 @@ git config --global credential.helper osxkeychain   # macOS
 ## Create a runner authentication token
 
 1. Admin → CI/CD → Runners → New instance runner.
-2. Tags: `docker`, `homelab` (optional).
-3. Executor: Docker; default image `alpine:latest`.
-4. Copy the authentication token (`glrt-…`) into
-   `ansible-lab/secrets.yml` as `vault_gitlab_runner_token`.
-5. Re-run:
+2. Tags: inventory hostname (`runner-01` or `runner-02`).
+3. For `runner-01`, enable **Run untagged jobs**; leave it off for `runner-02`.
+4. Executor: Docker; default image `alpine:latest`.
+5. Copy the authentication token (`glrt-…`) into
+   `ansible-lab/secrets.yml` under `vault_gitlab_runner_tokens`.
+6. Re-run:
 
 ```bash
 cd ~/homelab/ansible-lab
@@ -81,13 +82,11 @@ ansible-playbook playbooks/gitlab.yml -e @secrets.yml --limit runner-01
 
 ## Hello-world CI proof
 
-In any project, `.gitlab-ci.yml`:
+In any project, `.gitlab-ci.yml` (no tags → `runner-01`):
 
 ```yaml
 hello:
   image: alpine:latest
-  tags:
-    - docker
   script:
     - echo "hello from runner-01"
 ```
