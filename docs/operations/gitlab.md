@@ -32,7 +32,7 @@ Today: **1** registered runner (`runner-01-docker`, Docker executor).
 | Limit | Practical value on this VM |
 | ----- | -------------------------- |
 | Registered runners in `config.toml` | No hard GitLab max; keep **1–2** on this VM |
-| Concurrent jobs (`concurrent =`) | **2** (4 vCPU / 4 GiB) |
+| Concurrent jobs (`concurrent =`) | **5** |
 | Absolute max | CPU/RAM/disk — not a license count |
 
 Add more runners only if you need different tags/executors; otherwise raise
