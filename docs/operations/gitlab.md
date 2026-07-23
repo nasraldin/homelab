@@ -19,22 +19,19 @@ Personal Access Token.
 
 ## Web IDE
 
-Keep Web IDE on GitLab’s default multi-origin CDN (do **not** rely on single-origin
-fallback):
+Ansible (`gitlab_omnibus`) applies this after reconfigure so it survives
+destroy/recreate:
 
-| Setting | Value |
-| ------- | ----- |
-| Extension host domain | `cdn.web-ide.gitlab-static.net` (default) |
-| Enable single origin fallback | **off** |
+| Setting | Value | Ansible var |
+| ------- | ----- | ----------- |
+| Extension host domain | `cdn.web-ide.gitlab-static.net` | `gitlab_web_ide_extension_host_domain` |
+| Enable single origin fallback | **off** | `gitlab_web_ide_single_origin_fallback: false` |
 
 Browsers load VS Code assets from `*.cdn.web-ide.gitlab-static.net`. That CDN is
-reachable from this network, so the secure multi-origin mode works without a
-custom wildcard hostname.
-
-If the Admin banner returns after an upgrade, clear **Enable single origin
-fallback** again under **Admin → Settings → General → Web IDE**. Only set a
-custom extension host domain if that CDN is blocked (air-gapped); then you need a
-wildcard DNS + TLS path into Omnibus (see [GitLab docs](https://docs.gitlab.com/administration/settings/web_ide/)).
+reachable from this network, so secure multi-origin mode works without a custom
+wildcard hostname. Only override those vars if the CDN is blocked (air-gapped);
+then you need a wildcard DNS + TLS path into Omnibus (see
+[GitLab docs](https://docs.gitlab.com/administration/settings/web_ide/)).
 
 ## Container Registry / Package Registry
 
