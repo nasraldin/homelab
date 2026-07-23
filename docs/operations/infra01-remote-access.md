@@ -126,6 +126,18 @@ ssh nasr@192.168.68.12
 If `infra01` is unavailable, LAN SSH to `pve01` and the existing
 `https://homelab.nasraldin.com` Proxmox UI remain independent recovery paths.
 
+### OpsHub Terminal (optional)
+
+From a Mac running OpsHub, Proxmox-suggested guests (including `infra01`) can use
+**Terminal → Console** to open the Proxmox xterm.js console through
+`https://homelab.nasraldin.com` (browser Access session). **SSH inside OpsHub**
+still needs a reachable guest address (LAN or `infra.nasraldin.com` / VPN) — it
+does not tunnel through the Proxmox hostname.
+
+Remote Proxmox **API** from OpsHub requires Access **Service Auth**:
+[OpsHub runbook](https://github.com/nasraldin/opshub/blob/main/docs/runbooks/proxmox-via-cloudflare-access.md)
+· [Tunnel Service Auth](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md).
+
 Rebuild order:
 
 1. Apply `terraform-lab` and verify VMID 112.

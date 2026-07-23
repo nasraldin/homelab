@@ -129,12 +129,15 @@ Reserve DHCP for MAC `38:05:25:39:CF:43` on TP-Link.
 ```text
 Laptop
     │
-    └── https://homelab.nasraldin.com  (Cloudflare Access → Proxmox UI)
+    ├── https://homelab.nasraldin.com  (Cloudflare Access → Proxmox UI)
+    └── OpsHub (local or remote) → same hostname via Access Service Token
+        (machine client; email OTP alone is not enough — see OpsHub runbook)
 ```
 
 Terraform and Ansible still run best **on Mac at home** (or via VPN later).
-Tunnel is for **UI and emergency access** — see
-[cloudflare-tunnel](https://github.com/nasraldin/cloudflare-tunnel/blob/main/README.md).
+Tunnel is for **UI, OpsHub Proxmox API (with Service Auth), and emergency access** — see
+[cloudflare-tunnel](https://github.com/nasraldin/cloudflare-tunnel/blob/main/README.md) and
+[Service Auth](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md).
 
 Tailscale is optional; not in current design.
 
