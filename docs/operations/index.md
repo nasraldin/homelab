@@ -23,12 +23,13 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 
 ## OpsHub (sibling repo)
 
-Browser hub + Terminal. Remote Proxmox API needs Cloudflare Access **Service Auth**:
+Browser hub + Terminal + embedded QEMU noVNC (guest rows). Remote Proxmox API needs Cloudflare Access **Service Auth**:
 
-| Doc                                                                                                                           | Topic                               |
-| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| [Proxmox via Cloudflare Access](https://github.com/nasraldin/opshub/blob/main/docs/runbooks/proxmox-via-cloudflare-access.md) | Service Token setup, Console vs SSH |
-| [Tunnel Service Auth pointer](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md)               | Lab-side summary                    |
+| Doc                                                                                                                           | Topic                                           |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [Proxmox via Cloudflare Access](https://github.com/nasraldin/opshub/blob/main/docs/runbooks/proxmox-via-cloudflare-access.md) | Service Token setup, Console vs SSH             |
+| [OpsHub STATUS / ROADMAP](https://github.com/nasraldin/opshub/blob/main/docs/STATUS.md)                                       | Phase 6 embedded noVNC shipped; next Phase 7    |
+| [Tunnel Service Auth pointer](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md)               | Lab-side summary                                |
 
 ## Repo runbooks
 

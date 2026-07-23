@@ -48,7 +48,7 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | Storage        | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool    |
 | Operator VM    | `infra01` `.12`: hardened management toolchain + PVE access             |
 | Tunnel         | Proxmox UI + `infra.nasraldin.com` SSH route; first off-LAN OTP pending |
-| OpsHub         | Phase 5 Terminal + Proxmox plugin; CF Service Auth for remote API ✅    |
+| OpsHub         | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅   |
 | Firewall       | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)       |
 | Drift check    | `bootstrap.sh --check` + `enable-firewall.sh --check` clean             |
 | Restore drill  | First proof done (weekly cadence continues)                             |
@@ -115,7 +115,7 @@ Full log: [decisions/log.md](decisions/log.md)
 | `proxmox-bootstrap` | Layer 0 host               | synced | ✅ (+ firewall and `vmbr1` pilot bridge)            |
 | `terraform-lab`     | Layer 1–2 infra            | synced | ✅ core VMs + OPNsense pilot; ⏸️ `aux01`            |
 | `cloudflare-tunnel` | Remote UI + operator SSH   | synced | ✅ UI and SSH routes                                |
-| `opshub` (sibling)  | Ops shell / Terminal       | synced | n/a (dev on Mac; remote Proxmox needs Service Auth) |
+| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac; remote Proxmox needs Service Auth) |
 | `ansible-lab`       | Guest/appliance policy     | synced | ✅ DNS, `infra01`, and OPNsense pilot policy        |
 
 ---

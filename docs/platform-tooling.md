@@ -132,7 +132,7 @@ provisioning and does not replace Terraform or Argo CD.
 | [platform-tooling.md](platform-tooling.md) | Layer ownership (this file)                                                                                                                                  |
 | `proxmox-bootstrap/`                       | Layer 0 — host bootstrap, firewall, updates, ops runbooks                                                                                                    |
 | `cloudflare-tunnel/`                       | Remote UI + infra01 SSH — Tunnel + Access for `homelab.nasraldin.com` / `infra.nasraldin.com`                                                                |
-| `opshub/` (sibling clone)                  | Ops shell — hub, Proxmox plugin, Terminal; remote API needs [Service Auth](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md) |
+| `opshub/` (sibling clone)                  | Ops shell — hub, Proxmox plugin, Terminal, embedded noVNC; remote API needs [Service Auth](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md) |
 | `terraform-lab/`                           | Layers 1–2 — storage, pools, VMs, LXC, vzdump backups                                                                                                        |
 | `ansible-lab/`                             | Non-k8s guest configuration                                                                                                                                  |
 | Argo CD / `argocd/` app manifests          | Planned (Phase 7) — create when the first cluster exists                                                                                                     |
