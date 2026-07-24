@@ -31,14 +31,15 @@ Never commit live tokens. Prefer GitLab/GitHub **masked protected** CI variables
 
 | Repo | CI | Jobs |
 | ---- | -- | ---- |
-| ansible-lab | GitLab | syntax lint + manual run |
-| terraform-lab | GitLab | validate / plan / apply |
+| ansible-lab | GitLab | ansible-lint + syntax-check all playbooks + manual run |
+| terraform-lab | GitLab | fmt / validate / tflint / checkov (soft) / plan / apply |
 | proxmox-bootstrap | GitHub Actions | bash -n, shellcheck, shfmt |
 | cloudflare-tunnel | GitHub Actions | shell lint + unit tests |
 | opshub | GitHub Actions | lint, typecheck, **build** |
 | homebrew-tools | GitHub Actions | `brew style` + `brew audit` |
 | docker-lab / camunda-lab | GitHub Actions | existing |
-| homelab / homelab-docs | GitHub Actions | docs build |
+| homelab (workspace) | GitHub Actions | clone-labs shellcheck/shfmt + actionlint + yamllint |
+| homelab-docs | GitHub Actions | markdownlint + mkdocs build |
 
 ## Destructive / privileged scripts
 
@@ -53,3 +54,5 @@ Never commit live tokens. Prefer GitLab/GitHub **masked protected** CI variables
 - `camunda-lab` acceptance scripts: shellcheck SC2034 on harness env vars (cross-file).
 - Full gitleaks/trufflehog scan in CI: optional follow-up.
 - Migrate laptop Terraform state to GitLab HTTP backend before first real CI apply.
+- ansible-lab: enable `var-naming[no-role-prefix]` after role var rename.
+- terraform-lab: promote checkov from `--soft-fail` once CKV noise is tuned.

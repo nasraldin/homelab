@@ -33,8 +33,11 @@ usage() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -h|--help) usage 0 ;;
-    --pull|-u) DO_PULL=1; shift ;;
+    -h | --help) usage 0 ;;
+    --pull | -u)
+      DO_PULL=1
+      shift
+      ;;
     --protocol)
       PROTOCOL="${2:?}"
       shift 2
@@ -55,13 +58,13 @@ if [[ ! -f "$CONF" ]]; then
   exit 1
 fi
 
-if ! command -v jq >/dev/null 2>&1; then
+if ! command -v jq > /dev/null 2>&1; then
   echo "ERROR: jq is required to read $CONF" >&2
   echo "Install: brew install jq" >&2
   exit 1
 fi
 
-conf_type="$(jq -r 'type' "$CONF" 2>/dev/null || true)"
+conf_type="$(jq -r 'type' "$CONF" 2> /dev/null || true)"
 if [[ "$conf_type" != "object" ]]; then
   echo "ERROR: $CONF must be a JSON object (path → repo), got: ${conf_type:-invalid JSON}" >&2
   exit 1
@@ -77,7 +80,7 @@ if [[ -z "$PROTOCOL" ]]; then
 fi
 
 case "$PROTOCOL" in
-  ssh|https) ;;
+  ssh | https) ;;
   *)
     echo "ERROR: --protocol must be ssh or https (got: $PROTOCOL)" >&2
     exit 1
