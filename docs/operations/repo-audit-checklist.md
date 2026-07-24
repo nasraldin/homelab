@@ -35,7 +35,8 @@ Never commit live tokens. Prefer GitLab/GitHub **masked protected** CI variables
 | terraform-lab | GitLab | validate / plan / apply |
 | proxmox-bootstrap | GitHub Actions | bash -n, shellcheck, shfmt |
 | cloudflare-tunnel | GitHub Actions | shell lint + unit tests |
-| opshub | GitHub Actions | pnpm lint + typecheck |
+| opshub | GitHub Actions | lint, typecheck, **build** |
+| homebrew-tools | GitHub Actions | `brew style` + `brew audit` |
 | docker-lab / camunda-lab | GitHub Actions | existing |
 | homelab / homelab-docs | GitHub Actions | docs build |
 
