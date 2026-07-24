@@ -9,7 +9,7 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 - Phase overview table (0 → 11) with status and links
 - Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
 - Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
-- Approved order: GitLab Omnibus + runner → optional NetBird/Vault → kubeadm
+- Approved order: GitLab → Vault + AIStor (core) → optional NetBird → kubeadm
 
 ---
 
@@ -30,11 +30,12 @@ Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, G
 | 10    | AI platform          | ⏳      |                                                                              |
 | 11    | Developer platform   | ⏳      |                                                                              |
 
-**🔄 = next focus:** kubeadm Stage A when ready (or Terraform CI on GitLab first).
-NetBird / Vault optional. OPNsense/VLANs stay deferred.
+**🔄 = next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
+NetBird optional. OPNsense/VLANs stay deferred.
 
-**Approved sequence:** GitLab + runner ✅ → NetBird (optional) → Vault (optional)
-→ kubeadm Stage A. See the [foundation sequence](foundation-sequence.md).
+**Approved sequence:** GitLab + runners ✅ → Vault + AIStor ✅ (core secrets +
+S3) → NetBird (optional) → kubeadm Stage A. See the
+[foundation sequence](foundation-sequence.md).
 
 ---
 

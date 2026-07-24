@@ -9,7 +9,7 @@ Read this first if you’re new. Then use [current state](current-state.md) for 
 - Why the lab exists and the principles locked early
 - Hardware / storage design and install lessons
 - Phase 0a–0b: install + host automation applied (`aux01` deferred — no Slot 3 disk)
-- What comes next (DNS IPv6 polish → optional NetBird/Vault → kubeadm)
+- What comes next (Terraform CI optional → kubeadm; NetBird optional; Vault/AIStor ✅)
 
 ---
 
@@ -85,8 +85,9 @@ Repos created, pushed, and **applied** on `pve01` (July 2026):
 
 **Hold:** Slot 3 OEM NVMe not installed → `aux01` / Stage 2 backup migrate deferred.
 
-**Next:** DNS IPv6 polish → optional NetBird / Vault → kubeadm Stage A when
-ready. OPNsense/VLANs archived on `archive/opnsense-vlan-pilot`.
+**Next:** Terraform CI on GitLab (optional) → kubeadm Stage A. Vault + AIStor
+are ✅ core Layer-1. NetBird optional. OPNsense/VLANs archived on
+`archive/opnsense-vlan-pilot`.
 
 → [current-state.md](current-state.md)  
 → [installation/next-steps.md](installation/next-steps.md)  

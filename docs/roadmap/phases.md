@@ -13,9 +13,9 @@ Task-level status for each roadmap phase. Read the [roadmap overview](index.md) 
 
 The next sequence is:
 
-1. **GitLab Omnibus + Docker runner** — ✅ `gitlab.nasraldin.com`
-2. **NetBird remote access** — ⏳ optional
-3. **Vault** — ⏳ optional
+1. **GitLab Omnibus + Docker runners** — ✅ `gitlab.nasraldin.com`
+2. **Vault + AIStor Free** — ✅ core Layer-1 (`vault-01` `.18`, `aistor-01` `.17`)
+3. **NetBird remote access** — ⏳ optional
 4. **kubeadm Stage A** — ⏳ when ready
 
 The historical phase numbers below remain unchanged, but this approved order

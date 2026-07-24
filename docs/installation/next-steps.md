@@ -11,8 +11,8 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 - Terraform storage pools and backup jobs — ✅ `data01` / Stage 1; ⏸️ `aux01`
 - Cloudflare Tunnel — ✅ applied
 - Host firewall — ✅ applied
-- Remaining: GitLab Omnibus + runner → optional NetBird/Vault → kubeadm;
-  `aux01` when Slot 3 disk arrives
+- Remaining: optional NetBird → kubeadm; `aux01` when Slot 3 disk arrives;
+  Vault + AIStor are ✅ core (see [foundation sequence](../roadmap/foundation-sequence.md))
 
 ---
 
@@ -32,8 +32,9 @@ Read this after [verified state](verified-state.md). The same sequence is summar
 | —    | IPv4 DHCP → AdGuard               | ✅                                |
 | —    | IPv6 DNS polish                   | ✅ Mac pin (Deco has no RDNSS UI) |
 | —    | OPNsense VLAN Pilot               | ⏸️ archived                       |
-| —    | GitLab Omnibus + runner           | ✅                                |
-| —    | NetBird / Vault                   | ⏳ optional                       |
+| —    | GitLab Omnibus + runners          | ✅                                |
+| —    | Vault + AIStor (core)             | ✅                                |
+| —    | NetBird                           | ⏳ optional                       |
 | —    | kubeadm Stage A                   | ⏳ after GitLab                   |
 
 ---
@@ -130,12 +131,11 @@ First restore proof done. Keep weekly [restore drill](https://github.com/nasrald
 
 ## 8. Later phases (do not skip ahead)
 
-| Order | Phase                     | Status / boundary                                                        |
-| ----- | ------------------------- | ------------------------------------------------------------------------ |
-| 1     | DNS IPv6 polish (TP-Link) | ⏳ [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)              |
-| 2     | NetBird remote access     | ⏳ optional; Cloudflare Tunnel remains primary                           |
-| 3     | Vault                     | ⏳ optional                                                              |
-| 4     | kubeadm Stage A           | ⏳ when ready — [foundation sequence](../roadmap/foundation-sequence.md) |
+| Order | Phase                 | Status / boundary                                                                                   |
+| ----- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| 1     | Vault + AIStor        | ✅ core — [vault.md](../operations/vault.md) · [object-storage.md](../operations/object-storage.md) |
+| 2     | NetBird remote access | ⏳ optional; Cloudflare Tunnel remains primary                                                      |
+| 3     | kubeadm Stage A       | ⏳ when ready — [foundation sequence](../roadmap/foundation-sequence.md)                            |
 
 DNS VMs (AdGuard + Technitium) are ✅ on the flat live LAN. OPNsense/VLANs are
 archived on `archive/opnsense-vlan-pilot`. Keep Mac on Wi-Fi; do not treat

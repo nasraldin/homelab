@@ -100,6 +100,8 @@ export default defineConfig({
             { text: 'Proxmox storage', link: '/architecture/proxmox-storage-layout' },
             { text: 'GPU / IOMMU passthrough', link: '/architecture/gpu-passthrough' },
             { text: 'VM vs k8s vs Docker', link: '/architecture/service-placement' },
+            { text: 'Vault vs Infisical', link: '/architecture/vault-vs-infisical' },
+            { text: 'Secret ownership map', link: '/architecture/secret-ownership-map' },
             { text: 'Full topology map', link: '/architecture/target-topology' },
             { text: 'Network & DNS', link: '/architecture/network-dns-ingress' },
             { text: 'Automation layers', link: '/architecture/automation-layers' },
@@ -139,6 +141,9 @@ export default defineConfig({
           items: [
             { text: 'Ops overview', link: '/operations/' },
             { text: 'Deploy & rebuild order', link: '/operations/deploy-and-rebuild' },
+            { text: 'Vault', link: '/operations/vault' },
+            { text: 'Infisical', link: '/operations/infisical' },
+            { text: 'GitLab TF/Ansible CI', link: '/operations/gitlab-infra-pipeline' },
             { text: 'Infra01 remote access', link: '/operations/infra01-remote-access' },
             { text: 'DNS DHCP cutover', link: '/operations/dns-dhcp-cutover' },
             { text: 'Safe Proxmox upgrades', link: '/operations/proxmox-updates' },

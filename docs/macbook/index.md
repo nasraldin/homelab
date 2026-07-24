@@ -16,16 +16,21 @@ I’m still writing these pages. Until they land, use [Docker Lab](https://nasra
 
 ## What will go here
 
-| Topic             | Intent                                       |
-| ----------------- | -------------------------------------------- |
-| Baseline setup    | Homebrew, shells, editors, Git identity      |
-| SSH & hosts       | Key auth to Proxmox, `/etc/hosts` vs lab DNS |
-| Day-to-day CLIs   | Terraform, kubectl (later), lab CLIs         |
-| Containers on Mac | Lima / Docker Lab workflow                   |
-| Secrets hygiene   | What never leaves the password manager       |
+| Topic             | Intent                                                         |
+| ----------------- | -------------------------------------------------------------- |
+| Baseline setup    | Homebrew, shells, editors, Git identity                        |
+| SSH & hosts       | Key auth to Proxmox, `/etc/hosts` vs lab DNS                   |
+| Remote desktops   | [remote-connectivity.md](../operations/remote-connectivity.md) |
+| Day-to-day CLIs   | Terraform, kubectl (later), lab CLIs                           |
+| Containers on Mac | Lima / Docker Lab workflow                                     |
+| Secrets hygiene   | What never leaves the password manager                         |
 
 ## Related now
 
+- [Remote connectivity](../operations/remote-connectivity.md) — SSH, Windows App RDP, RustDesk, NoMachine
+- [Mac DNS](../operations/mac-dns.md) — `scutil` / `networksetup`, failover when AdGuard is down
+- [LAN DNS resilience](../operations/lan-dns-resilience.md) — why `.10` matters for the whole LAN
+- [infra01 remote access](../operations/infra01-remote-access.md) — SSH via Cloudflare Access
 - [Current state](../current-state.md) — lab progress from the hypervisor side
 - [Build story](../build-story.md) — how the Mac fits into the overall timeline
 - [Placeholders](../conventions/placeholders.md) — example IPs and hostnames used in commands

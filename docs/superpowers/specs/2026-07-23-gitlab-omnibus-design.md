@@ -23,13 +23,19 @@ starting with a hello-world job, then Terraform pipelines later.
 
 ## Guests
 
-| Property | `gitlab-01`                | `runner-01`            |
-| -------- | -------------------------- | ---------------------- |
-| VMID     | `113`                      | `114`                  |
-| Address  | `192.168.68.14/22`         | `192.168.68.15/22`     |
-| Compute  | 4 vCPU, 8 GiB              | 4 vCPU, 4 GiB          |
-| Disk     | 100 GiB on `data01`        | 60 GiB on `data01`     |
-| Tags     | `gitlab`, `core`, `debian` | `ci`, `core`, `debian` |
+Layer-1 VMID order (2026-07 reshuffle): Vault 113 → AIStor 114 → GitLab 115 →
+runners 116/117. IPs keep historical last octets. See
+[guest-vmid-map.md](../../operations/guest-vmid-map.md).
+
+| Property | `gitlab-01`                | `runner-01`            | `runner-02`                |
+| -------- | -------------------------- | ---------------------- | -------------------------- |
+| VMID     | `115`                      | `116`                  | `117`                      |
+| Address  | `192.168.68.14/22`         | `192.168.68.15/22`     | `192.168.68.16/22`         |
+| Compute  | 4 vCPU, 8 GiB              | 4 vCPU, 4 GiB          | 16 vCPU, 32 GiB            |
+| Disk     | 100 GiB on `data01`        | 60 GiB on `data01`     | 150 GiB on `data01`        |
+| Tags     | `gitlab`, `core`, `debian` | `ci`, `core`, `debian` | `ci`, `monorepo`, `debian` |
+
+Companions (same Layer-1 tier): `vault-01` VMID 113 / `.18`, `vault-seal` VMID 114 / `.19`, `infisical-01` VMID 115 / `.20`, `aistor-01` VMID 116 / `.17`.
 
 ## TLS and tunnel
 

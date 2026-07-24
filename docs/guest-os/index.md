@@ -159,6 +159,7 @@ CoreOS ships **qcow2/raw** images (not a traditional ISO) — import via Proxmox
 
 ## Related
 
+- [vm-best-practices.md](../architecture/vm-best-practices.md) — q35 / OVMF / SCSI defaults
 - [target-topology.md](../architecture/target-topology.md)
 - [gpu-passthrough.md](../architecture/gpu-passthrough.md) — IOMMU + attach GPU to a VM
 - [platform-tooling.md](../platform-tooling.md) — who owns guest packages

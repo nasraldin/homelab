@@ -321,9 +321,9 @@ Estimated effort after Phase 7: **2–3 focused sessions**.
 You are past **Phase 0** (`aux01` ⏸️ until Slot 3 NVMe), but this security stack
 is not next. Complete the approved foundation sequence first:
 
-1. DNS IPv6 polish (TP-Link RDNSS → AdGuard)
-2. NetBird remote access (optional)
-3. Vault (optional)
+1. DNS IPv6 polish ✅ (Mac pin when Deco lacks RDNSS)
+2. Vault + AIStor ✅ (core Layer-1)
+3. NetBird remote access (optional)
 4. Later, bootstrap kubeadm + Argo CD
 5. Deploy Harbor
 6. Add one CI pipeline with Cosign

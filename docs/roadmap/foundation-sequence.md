@@ -7,8 +7,8 @@ board; use [installation/next-steps.md](../installation/next-steps.md) for
 remaining commands.
 
 **Status:** Phase 0 ✅ closed · DNS VMs ✅ · IPv4 DHCP → AdGuard ✅ ·
-GitLab Omnibus + runner ✅ · `aux01` ⏸️ · OPNsense ⏸️ archived · next =
-kubeadm (optional NetBird/Vault).
+GitLab Omnibus + runners ✅ · Vault + AIStor ✅ · `aux01` ⏸️ · OPNsense ⏸️
+archived · next = Terraform CI (optional) → kubeadm (NetBird optional).
 
 ## What this page covers
 
@@ -34,20 +34,23 @@ kubeadm (optional NetBird/Vault).
 | 13  | IPv6 DNS polish (Deco has no RDNSS UI)            | ✅      | Mac Wi-Fi DNS pinned to AdGuard; see [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                                  |
 | 14  | OPNsense VLAN Pilot                               | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                     |
 | 15  | NetBird remote access                             | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                        |
-| 16  | Vault                                             | ⏳      | optional                                                                                                                                       |
-| 17  | GitLab Omnibus + runner VM                        | ✅      | `gitlab-01` `.14` + `runner-01` `.15`; [spec](../superpowers/specs/2026-07-23-gitlab-omnibus-design.md)                                        |
+| 16  | Vault (`vault-01` + `vault-seal`)                 | ✅      | **core** — secrets `.18` VMID **113**, Transit seal `.19` VMID **114**; [vault.md](../operations/vault.md)                                     |
+| 16b | Infisical (`infisical-01`)                        | ⏳      | App env-secrets — TF+Ansible ready; `.20` VMID **115**; [infisical.md](../operations/infisical.md)                                             |
+| 17  | GitLab Omnibus + runner VMs                       | ✅      | `gitlab-01` VMID **117** `.14` + runners **118**/**119**; [spec](../superpowers/specs/2026-07-23-gitlab-omnibus-design.md)                     |
+| 17a | AIStor Free (`aistor-01`)                         | ✅      | **core** — VMID **116**, `.17`; [object-storage.md](../operations/object-storage.md) · [guest-vmid-map.md](../operations/guest-vmid-map.md)    |
 | 18  | kubeadm Stage A (1 CP + 2 workers)                | ⏳      | after GitLab CI path; [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                         |
 | 19  | GitOps (Argo CD)                                  | ⏳      | Phase 7                                                                                                                                        |
-| 20  | Platform services                                 | ⏳      | Phases 8+                                                                                                                                      |
+| 20  | Platform services                                 | ⏳      | Phases 8+ (in-cluster object store optional; AIStor remains Layer-1 S3)                                                                        |
 
 ## Next approved sequence
 
-Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. Stand up
-GitLab next so CI can drive Terraform. NetBird and Vault are optional. Then
-kubeadm Stage A. See [phases.md](phases.md).
+Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. GitLab,
+Vault, and AIStor are **core** Layer-1 services (outside Kubernetes). NetBird
+remains optional. Next: optional Terraform CI on GitLab, then kubeadm Stage A.
+See [phases.md](phases.md).
 
 Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.13`,
-AdGuard `.10`, Technitium `.11`, and Cloudflare Tunnel.
+AdGuard `.10`, Technitium `.11`, Vault `.18`, vault-seal `.19`, Infisical `.20`, AIStor `.17`, and Cloudflare Tunnel.
 
 When Slot 3 OEM disk is installed:
 

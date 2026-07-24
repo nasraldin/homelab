@@ -8,8 +8,10 @@ the checkmarks mean something; the approved next sequence is tracked in the
 `infra01` ✅. OPNsense VLAN pilot **archived** (2026-07-23) — code on
 `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
 **Next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
-NetBird / Vault remain optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
-DNS: IPv4 DHCP → AdGuard ✅; Deco has no IPv6 DNS UI — Mac pinned to AdGuard ✅.
+NetBird remains optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
+Vault (`vault-01` `.18`) + AIStor Free (`aistor-01` `.17`) ✅ as core Layer-1.
+DNS: IPv4 DHCP → AdGuard Primary + **Secondary `1.1.1.1`** (resilience) ✅;
+Deco has no IPv6 DNS UI — Mac pin optional — [lan-dns-resilience](operations/lan-dns-resilience.md).
 **Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
 
 ## What this page covers
@@ -35,28 +37,31 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## What is done (✅)
 
-| Area            | Item                                                                  |
-| --------------- | --------------------------------------------------------------------- |
-| Install         | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)      |
-| Network         | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                          |
-| DNS (lab)       | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅ |
-| DNS (IPv4 DHCP) | TP-Link primary DNS = AdGuard `192.168.68.10`                         |
-| DNS (Mac path)  | Wi-Fi DNS pinned to `192.168.68.10` (Deco has no IPv6 DNS controls)   |
-| SSH             | Key auth Mac → `root@192.168.68.13` + admin user                      |
-| APT             | deb822, no-subscription enabled, enterprise disabled                  |
-| API             | `terraform@pve!provider` token                                        |
-| Host bootstrap  | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`      |
-| Updates         | `pve-update-check.timer` enabled (daily check + notify)               |
-| Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool  |
-| Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access           |
-| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access)     |
-| GitLab          | Omnibus `gitlab-01` `.14` + Docker runner `runner-01` `.15` ✅        |
-| OpsHub          | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅ |
-| Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)     |
-| Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean           |
-| Restore drill   | First proof done (weekly cadence continues)                           |
-| Documentation   | Split repos, roadmap, architecture, install journal                   |
-| Git             | Lab repos pushed to `nasraldin/*`                                     |
+| Area            | Item                                                                           |
+| --------------- | ------------------------------------------------------------------------------ |
+| Install         | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)               |
+| Network         | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                                   |
+| DNS (lab)       | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅          |
+| DNS (IPv4 DHCP) | TP-Link primary DNS = AdGuard `192.168.68.10`                                  |
+| DNS (Mac path)  | Wi-Fi DNS pinned to `192.168.68.10` (Deco has no IPv6 DNS controls)            |
+| SSH             | Key auth Mac → `root@192.168.68.13` + admin user                               |
+| APT             | deb822, no-subscription enabled, enterprise disabled                           |
+| API             | `terraform@pve!provider` token                                                 |
+| Host bootstrap  | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`               |
+| Updates         | `pve-update-check.timer` enabled (daily check + notify)                        |
+| Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool           |
+| Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access                    |
+| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access)              |
+| GitLab          | Omnibus `gitlab-01` VMID 117 `.14` + runners 118/119; object_store → AIStor ✅ |
+| Vault           | OSS Raft on `vault-01` VMID 113 `.18` + seal VMID 114 `.19` — AppRole ✅       |
+| Object storage  | AIStor Free on `aistor-01` VMID 116 `.17` — GitLab buckets + runner cache ✅   |
+| Infisical       | App env-secrets `infisical-01` VMID 115 `.20` — TF+Ansible scaffolded ⏳       |
+| OpsHub          | Phase 6 embedded QEMU noVNC + Terminal/CF Console; CF Service Auth ✅          |
+| Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)              |
+| Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean                    |
+| Restore drill   | First proof done (weekly cadence continues)                                    |
+| Documentation   | Split repos, roadmap, architecture, install journal                            |
+| Git             | Lab repos pushed to `nasraldin/*`                                              |
 
 ---
 
@@ -72,16 +77,16 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 
 ## Next (approved order)
 
-| #   | Task                              | Status                                            |
-| --- | --------------------------------- | ------------------------------------------------- |
-| 1   | GitLab Omnibus + Docker runner VM | ✅ — `https://gitlab.nasraldin.com` + `runner-01` |
-| 2   | NetBird remote access (optional)  | ⏳                                                |
-| 3   | Vault (optional)                  | ⏳                                                |
-| 4   | kubeadm Stage A                   | ⏳ after GitLab CI path is usable                 |
+| #   | Task                             | Status                                                                                   |
+| --- | -------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | GitLab Omnibus + Docker runners  | ✅ — `https://gitlab.nasraldin.com` + `runner-01`/`runner-02`                            |
+| 2   | Vault + AIStor (core)            | ✅ — [vault.md](operations/vault.md) · [object-storage.md](operations/object-storage.md) |
+| 3   | NetBird remote access (optional) | ⏳                                                                                       |
+| 4   | kubeadm Stage A                  | ⏳ after GitLab CI path is usable                                                        |
 
 **Active focus** — Terraform CI on GitLab next (optional), then kubeadm Stage A.
-GitLab: Tunnel HTTPS, no Access; Docker runner hello-world ✅. Keep flat LAN +
-AdGuard. See [gitlab.md](operations/gitlab.md).
+GitLab: Tunnel HTTPS, no Access; S3 via AIStor; secrets via Vault. Keep flat
+LAN + AdGuard. Runner-02 docker-autoscaler is a [follow-up](operations/gitlab-runner-autoscaling.md).
 
 ---
 
