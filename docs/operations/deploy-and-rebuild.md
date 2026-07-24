@@ -23,7 +23,8 @@ acceptance tests      DNS, UI, SSH, backups
 TP-Link DHCP cutover  clients receive AdGuard as DNS
 ```
 
-Kubernetes follows later: Terraform creates Debian VMs, kubeadm bootstraps the
+Kubernetes follows later: Terraform creates Debian VMs (q35 + OVMF + VirtIO SCSI —
+[vm-best-practices](../architecture/vm-best-practices.md)), kubeadm bootstraps the
 cluster, and Argo CD owns in-cluster applications.
 
 ## 0. Control-machine prerequisites
@@ -123,6 +124,10 @@ Important:
 - `credentials.auto.tfvars`, state, `.terraform/`, and `tfplan` are local only.
 - Never run `terraform destroy` as a routine cleanup command.
 - Confirm destructive plans explicitly, especially disk/ZFS changes.
+- **GitLab CI (later):** selective guest apply via `TF_TARGET_GUESTS` — never
+  shrink `var.vms` in CI. Contract:
+  [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md).
+  Local same scripts: `TF_TARGET_GUESTS=infra01 TF_ACTION=plan ./scripts/ci-run.sh`
 
 ## 4. Configure guests with Ansible
 
@@ -197,8 +202,12 @@ UIs are LAN-only:
 ## 6. Cut DHCP clients over to AdGuard
 
 Only after all acceptance checks pass, follow
-[Point TP-Link DHCP DNS at AdGuard](dns-dhcp-cutover.md). Keep the DHCP address
-pool and gateway unchanged; set only Primary DNS to `192.168.68.10`.
+[dns-dhcp-cutover.md](dns-dhcp-cutover.md) and
+[lan-dns-resilience.md](lan-dns-resilience.md). Keep the DHCP address pool and
+gateway unchanged. Set:
+
+- **Primary DNS** = `192.168.68.10` (AdGuard)
+- **Secondary DNS** = `1.1.1.1` (required — LAN stays online if AdGuard is down)
 
 After clients renew their leases:
 
@@ -207,7 +216,10 @@ dig pve01.lab.nasraldin.com +short
 # 192.168.68.13
 ```
 
-Confirm client requests appear in the AdGuard query log.
+Confirm client requests appear in the AdGuard query log when AdGuard is healthy.
+
+Before Terraform `-replace` of DNS VMs: `ansible-lab/scripts/dns-failover-public.sh`.
+After `dns.yml`: `ansible-lab/scripts/dns-restore-adguard.sh`.
 
 ## Routine reruns
 

@@ -11,10 +11,12 @@ or UI clicks.
 
 | Guest              | VMID      | LAN             | Public                            |
 | ------------------ | --------- | --------------- | --------------------------------- |
-| `gitlab-01`        | 113       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
+| `gitlab-01`        | 117       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
 | Container Registry | (same VM) | `:5050`         | `https://gregistry.nasraldin.com` |
-| `runner-01`        | 114       | `192.168.68.15` | — (talks to GitLab over HTTPS)    |
-| `runner-02`        | 115       | `192.168.68.16` | —                                 |
+| `runner-01`        | 118       | `192.168.68.15` | — (talks to GitLab over HTTPS)    |
+| `runner-02`        | 119       | `192.168.68.16` | —                                 |
+
+VMID map (Vault/AIStor/GitLab order): [guest-vmid-map.md](guest-vmid-map.md).
 
 `registry.nasraldin.com` is reserved for a later registry (e.g. Harbor). Package
 Registry lives under the main GitLab URL (no separate hostname).
@@ -31,15 +33,29 @@ order cannot leave wrong tags:
 | ------------------------------ | ------------------------------------------- | --------------------------------------- |
 | Root password                  | `vault_gitlab_root_password`                | `application_settings.rb.j2`            |
 | Open signup                    | **off**                                     | `gitlab_signup_enabled: false`          |
+| Default branch                 | `main`                                      | ApplicationSettings                     |
+| Auto DevOps                    | **off**                                     | ApplicationSettings                     |
 | Web IDE extension host         | `cdn.web-ide.gitlab-static.net`             | `gitlab_web_ide_extension_host_domain`  |
 | Web IDE single-origin fallback | **off**                                     | `gitlab_web_ide_single_origin_fallback` |
+| Object store / registry S3     | AIStor `192.168.68.17:9000`                 | `gitlab.rb.j2` object_store             |
+| Runner mint (`glrt-…`)         | `CreateRunnerService` → token files         | `mint_runners.rb.j2` (no Admin UI)      |
 | Runner tags / untagged         | from `host_vars` (`runner-01`, `runner-02`) | `reconcile_runners.rb.j2`               |
-| Runner concurrent              | `host_vars`                                 | `config.toml` on each runner            |
+| Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache`         | `config.toml` on each runner            |
 | Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                              | Omnibus reconfigure                     |
 
-`glrt-…` tokens still come from Admin → Runners (GitLab does not mint those in
-Omnibus config). After register, Ansible **overwrites** tag list and
-`run_untagged` to match inventory.
+Ansible mints instance runners on `gitlab-01` and writes tokens under
+`/etc/gitlab/ansible-runner-tokens/` (mode `0770`, group `git` — mint runs as
+`git` and must not `chmod` the directory). Runner hosts fetch their token over
+SSH — do not create runners in the Admin UI for day-2 inventory hosts.
+
+S3 distributed cache is applied by
+`roles/gitlab_runner/files/fix_runner_cache.py` (replaces the empty
+`[runners.cache]` block from `gitlab-runner register` without duplicating keys).
+
+Secrets for S3 and root password live in Vault (`apps/gitlab/…`) after seed;
+`secrets.yml` keeps Vault AppRole material + thin bootstrap keys. See
+[vault.md](vault.md) and [object-storage.md](object-storage.md).
+Guest IDs: [guest-vmid-map.md](guest-vmid-map.md).
 
 ## Web IDE
 
@@ -97,18 +113,25 @@ git config --global credential.helper osxkeychain   # macOS
 
 ## Create a runner authentication token
 
+Preferred: re-run `playbooks/gitlab.yml` — mint + register is automated for
+inventory runners. Manual Admin UI mint is only for one-off experiments.
+
+If you must mint by hand:
+
 1. Admin → CI/CD → Runners → New instance runner.
 2. Tags / untagged in the UI are optional (Ansible reconciles from inventory).
 3. Executor: Docker; default image `alpine:latest`.
-4. Copy the authentication token (`glrt-…`) into
+4. Prefer letting Ansible mint; otherwise put `glrt-…` in
    `ansible-lab/secrets.yml` under `vault_gitlab_runner_tokens.<hostname>`.
-5. Re-run the full playbook (or `--limit` the runner host, then `gitlab-01` for
-   reconcile):
+5. Re-run:
 
 ```bash
 cd ~/homelab/ansible-lab
 ansible-playbook playbooks/gitlab.yml -e @secrets.yml
 ```
+
+Autoscaling `runner-02` (docker-autoscaler + fleeting Proxmox) is documented as
+the next CI wave — [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md).
 
 ## Hello-world CI proof
 
@@ -122,6 +145,12 @@ hello:
 ```
 
 Pipeline should run on `runner-01` and succeed.
+
+## Infra pipelines (Terraform + Ansible)
+
+Targeted create/update/destroy (e.g. only `infra01`) uses pipeline variables —
+not a filtered `vms` map. Full contract, env vars, and rollout checklist:
+[gitlab-infra-pipeline.md](gitlab-infra-pipeline.md).
 
 ## Re-apply Ansible
 

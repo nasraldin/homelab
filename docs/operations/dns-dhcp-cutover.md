@@ -1,15 +1,26 @@
 # Point TP-Link DHCP DNS at AdGuard
 
-After AdGuard + Technitium pass dig proofs, change the router so **all Wi‑Fi/LAN DHCP clients** (phones, laptops, TVs, IoT) use AdGuard for ad-blocking and `*.lab.nasraldin.com`. No per-device setup.
+Configure the edge router so **all Wi‑Fi and LAN DHCP clients** use AdGuard for
+filtering and `*.lab.nasraldin.com`, with a **public Secondary DNS** so the LAN
+stays usable when AdGuard is briefly unavailable.
 
-You click Save on the router; this lab does **not** automate TP-Link login/API.
+This lab does **not** automate the TP-Link UI. You change DHCP DNS once in the
+router admin console.
+
+**Resilience design (required reading):** [lan-dns-resilience.md](lan-dns-resilience.md)
+
+## What this page covers
+
+- Preconditions and dig proofs before touching the router
+- Exact DHCP Primary / Secondary policy
+- Post-cutover verification and IPv6 Deco limitations
+- Rollback
 
 ## Preconditions
 
-Before touching the router:
-
-1. VMs up: `adguard-01` `192.168.68.10`, `technitium-01` `192.168.68.11`
-2. Proofs from a Mac (or any LAN host):
+1. Guests up and configured: `adguard-01` (`192.168.68.10`), `technitium-01`
+   (`192.168.68.11`) — after Terraform, run `ansible-playbook playbooks/dns.yml`.
+2. Proofs from any LAN host:
 
 ```bash
 dig @192.168.68.11 pve01.lab.nasraldin.com +short   # → 192.168.68.13
@@ -17,103 +28,114 @@ dig @192.168.68.10 pve01.lab.nasraldin.com +short   # → 192.168.68.13
 dig @192.168.68.10 example.com +short               # public names resolve
 ```
 
-3. UIs reachable on LAN only: `http://192.168.68.10:3000` · `http://192.168.68.11:5380`
-4. **Write down** the current TP-Link DHCP DNS values (rollback).
-5. IPv6 direct-query proof:
+3. UIs (LAN only): `http://192.168.68.10:3000` · `http://192.168.68.11:5380`
+4. Record current TP-Link DHCP DNS values for rollback.
+5. Optional IPv6 link-local proof (when testing AdGuard IPv6):
 
 ```bash
 dig @fe80::ff:fe00:10%en0 doubleclick.net +short       # → 0.0.0.0
 dig @fe80::ff:fe00:10%en0 pve01.lab.nasraldin.com +short # → 192.168.68.13
 ```
 
-## TP-Link steps (Deco / Archer menus vary)
+## TP-Link DHCP DNS (locked policy)
 
-Exact labels differ by firmware; look for **DHCP Server** or **LAN DNS**.
+Exact menu labels vary (Deco app / Archer web). Look for **DHCP Server** or
+**LAN DNS**.
 
-1. Log into the TP-Link admin UI (Deco app / Archer web UI).
-2. Open **Advanced** → **Network** → **DHCP Server** (or **LAN** → **DHCP**).
-3. Set **Primary DNS** = `192.168.68.10` (adguard-01).
-4. Set **Secondary DNS** = **empty** (preferred).  
-   Last resort only: a public resolver (e.g. `1.1.1.1`).  
-   **Never** put Technitium `192.168.68.11` here — it is authoritative for the lab zone only, not a general recursive resolver for clients.
-5. Save.
+| Field             | Value             | Why                                           |
+| ----------------- | ----------------- | --------------------------------------------- |
+| **Primary DNS**   | `192.168.68.10`   | AdGuard — filtering + lab zone forward        |
+| **Secondary DNS** | `1.1.1.1`         | Public fallback when AdGuard is down          |
+| Technitium `.11`  | **Never** in DHCP | Authoritative only — not a recursive resolver |
+
+Steps:
+
+1. Open TP-Link admin → **Advanced** → **Network** → **DHCP Server** (or **LAN** → **DHCP**).
+2. Set Primary and Secondary as in the table above.
+3. Save.
+
+Without Secondary DNS, destroying or replacing `adguard-01` takes down name
+resolution for **every** DHCP client. See [lan-dns-resilience.md](lan-dns-resilience.md).
 
 ## After save
 
-1. Renew leases: reconnect Wi‑Fi, or `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder` on Mac, or renew DHCP on each device.
-2. Verify from a **DHCP** Mac and a phone:
-   - `scutil --dns | grep nameserver` lists AdGuard and no ISP/public resolver
-   - `dig pve01.lab.nasraldin.com +short` → `192.168.68.13` (no `@` — uses system DNS)
-   - Internet works (e.g. open a news site)
-   - AdGuard **Query log** shows the client and blocked ads
-3. Devices with **static DNS** — point them at `192.168.68.10` or switch back to DHCP.
-4. Optional: DHCP reservations for `.10` / `.11` by MAC on the router so addresses stay fixed.
+1. Renew leases (reconnect Wi‑Fi, or flush Mac DNS cache, or renew DHCP per device).
+2. Verify from a DHCP client:
+   - Internet works (public site loads).
+   - `dig pve01.lab.nasraldin.com +short` → `192.168.68.13` (system DNS).
+   - AdGuard **Query log** shows the client when AdGuard is healthy.
+3. Optional: DHCP reservations for `.10` / `.11` by MAC so addresses stay fixed.
+
+`scutil --dns` on the Mac may list both AdGuard and `1.1.1.1` when using DHCP —
+that is expected with Secondary set. Prefer AdGuard when it answers; Secondary
+is for outages only.
 
 ## IPv6 bypass (Deco limitation)
 
-Changing IPv4 DHCP does not override DNS servers advertised through IPv6 router
-advertisements. If `scutil --dns` still lists ISP IPv6 resolvers, clients can
-bypass AdGuard and `dig pve01.lab.nasraldin.com` may return the public wildcard.
+IPv4 DHCP DNS does not override DNS learned via IPv6 router advertisements. If
+`scutil --dns` still lists ISP IPv6 resolvers, clients can bypass AdGuard.
 
-AdGuard is ready for IPv6 DNS:
+AdGuard is prepared for IPv6 DNS:
 
-- Terraform pins MAC `02:00:00:00:00:10`.
-- Stable link-local DNS address: `fe80::ff:fe00:10`.
-- UFW permits TCP and UDP 53 from `fe80::/10` only.
-- IPv4 and link-local IPv6 filtering proofs pass.
+- Terraform pins MAC `02:00:00:00:00:10`
+- Stable link-local: `fe80::ff:fe00:10`
+- UFW allows TCP/UDP 53 from `fe80::/10`
 
 ### Router options (when the UI exposes them)
 
-1. Set **Primary IPv6 DNS** / **RDNSS** to `fe80::ff:fe00:10`; leave Secondary
-   empty.
-2. If the firmware rejects a link-local value, disable its IPv6 DNS
-   advertisement.
-3. If it cannot disable DNS advertisement separately, temporarily disable IPv6
-   on the LAN.
+1. Primary IPv6 DNS / RDNSS → `fe80::ff:fe00:10`
+2. Or disable IPv6 DNS advertisement on the LAN
+3. Or temporarily disable IPv6 on the LAN
 
-Do not advertise a public IPv6 resolver as Secondary DNS.
+Do not advertise a public IPv6 resolver as the only IPv6 DNS if you want
+filtering on IPv6 clients.
 
-### Accepted workaround when Deco has no IPv6 DNS controls (2026-07-23)
+### Accepted workaround (Deco has no IPv6 DNS UI) — 2026-07-23
 
-TP-Link Deco cloud portal / app on this mesh **does not expose** IPv6 DNS /
-RDNSS settings. Whole-LAN RDNSS cutover is therefore blocked by firmware, not
-by AdGuard.
-
-For the admin Mac (and any other client you care about), pin DNS to AdGuard so
-system queries ignore the ISP IPv6 resolvers:
+Pin the **admin Mac** to AdGuard so system queries ignore ISP IPv6 resolvers:
 
 ```bash
-# Pin Wi-Fi DNS to AdGuard (IPv4). Leaves DHCP for address/router.
 networksetup -setdnsservers Wi-Fi 192.168.68.10
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 
-scutil --dns | grep nameserver          # expect only 192.168.68.10
+scutil --dns | grep nameserver
 dig pve01.lab.nasraldin.com +short      # → 192.168.68.13
 dig doubleclick.net +short              # → 0.0.0.0
 ```
 
-Revert to DHCP DNS later with:
+Before replacing DNS VMs, switch the Mac to public DNS first:
 
 ```bash
-networksetup -setdnsservers Wi-Fi Empty
+~/homelab/ansible-lab/scripts/dns-failover-public.sh
+# equivalent: sudo networksetup -setdnsservers "Wi-Fi" 1.1.1.1 1.0.0.1
 ```
 
-**Boundary:** phones / IoT that stay on Deco DHCP may still learn ISP IPv6
-resolvers until Deco gains IPv6 DNS controls or the edge is replaced. Lab
-admin path (Mac → AdGuard) is complete with the pin above.
+Return to AdGuard (or DHCP) after `dns.yml`:
 
-If pinning DNS is not enough on a given OS, fall back to disabling IPv6 on that
-client only (`networksetup -setv6off Wi-Fi` on macOS).
+```bash
+~/homelab/ansible-lab/scripts/dns-restore-adguard.sh
+# or: networksetup -setdnsservers Wi-Fi Empty   # inherit DHCP again
+```
+
+Full Mac command reference (`scutil`, DHCP vs manual, flush cache):
+[mac-dns.md](mac-dns.md).
+
+**Boundary:** phones / IoT on Deco DHCP may still learn ISP IPv6 resolvers until
+firmware exposes RDNSS controls or the edge is replaced.
 
 ## Rollback
 
-Restore the previous Primary/Secondary DNS on the TP-Link DHCP page and renew leases. AdGuard/Technitium VMs stay up for manual `dig @192.168.68.10 …`.
+Restore previous Primary/Secondary DNS on the TP-Link DHCP page and renew
+leases. AdGuard/Technitium VMs can remain up for manual `dig @192.168.68.10 …`.
 
 ## After cutover is stable
 
-Remove interim `/etc/hosts` lab duplicates on Mac/node that DNS now owns (keep only entries you still need for break-glass). See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
+Remove interim `/etc/hosts` lab duplicates that DNS now owns (keep break-glass
+entries only). See [network-dns-ingress.md](../architecture/network-dns-ingress.md).
 
 ## Related
 
-- Ansible guest config: [ansible-lab docs/dns.md](https://github.com/nasraldin/ansible-lab/blob/main/docs/dns.md)
-- Architecture: [network-dns-ingress.md](../architecture/network-dns-ingress.md)
+- [lan-dns-resilience.md](lan-dns-resilience.md) — outage modes, autostart, replace runbook
+- [ansible-lab docs/dns.md](https://github.com/nasraldin/ansible-lab/blob/main/docs/dns.md)
+- [network-dns-ingress.md](../architecture/network-dns-ingress.md)
+- [guest-vmid-map.md](guest-vmid-map.md)

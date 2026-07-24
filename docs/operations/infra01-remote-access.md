@@ -149,3 +149,8 @@ Rebuild order:
    `cloudflare-tunnel/mac/bootstrap.sh --yes`.
 4. Run `cloudflare-tunnel/mac/install-ssh-client.sh`.
 5. Complete one off-LAN `ssh infra01` Access login.
+
+## Related
+
+- [remote-connectivity.md](remote-connectivity.md) — RDP / RustDesk / NoMachine for GUI guests
+- [mac-dns.md](mac-dns.md) — Mac resolver when AdGuard is down

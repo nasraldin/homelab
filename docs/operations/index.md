@@ -10,15 +10,28 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
-| Doc                                                  | Topic                                          |
-| ---------------------------------------------------- | ---------------------------------------------- |
-| [deploy-and-rebuild.md](deploy-and-rebuild.md)       | Canonical repo order, commands, and acceptance |
-| [infra01-remote-access.md](infra01-remote-access.md) | Secure remote shell and PVE administration     |
-| [proxmox-updates.md](proxmox-updates.md)             | Daily check, manual upgrade, n8n layer         |
-| [backups.md](backups.md)                             | vzdump stages, drills, migration               |
-| [backup-platform.md](backup-platform.md)             | PBS, Velero, MinIO — Veeam-equivalent          |
-| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)           | TP-Link DHCP DNS → AdGuard (all LAN clients)   |
-| [gitlab.md](gitlab.md)                               | Omnibus + runner: login, PAT, hello-world CI   |
+| Doc                                                             | Topic                                                |
+| --------------------------------------------------------------- | ---------------------------------------------------- |
+| [deploy-and-rebuild.md](deploy-and-rebuild.md)                  | Canonical repo order, commands, and acceptance       |
+| [infra01-remote-access.md](infra01-remote-access.md)            | Secure remote shell and PVE administration           |
+| [proxmox-updates.md](proxmox-updates.md)                        | Daily check, manual upgrade, n8n layer               |
+| [backups.md](backups.md)                                        | vzdump stages, drills, migration                     |
+| [backup-platform.md](backup-platform.md)                        | PBS, Velero, MinIO — Veeam-equivalent                |
+| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)                      | TP-Link DHCP DNS → AdGuard (+ Secondary)             |
+| [lan-dns-resilience.md](lan-dns-resilience.md)                  | DNS outages, autostart, replace without LAN death    |
+| [mac-dns.md](mac-dns.md)                                        | Mac: scutil / networksetup failover & restore        |
+| [remote-connectivity.md](remote-connectivity.md)                | Mac → SSH / RDP / RustDesk / NoMachine (no WAN)      |
+| [gitlab.md](gitlab.md)                                          | Omnibus + runners: S3, mint, login, CI               |
+| [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md)            | TF/Ansible CI: TF_TARGET_GUESTS, ANSIBLE_LIMIT       |
+| [object-storage.md](object-storage.md)                          | AIStor Free shared S3 (`aistor-01`)                  |
+| [vault.md](vault.md)                                            | HashiCorp Vault OSS Raft (`vault-01` + seal)         |
+| [infisical.md](infisical.md)                                    | Infisical app env-secrets (`infisical-01`)           |
+| [Vault vs Infisical](../architecture/vault-vs-infisical.md)     | Secrets platforms: features, use cases, decision     |
+| [Secret ownership map](../architecture/secret-ownership-map.md) | Vault only / Infisical only / Either per secret type |
+| [guest-vmid-map.md](guest-vmid-map.md)                          | Core VMID 110–119, boot order, recreate notes        |
+| [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)    | runner-02 fleeting follow-up                         |
+
+Architecture: [vm-best-practices.md](../architecture/vm-best-practices.md) (q35, OVMF, VirtIO SCSI, startup order).
 
 ## OpsHub (sibling repo)
 
