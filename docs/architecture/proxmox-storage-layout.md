@@ -179,18 +179,24 @@ Kernel after install: add **`iommu=pt`** only (not `amd_iommu=on`) —
 
 ---
 
-## VM defaults (Proxmox)
+## VM defaults (Proxmox VE 9)
 
-| Setting         | Value                                                         |
-| --------------- | ------------------------------------------------------------- |
-| CPU type        | **host** (or x86-64-v2-AES if you need migration)             |
-| Machine         | q35                                                           |
-| BIOS            | OVMF only if UEFI guest needs it; Debian cloud = SeaBIOS fine |
-| SCSI controller | VirtIO SCSI single                                            |
-| Disk bus        | **SCSI** + **Discard** + **SSD** flag on NVMe pool            |
-| Network         | VirtIO on `vmbr0`                                             |
-| QEMU agent      | Enabled (cloud images)                                        |
-| Disk storage    | **`data01`** always                                           |
+Full rationale: [vm-best-practices.md](vm-best-practices.md). Encoded in
+`terraform-lab/modules/vm`.
+
+| Setting         | Value                                               |
+| --------------- | --------------------------------------------------- |
+| Guest OS type   | Linux 6.x (`l26`)                                   |
+| CPU type        | **host** (sockets 1; x86-64-v2-AES only if migrate) |
+| Machine         | **q35**                                             |
+| BIOS            | **OVMF (UEFI)** + EFI disk `4m`                     |
+| SCSI controller | **VirtIO SCSI single**                              |
+| Disk bus        | **SCSI** (`scsi0`) + Discard + SSD + IO thread      |
+| Cache           | none                                                |
+| Network         | VirtIO on `vmbr0`                                   |
+| QEMU agent      | Enabled (cloud-init / Ansible)                      |
+| Ballooning      | Off (no floating memory)                            |
+| Disk storage    | **`data01`** always                                 |
 
 ---
 

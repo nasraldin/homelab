@@ -48,6 +48,8 @@ pve01 (Proxmox VE 9.x)
 
 - [proxmox-storage-layout.md](proxmox-storage-layout.md)
 - [service-placement.md](service-placement.md)
+- [vault-vs-infisical.md](vault-vs-infisical.md)
+- [secret-ownership-map.md](secret-ownership-map.md)
 - [hardware-and-storage.md](hardware-and-storage.md)
 - [network-dns-ingress.md](network-dns-ingress.md)
 - [kubernetes/gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md)

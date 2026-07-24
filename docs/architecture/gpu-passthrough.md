@@ -160,7 +160,7 @@ Terraform.
 3. Select the GPU (`c6:00.0` or raw `c6:00` all functions)
 4. Enable **PCI-Express**, **All Functions** (if audio should follow)
 5. Optional: **Primary GPU** / ROM-Bar per guest needs
-6. Machine type **q35**; use **OVMF (UEFI)** if the guest needs it for GPU
+6. Machine type **q35** + **OVMF** are already lab defaults — [vm-best-practices.md](vm-best-practices.md); add `hostpci` for GPU
 7. Start VM; install guest GPU drivers (AMD ROCm / mesa as required)
 
 **CLI sketch** (replace `VMID`):

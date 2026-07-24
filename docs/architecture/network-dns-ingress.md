@@ -32,28 +32,31 @@ practice (typically with Kubernetes).
 
 ## DNS (decided)
 
-| Layer                  | Tool               | Role                                            | Status |
-| ---------------------- | ------------------ | ----------------------------------------------- | ------ |
-| Filtering              | **AdGuard Home**   | LAN resolver — ads, trackers, forward lab zone  | ✅     |
-| Authoritative internal | **Technitium DNS** | `lab.nasraldin.com` zone only                   | ✅     |
-| Public                 | **Cloudflare**     | Public names + Tunnel                           | ✅     |
-| In-cluster             | **ExternalDNS**    | K8s → DNS records                               | ⏳     |
-| Router DHCP DNS        | **TP-Link → .10**  | IPv4 set; AdGuard IPv6 ready; router RDNSS next | ⏳     |
+| Layer                  | Tool                                  | Role                                                                                                  | Status |
+| ---------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------ |
+| Filtering              | **AdGuard Home**                      | LAN resolver — ads, trackers, forward lab zone                                                        | ✅     |
+| Authoritative internal | **Technitium DNS**                    | `lab.nasraldin.com` zone only                                                                         | ✅     |
+| Public                 | **Cloudflare**                        | Public names + Tunnel                                                                                 | ✅     |
+| In-cluster             | **ExternalDNS**                       | K8s → DNS records                                                                                     | ⏳     |
+| Router DHCP DNS        | **TP-Link → .10 + Secondary 1.1.1.1** | Primary AdGuard; public fallback required — [lan-dns-resilience](../operations/lan-dns-resilience.md) |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
-**Topology:** Clients → AdGuard (`192.168.68.10`) → forward `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`.
+**Topology:** Clients → AdGuard (`192.168.68.10`) → forward `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`. DHCP Secondary `1.1.1.1` keeps the LAN online when AdGuard is unreachable.
 
-| Host           | IP              | Notes                                            |
-| -------------- | --------------- | ------------------------------------------------ |
-| adguard-01     | `192.168.68.10` | UI `:3000`; IPv6 DNS `fe80::ff:fe00:10`          |
-| technitium-01  | `192.168.68.11` | Debian 13 VM, UI `:5380`                         |
-| infra01        | `192.168.68.12` | Operator VM; Access SSH at `infra.nasraldin.com` |
-| pve01 (seed A) | `192.168.68.13` | In Technitium zone; Tunnel connector             |
+| Host           | IP / VMID       | Notes                                                    |
+| -------------- | --------------- | -------------------------------------------------------- |
+| adguard-01     | `.10` / **110** | UI `:3000`; startup order 1; IPv6 DNS `fe80::ff:fe00:10` |
+| technitium-01  | `.11` / **111** | UI `:5380`; startup order 2; authoritative only          |
+| infra01        | `.12` / **112** | Operator VM; Access SSH at `infra.nasraldin.com`         |
+| pve01 (seed A) | `.13`           | In Technitium zone; Tunnel connector                     |
 
 **Interim:** `/etc/hosts` on Mac + node for break-glass until [DHCP cutover](../operations/dns-dhcp-cutover.md) is verified, then remove lab duplicates DNS owns.
 
 Example internal names: `gitlab.lab.nasraldin.com`, `grafana.lab.nasraldin.com`, `argocd.lab.nasraldin.com`.
+
+**Ops:** Autostart, outage modes, and replace runbooks —
+[lan-dns-resilience.md](../operations/lan-dns-resilience.md).
 
 ## Ingress (Kubernetes)
 
@@ -73,7 +76,8 @@ Example internal names: `gitlab.lab.nasraldin.com`, `grafana.lab.nasraldin.com`,
 
 ## Cutover
 
-IPv4 DHCP already points LAN clients at AdGuard. Finish IPv6 RDNSS / DNS
-advertisement on the TP-Link so clients cannot bypass AdGuard — see
-[dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md). Do not replace the
-TP-Link edge until a later, deliberate design; OPNsense remains archived.
+IPv4 DHCP must use **Primary** AdGuard `.10` and **Secondary** `1.1.1.1` —
+[dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md) ·
+[lan-dns-resilience.md](../operations/lan-dns-resilience.md). Finish IPv6 RDNSS
+when Deco exposes it so clients cannot bypass AdGuard on IPv6. Do not replace
+the TP-Link edge until a later deliberate design; OPNsense remains archived.

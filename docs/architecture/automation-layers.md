@@ -182,21 +182,22 @@ Kubernetes platform: **Terraform** creates nodes → **Argo CD** owns cluster ap
 
 ## Where you are now
 
-| Step                                         | Status                        |
-| -------------------------------------------- | ----------------------------- |
-| Official install Proxmox                     | ✅ done                       |
-| SSH, DNS, API token                          | ✅ done                       |
-| `proxmox-bootstrap` on node                  | ✅ done                       |
-| `cloudflare-tunnel`                          | ✅ done                       |
-| `terraform apply` (`data01`, Stage 1 backup) | ✅ done                       |
-| `aux01` (OEM Slot 3)                         | ⏸️ hold — NVMe not installed  |
-| Host firewall                                | ✅ done                       |
-| AdGuard + Technitium guests                  | ✅ done                       |
-| Router DNS cutover (IPv4)                    | ✅ done                       |
-| Router IPv6 DNS polish                       | ⏳ ISP resolvers still bypass |
-| OPNsense VLAN Pilot                          | ⏸️ archived                   |
-| NetBird → Vault                              | ⏳ optional                   |
-| kubeadm + Argo CD                            | ⏳ Phase 6–7                  |
+| Step                                         | Status                         |
+| -------------------------------------------- | ------------------------------ |
+| Official install Proxmox                     | ✅ done                        |
+| SSH, DNS, API token                          | ✅ done                        |
+| `proxmox-bootstrap` on node                  | ✅ done                        |
+| `cloudflare-tunnel`                          | ✅ done                        |
+| `terraform apply` (`data01`, Stage 1 backup) | ✅ done                        |
+| `aux01` (OEM Slot 3)                         | ⏸️ hold — NVMe not installed   |
+| Host firewall                                | ✅ done                        |
+| AdGuard + Technitium guests                  | ✅ done                        |
+| Router DNS cutover (IPv4)                    | ✅ done                        |
+| Router IPv6 DNS polish                       | ✅ Mac pin (Deco has no RDNSS) |
+| OPNsense VLAN Pilot                          | ⏸️ archived                    |
+| Vault (`vault-01`) + AIStor (`aistor-01`)    | ✅ core Layer-1                |
+| NetBird                                      | ⏳ optional                    |
+| kubeadm + Argo CD                            | ⏳ Phase 6–7                   |
 
-Next: [current-state.md](../current-state.md) · finish IPv6 DNS polish, then
+Next: [current-state.md](../current-state.md) · optional Terraform CI, then
 kubeadm when ready
