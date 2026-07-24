@@ -144,6 +144,7 @@ export default defineConfig({
             { text: 'Vault', link: '/operations/vault' },
             { text: 'Infisical', link: '/operations/infisical' },
             { text: 'GitLab TF/Ansible CI', link: '/operations/gitlab-infra-pipeline' },
+            { text: 'Repo audit checklist', link: '/operations/repo-audit-checklist' },
             { text: 'Infra01 remote access', link: '/operations/infra01-remote-access' },
             { text: 'DNS DHCP cutover', link: '/operations/dns-dhcp-cutover' },
             { text: 'Safe Proxmox upgrades', link: '/operations/proxmox-updates' },

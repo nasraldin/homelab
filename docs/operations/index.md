@@ -23,6 +23,7 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | [remote-connectivity.md](remote-connectivity.md)                | Mac → SSH / RDP / RustDesk / NoMachine (no WAN)      |
 | [gitlab.md](gitlab.md)                                          | Omnibus + runners: S3, mint, login, CI               |
 | [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md)            | TF/Ansible CI: TF_TARGET_GUESTS, ANSIBLE_LIMIT       |
+| [repo-audit-checklist.md](repo-audit-checklist.md)              | Secrets hygiene, CI coverage, ownership (DRY)        |
 | [object-storage.md](object-storage.md)                          | AIStor Free shared S3 (`aistor-01`)                  |
 | [vault.md](vault.md)                                            | HashiCorp Vault OSS Raft (`vault-01` + seal)         |
 | [infisical.md](infisical.md)                                    | Infisical app env-secrets (`infisical-01`)           |
