@@ -5,6 +5,7 @@
   "description": "Platform Engineering homelab",
   "author": "Nasr Aldin <ns@nasraldin.com> (https://nasraldin.com)",
   "private": true,
+  "packageManager": "pnpm@11.17.0",
   "scripts": {
     "format": "prettier --write . --ignore-path .prettierignore",
     "format:check": "prettier --check . --ignore-path .prettierignore",
