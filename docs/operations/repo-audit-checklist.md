@@ -39,7 +39,8 @@ Never commit live tokens. Prefer GitLab/GitHub **masked protected** CI variables
 | homebrew-tools | GitHub Actions | `brew style` + `brew audit` |
 | docker-lab / camunda-lab | GitHub Actions | existing |
 | homelab (workspace) | GitHub Actions | clone-labs shellcheck/shfmt + actionlint + yamllint |
-| homelab-docs | GitHub Actions | markdownlint + mkdocs build |
+| homelab (docs) | GitHub Actions | markdownlint + VitePress build |
+| homelab-docs | archived | superseded by VitePress docs in `homelab` |
 
 ## Destructive / privileged scripts
 

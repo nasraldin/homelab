@@ -41,9 +41,11 @@
 1. Default config path: `$ROOT/repos.json` (env override remains `HOMELAB_REPOS_CONF`).
 2. Require `jq` on `PATH`; if missing, print `brew install jq` (or equivalent) and exit 1.
 3. Emit path/spec pairs via:
+
    ```bash
    jq -r 'to_entries[] | "\(.key)\t\(.value)"' "$CONF"
    ```
+
 4. Keep the existing clone / skip / `--pull` / `--protocol` loop unchanged after pairs are produced.
 5. Reject non-object top-level JSON (e.g. array) with an explicit error.
 

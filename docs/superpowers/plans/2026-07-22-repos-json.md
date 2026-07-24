@@ -310,13 +310,13 @@ Requires [`jq`](https://jqlang.org/) (`brew install jq`).
 Change:
 
 ```make
-	@echo "  make clone           Clone all labs from repos.conf (missing only)"
+  @echo "  make clone           Clone all labs from repos.conf (missing only)"
 ```
 
 to:
 
 ```make
-	@echo "  make clone           Clone all labs from repos.json (missing only)"
+  @echo "  make clone           Clone all labs from repos.json (missing only)"
 ```
 
 - [ ] **Step 3: Delete `repos.conf`**

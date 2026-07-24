@@ -38,7 +38,7 @@ practice (typically with Kubernetes).
 | Authoritative internal | **Technitium DNS**                    | `lab.nasraldin.com` zone only                                                                         | ✅     |
 | Public                 | **Cloudflare**                        | Public names + Tunnel                                                                                 | ✅     |
 | In-cluster             | **ExternalDNS**                       | K8s → DNS records                                                                                     | ⏳     |
-| Router DHCP DNS        | **TP-Link → .10 + Secondary 1.1.1.1** | Primary AdGuard; public fallback required — [lan-dns-resilience](../operations/lan-dns-resilience.md) |
+| Router DHCP DNS        | **TP-Link → .10 + Secondary 1.1.1.1** | Primary AdGuard; public fallback required — [lan-dns-resilience](../operations/lan-dns-resilience.md) | ✅     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
