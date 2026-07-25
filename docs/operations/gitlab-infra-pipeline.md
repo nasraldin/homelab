@@ -78,14 +78,21 @@ Script: `scripts/ci-run.sh`
 | `infra01`                 | `infra01`          | `playbooks/infra.yml`          | `infra01`             |
 | `vault-seal`              | `vault-seal`       | `playbooks/object-storage.yml` | `vault-seal`          |
 | `vault-01`                | `vault-01`         | `playbooks/object-storage.yml` | `vault-01`            |
-| `infisical-01`            | `infisical-01`     | `playbooks/infisical.yml`      | `infisical-01`        |
 | `aistor-01`               | `aistor-01`        | `playbooks/object-storage.yml` | `aistor-01`           |
 | `gitlab-01`               | `gitlab-01`        | `playbooks/gitlab.yml`         | `gitlab-01`           |
-| `runner-01` / `runner-02` | `runner-01`        | `playbooks/gitlab.yml`         | `runners` or name     |
+| `runner-01`               | `runner-01`        | `playbooks/gitlab.yml`         | `runners` or name     |
+| `database-01`             | `database-01`      | `playbooks/database.yml`       | `database-01`         |
+| `docker-01` / Infisical   | `docker-01`        | `playbooks/docker-hosts.yml`   | `docker-01`           |
+| `sonarqube-01`            | `sonarqube-01`     | `playbooks/sonarqube.yml`      | `sonarqube-01`        |
+| `elastic-01`              | `elastic-01`       | `playbooks/elastic.yml`        | `elastic-01`          |
+| `monitoring-01`           | `monitoring-01`    | `playbooks/monitoring.yml`     | `monitoring-01`       |
+| `podman-01`               | `podman-01`        | `playbooks/podman-host.yml`    | `podman-01`           |
+| `dockhand` (CT)           | `dockhand`         | `playbooks/dockhand.yml`       | `dockhand`            |
 
 **Order still matters for new stacks:** DNS → vault-seal → vault-01 → aistor →
-Infisical → GitLab → runners. A targeted pipeline does not remove dependency
-awareness — it only scopes _which_ resource the job touches.
+GitLab → **database** → docker-hosts (Infisical/Keycloak) → sonar/elastic/monitoring.
+A targeted pipeline does not remove dependency awareness — it only scopes _which_
+resource the job touches.
 
 ## Local dry-run (same as CI)
 
@@ -108,7 +115,7 @@ ANSIBLE_PLAYBOOK=playbooks/infra.yml ANSIBLE_LIMIT=infra01 ./scripts/ci-run.sh
 2. Set variables, e.g.:
    - `TF_TARGET_GUESTS` = `infra01`
    - `TF_ACTION` = `plan` (apply job remains **manual**)
-3. For destroy one guest: run **destroy** job with `TF_TARGET_GUESTS=infisical-01`
+3. For destroy one guest: run **destroy** job with `TF_TARGET_GUESTS=docker-01`
 
 Default branch pipelines without `TF_TARGET_GUESTS` → **full** plan (then manual apply).
 

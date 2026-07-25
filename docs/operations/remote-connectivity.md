@@ -4,10 +4,17 @@ How the **Mac control plane** reaches Linux and Windows guests, Proxmox, and
 (optionally) the lab from away-from-home. Prefer **LAN or an outbound mesh /
 Tunnel** — never expose RDP or SSH on the WAN.
 
+**Away from home and need a shell into the lab?** Start with
+[infra01-remote-access.md](infra01-remote-access.md) (`ssh infra01` via
+Cloudflare Access). **New laptop that has never been on home Wi‑Fi:** use the
+[New local machine (outside the lab)](infra01-remote-access.md#new-local-machine-outside-the-lab)
+section there. Do not open WAN `:22` or assume `192.168.68.x` is reachable
+from the internet.
+
 | Already in this lab | Doc                                                                          |
 | ------------------- | ---------------------------------------------------------------------------- |
 | Proxmox UI + Access | Cloudflare Tunnel (`homelab.nasraldin.com`)                                  |
-| Operator SSH        | [infra01-remote-access.md](infra01-remote-access.md) (`infra.nasraldin.com`) |
+| Operator SSH (off-LAN) | [infra01-remote-access.md](infra01-remote-access.md) (`infra.nasraldin.com`) |
 | Guest console       | OpsHub / Proxmox noVNC (break-glass)                                         |
 | Mesh VPN (optional) | NetBird — ⏳ not required for day-to-day LAN                                 |
 

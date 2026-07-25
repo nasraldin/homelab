@@ -4,6 +4,11 @@ Symptom → cause → fix log from the fresh Proxmox setup. Use it when a new no
 
 Statuses: `resolved` | `workaround` | `open` | `wont-fix`.
 
+Lab **factory-reset / rebuild** failures (SSH host keys, OpsHub adopt, Vault
+Transit init, etc.) live in
+[operations/lab-refresh-issues.md](../operations/lab-refresh-issues.md) with the
+checklist in [lab-refresh-runbook.md](../operations/lab-refresh-runbook.md).
+
 ## What this page covers
 
 - Summary table of every tracked install issue

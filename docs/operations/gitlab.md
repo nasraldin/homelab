@@ -11,12 +11,12 @@ or UI clicks.
 
 | Guest              | VMID      | LAN             | Public                            |
 | ------------------ | --------- | --------------- | --------------------------------- |
-| `gitlab-01`        | 117       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
+| `gitlab-01`        | 116       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
 | Container Registry | (same VM) | `:5050`         | `https://gregistry.nasraldin.com` |
-| `runner-01`        | 118       | `192.168.68.15` | — (talks to GitLab over HTTPS)    |
-| `runner-02`        | 119       | `192.168.68.16` | —                                 |
+| `runner-01`        | 117       | `192.168.68.15` | Fleeting **manager** (2c/4G)      |
 
-VMID map (Vault/AIStor/GitLab order): [guest-vmid-map.md](guest-vmid-map.md).
+VMID map: [guest-vmid-map.md](guest-vmid-map.md). Autoscaling:
+[gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md) (no `runner-02`).
 
 `registry.nasraldin.com` is reserved for a later registry (e.g. Harbor). Package
 Registry lives under the main GitLab URL (no separate hostname).
@@ -39,7 +39,7 @@ order cannot leave wrong tags:
 | Web IDE single-origin fallback | **off**                                     | `gitlab_web_ide_single_origin_fallback` |
 | Object store / registry S3     | AIStor `192.168.68.17:9000`                 | `gitlab.rb.j2` object_store             |
 | Runner mint (`glrt-…`)         | `CreateRunnerService` → token files         | `mint_runners.rb.j2` (no Admin UI)      |
-| Runner tags / untagged         | from `host_vars` (`runner-01`, `runner-02`) | `reconcile_runners.rb.j2`               |
+| Runner tags / untagged         | from `host_vars` (`runner-01`)              | `reconcile_runners.rb.j2`               |
 | Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache`         | `config.toml` on each runner            |
 | Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                              | Omnibus reconfigure                     |
 
@@ -74,17 +74,12 @@ wildcard DNS + TLS path into Omnibus (see
 
 ## Runners
 
-| Host        | Specs                      | Concurrent | Tag         | Untagged jobs          |
-| ----------- | -------------------------- | ---------- | ----------- | ---------------------- |
-| `runner-01` | 4 vCPU / 4 GiB             | **4**      | `runner-01` | **yes** (default pool) |
-| `runner-02` | 16 vCPU / 32 GiB / 150 GiB | **40**     | `runner-02` | no (tag-only)          |
+| Host | Specs | Role |
+| ---- | ----- | ---- |
+| `runner-01` | **2c / 4G** manager | `docker-autoscaler` + fleeting; untagged + tagged |
 
-Jobs with no `tags:` run on `runner-01`. Pin heavy/monorepo work to `runner-02`:
-
-```yaml
-tags:
-  - runner-02
-```
+Ephemeral workers (~2c/4G) provide concurrency. See
+[gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md).
 
 ## First login
 
@@ -130,8 +125,8 @@ cd ~/homelab/ansible-lab
 ansible-playbook playbooks/gitlab.yml -e @secrets.yml
 ```
 
-Autoscaling `runner-02` (docker-autoscaler + fleeting Proxmox) is documented as
-the next CI wave — [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md).
+Fleeting autoscaler on `runner-01` is **core** —
+[gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md).
 
 ## Hello-world CI proof
 

@@ -1,12 +1,12 @@
 # Object storage (AIStor Free)
 
-Shared lab S3 on **`aistor-01`** (`192.168.68.17`, **VMID 116**). Software is
+Shared lab S3 on **`aistor-01`** (`192.168.68.17`, **VMID 115**). Software is
 **MinIO AIStor Free** — not archived MinIO Community Edition. Do not deploy
 classic MinIO CE alongside it.
 
 | Item    | Value                                                 |
 | ------- | ----------------------------------------------------- |
-| Guest   | `aistor-01` (VMID 116)                                |
+| Guest   | `aistor-01` (VMID 115)                                |
 | S3 API  | `http://192.168.68.17:9000` (**LAN only**)            |
 | Console | `http://192.168.68.17:9001` (LAN only)                |
 | Spec    | 4 vCPU / 8 GiB / 300 GiB on `data01`                  |

@@ -78,17 +78,20 @@ QEMU Guest Agent install is automated via vendor-data / Ansible — see
 
 After a **host** reboot, Proxmox starts guests by `startup` order (not by VMID):
 
-| Order | Guest           | Delay after start |
-| ----- | --------------- | ----------------- |
-| 1     | `adguard-01`    | 15 s              |
-| 2     | `technitium-01` | 10 s              |
-| 3     | `infra01`       | —                 |
-| 4     | `vault-seal`    | 20 s              |
-| 5     | `vault-01`      | —                 |
-| 6     | `aistor-01`     | —                 |
-| 7     | `infisical-01`  | —                 |
-| 8     | `gitlab-01`     | —                 |
-| 9–10  | runners         | —                 |
+| Order | Guest             | Delay after start |
+| ----- | ----------------- | ----------------- |
+| 1     | `adguard-01`      | 15 s              |
+| 2     | `technitium-01`   | 10 s              |
+| 3     | `infra01`         | —                 |
+| 4     | `vault-seal`      | 20 s              |
+| 5     | `vault-01`        | —                 |
+| 6     | `aistor-01`       | —                 |
+| 7     | `gitlab-01`       | —                 |
+| 8     | `runner-01`       | —                 |
+| 9     | `database-01`     | —                 |
+| 10    | `docker-01`       | —                 |
+| 11–14 | podman / monitoring / sonar / elastic | — |
+| CT    | `dockhand` (200)  | —                 |
 
 Autostart brings the **VM** up. Application configuration still comes from
 Ansible after a disk wipe.

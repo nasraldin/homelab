@@ -1,47 +1,29 @@
-# GitLab Runner autoscaling (next CI wave)
+# GitLab Runner autoscaling (fleeting) — core
 
-**Core stage status:** `runner-02` stays a **static** fat VM (`concurrent=40`).
-That does **not** free Proxmox resources when idle. This page is the follow-up
-checklist — do not block Vault/AIStor/GitLab on it.
+Day-one CI scale uses **one** manager VM `runner-01` (VMID **117**, `.15`,
+**2c / 4G**) with GitLab **`docker-autoscaler`** + **fleeting-plugin-proxmox**.
 
-## Target design
+**Removed:** static fat `runner-02`.
 
-```text
-runner-02  →  small manager (docker-autoscaler)
-                 └─ fleeting-plugin-proxmox
-                      └─ ephemeral VMs from a CI template
-                           idle_count / idle_time / max_instances
-```
+## Capacity model
 
-- Keep job tag `runner-02` (pipelines unchanged)
-- Keep `runner-01` as static light / untagged pool
-- After kubeadm, prefer Kubernetes executor + HPA for most CI
+| Knob | Start value |
+| ---- | ----------- |
+| `idle_count` | ≈ 4 |
+| `max_instances` | sized for ~40 jobs with free node RAM |
+| `capacity_per_instance` | 2 |
+| Worker template | ≈ 2c / 4G / 40G ephemeral VMs |
 
-## Implementation checklist (follow-up)
+The manager does **not** run 40 concurrent jobs itself.
 
-1. TF: CI template VM (Debian + Docker + qemu-guest-agent)
-2. Resize `runner-02` to manager size (e.g. 2c/4G)
-3. Ansible: install fleeting Proxmox plugin; switch executor to `docker-autoscaler`
-4. Proxmox pool + dedicated API user (permissions per plugin docs)
-5. Store Proxmox API creds in Vault `infra/proxmox/fleeting`
-6. Tune `max_instances`, `idle_count=0` for scale-to-zero when quiet
+## Ansible scaffold
 
-### Tuning knobs
+Role: `ansible-lab/roles/gitlab_runner_fleeting/`  
+Writes `/etc/gitlab-runner/FLEETING.md` + example TOML snippet.
 
-| Knob                    | Role                                                       |
-| ----------------------- | ---------------------------------------------------------- |
-| `idle_count`            | Warm instances waiting (0 = scale to zero when quiet)      |
-| `idle_time`             | How long idle workers live before destroy                  |
-| `max_instances`         | Hard capacity ceiling (replaces “concurrent=40” on one VM) |
-| `capacity_per_instance` | Jobs per ephemeral VM (often 1–4)                          |
-
-## What we will not do
-
-- Docker Machine autoscaler (deprecated)
-- Autoscaling by only tweaking `concurrent` on a 32 GiB VM
-- Building a custom fleeting plugin (use maintained Proxmox plugin)
+Wire Proxmox API credentials from Vault before enabling the plugin live.
 
 ## Related
 
-- [gitlab.md](gitlab.md) — current static runner layout
-- [vault.md](vault.md) — where fleeting Proxmox API creds will live
+- [gitlab.md](gitlab.md) · [guest-vmid-map.md](guest-vmid-map.md)
+- Design: [core-container-hosts](../superpowers/specs/2026-07-25-core-container-hosts-design.md)

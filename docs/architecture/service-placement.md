@@ -32,41 +32,17 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **Proxmox VE**                            | Host                                 | 0        | Only hypervisor                                                                                                                   |
 | **Terraform**                             | Mac + Git                            | 1        | Not a server — IaC in repos                                                                                                       |
 | **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`)        | 2        | Source of truth; **not** inside k8s                                                                                               |
-| **GitLab Runner**                         | 🖥 **VM** (`runner-01`) then ☸        | 2 / 8    | Docker executor VM pre-k8s; in-cluster runners later for scale                                                                    |
-| **GitHub Runner**                         | ☸ k8s                                | 11       | `actions-runner-controller` when needed                                                                                           |
-| **HAProxy**                               | 🖥 VM                                 | 6        | API VIP `:6443` for kubeadm HA                                                                                                    |
-| **PBS**                                   | 🖥 Dedicated VM                       | backup   | Stage 3 — Dell or separate disk                                                                                                   |
-| **AdGuard / Technitium**                  | 🖥 Debian 13 VMs                      | 3        | DNS — outside k8s (`.10` / `.11` on `data01`)                                                                                     |
-| **kubeadm cluster**                       | 🖥 3–5 VMs                            | 6        | CP + workers on `data01`                                                                                                          |
-| **k3s**                                   | 🧪 Skip / legacy                     | —        | Replaced by kubeadm for CKA                                                                                                       |
-| **Talos**                                 | 🧪 Optional 2nd cluster              | later    | Learning only                                                                                                                     |
-| **Cilium**                                | ☸ k8s                                | 6b       | First addon after kubeadm                                                                                                         |
-| **Longhorn**                              | ☸ k8s                                | 6b/9     | PVCs — **extra vdisk per worker** on `data01`                                                                                     |
-| **cert-manager**                          | ☸ k8s                                | 6b       | TLS                                                                                                                               |
-| **NGINX Ingress**                         | ☸ k8s                                | 6b       | **Not Traefik** (lab standard)                                                                                                    |
-| **metrics-server**                        | ☸ k8s                                | 6b       | `kubectl top`                                                                                                                     |
-| **KEDA**                                  | ☸ k8s                                | 6b       | Autoscaling                                                                                                                       |
-| **Argo CD**                               | ☸ k8s                                | 7        | **Bootstrap once** — then Git owns cluster                                                                                        |
-| **Helm**                                  | 📦 via Argo CD                       | 7        | Not manual `helm install` after bootstrap                                                                                         |
-| **Harbor**                                | ☸ k8s                                | 8        | Registry — [harbor-registry.md](../platform/harbor-registry.md)                                                                   |
-| **Zot**                                   | 🧪 Lab VM or skip                    | —        | Pick Harbor **or** Zot — not both long-term                                                                                       |
-| **Prometheus**                            | ☸ k8s                                | 9        |                                                                                                                                   |
-| **Grafana**                               | ☸ k8s                                | 9        |                                                                                                                                   |
-| **Loki**                                  | ☸ k8s                                | 9        | App logs                                                                                                                          |
-| **Alertmanager**                          | ☸ k8s                                | 9        |                                                                                                                                   |
-| **node-exporter**                         | ☸ k8s DaemonSet                      | 9        |                                                                                                                                   |
-| **kube-state-metrics**                    | ☸ k8s                                | 9        |                                                                                                                                   |
-| **Elasticsearch / Kibana**                | ☸ k8s (optional)                     | 10+      | Prefer Loki first; ES if you want ELK practice                                                                                    |
-| **Redis**                                 | ☸ k8s                                | 8        | Operator or Helm                                                                                                                  |
-| **PostgreSQL**                            | ☸ k8s                                | 8        | CloudNativePG for lab                                                                                                             |
-| **MySQL / MariaDB**                       | ☸ k8s                                | app      | Per-app or operator                                                                                                               |
-| **MongoDB / CouchDB / etc.**              | ☸ k8s                                | app      | When an app needs it                                                                                                              |
-| **RabbitMQ**                              | ☸ k8s                                | 8        |                                                                                                                                   |
-| **Keycloak**                              | ☸ k8s                                | 8        |                                                                                                                                   |
+| **GitLab Runner**                         | 🖥 **VM** (`runner-01` fleeting manager) | 2        | docker-autoscaler + fleeting; no fat runner-02                                                                                    |
 | **Vault**                                 | 🖥 **VM** (`vault-01` + `vault-seal`) | ✅ core  | Infra/crypto secrets + Transit auto-unseal — LAN `:8200`; [vault.md](../operations/vault.md)                                      |
-| **Infisical**                             | 🖥 **VM** (`infisical-01`)            | ⏳ ready | App env-secrets (`dev`/`staging`/`prod`) — TF+Ansible scaffolded; LAN `:80`; [infisical.md](../operations/infisical.md)           |
-| **OpenBao**                               | ⛔ Skip (for now)                    | —        | Vault FOSS fork — same class as Vault; [vault-vs-infisical.md](vault-vs-infisical.md)                                             |
-| **AIStor Free**                           | 🖥 **VM** (`aistor-01`)               | ✅ core  | Shared S3 (not archived MinIO CE) — GitLab + runner cache + Vault snapshots; [object-storage.md](../operations/object-storage.md) |
+| **Infisical**                             | 🖥 Compose on **`docker-01`**         | ⏳       | App env-secrets; DB via PgCat on database-01; [infisical.md](../operations/infisical.md)                                           |
+| **PostgreSQL (lab central)**              | 🖥 **`database-01`** + PgCat          | ⏳ core  | Shared relational DB for Keycloak/Infisical/Sonar; [database-01.md](../operations/database-01.md)                                  |
+| **Keycloak**                              | 🖥 Compose on **`docker-01`**         | ⏳ core  | [keycloak.md](../operations/keycloak.md)                                                                                          |
+| **SonarQube**                             | 🖥 **`sonarqube-01`**                | ⏳ core  | Dedicated VM; JDBC → PgCat; Tunnel `sonar.nasraldin.com`                                                                          |
+| **Elasticsearch / Kibana**                | 🖥 **`elastic-01`**                  | ⏳ core  | Option A: Loki remains primary logs; [elastic.md](../operations/elastic.md)                                                       |
+| **Prometheus / Grafana / Loki**           | 🖥 **`monitoring-01`**               | ⏳ core  | Day-one fleet telemetry; k8s monitoring still later phase                                                                         |
+| **NPM / it-tools / mailpit**              | 🖥 **`docker-01`**                   | ⏳ core  | [docker-hosts.md](../operations/docker-hosts.md)                                                                                  |
+| **Dockhand**                              | 🖥 LXC **200**                       | ⏳ core  | `docker.nasraldin.com` + Access                                                                                                   |
+| **AIStor Free**                           | 🖥 **VM** (`aistor-01`)               | ✅ core  | Shared S3 — GitLab + runner cache + Vault snapshots; [object-storage.md](../operations/object-storage.md) |
 | **MinIO in-cluster**                      | ☸ optional later                     | 8+       | Only if a second S3 domain is needed; do not replace AIStor for GitLab                                                            |
 | **ExternalDNS**                           | ☸ k8s                                | 9        | When AdGuard API stable                                                                                                           |
 | **Kyverno**                               | ☸ k8s                                | 9        | Policy                                                                                                                            |
@@ -78,7 +54,6 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **GLPI / iTop**                           | 🖥 VM or lab                          | optional | Internal ITIL / ServiceNow-style practice                                                                                         |
 | **Ollama**                                | ☸ k8s or GPU VM                      | 10       | Host IOMMU/`iommu=pt` via bootstrap; VFIO + Radeon 890M passthrough later — [gpu-passthrough.md](gpu-passthrough.md)              |
 | **Open WebUI**                            | ☸ k8s                                | 10       |                                                                                                                                   |
-| **SonarQube**                             | ☸ k8s                                | 11       |                                                                                                                                   |
 | **Uptime Kuma**                           | 🖥 **Docker VM** or ☸                 | 5        | **VM preferred** — alerts when k8s is down                                                                                        |
 | **Vaultwarden**                           | 🖥 Docker VM                          | optional | Small, personal                                                                                                                   |
 | **Mealie**                                | ☸ k8s or Docker VM                   | app      | Low priority                                                                                                                      |
@@ -112,13 +87,14 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | GitLab in Docker on utility VM  | OK for learning — more moving parts                     |
 | GitLab inside Kubernetes        | ❌ **Avoid** — if k8s dies, you lose Git + Argo source  |
 
-**Sizing:** 4 vCPU, **8 GB RAM**, 100 GB disk on `data01` (`gitlab-01`, VMID 117,
+**Sizing:** 6 vCPU, **16 GB RAM**, 120 GB disk on `data01` (`gitlab-01`, VMID 116,
 `192.168.68.14`). Public URL: `https://gitlab.nasraldin.com` (Tunnel, no Access).
 
-**Runners:** `runner-01` (VMID 118, `.15`, light/untagged) and `runner-02`
-(VMID 119, `.16`, heavy/tagged). Object store + cache on `aistor-01` (VMID 116).
-Secrets on `vault-01` (VMID 113); Transit seal helper `vault-seal` (VMID 114).
-App env-secrets: `infisical-01` (VMID 115) when applied.
+**Runners:** `runner-01` (VMID 117, `.15`) is the **fleeting manager only** (light
+Docker executor until autoscaler API is wired). No static fat `runner-02`.
+Object store + cache on `aistor-01` (VMID 115). Secrets on `vault-01` (VMID 113);
+Transit seal helper `vault-seal` (VMID 114). App env-secrets: **Infisical on
+`docker-01`** (VMID 119, `.22`) with Postgres via PgCat on `database-01` (VMID 118).
 Full map: [guest-vmid-map.md](../operations/guest-vmid-map.md) ·
 [secret-ownership-map.md](secret-ownership-map.md).
 

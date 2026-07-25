@@ -53,5 +53,7 @@ Every configuration here is intended as a reference, not a copy-and-paste soluti
 
 - [Platform tooling](/platform-tooling) — who owns what (Terraform vs Ansible vs Argo CD)
 - [Deploy and rebuild](/operations/deploy-and-rebuild) — exact cross-repository command order
+- [Lab refresh runbook](/operations/lab-refresh-runbook) — wipe → adopt → TF → SSH keys → Ansible checklist
+- [Infra01 remote access](/operations/infra01-remote-access) — off-LAN operator jump box (`infra.nasraldin.com`)
 - [Community labs](/community-labs) — standalone public projects
 - [Decision log](/decisions/log) — locked choices so we don’t re-debate them

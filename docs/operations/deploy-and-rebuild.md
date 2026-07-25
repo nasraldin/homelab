@@ -5,6 +5,11 @@ This is the canonical execution order for the repositories under
 Each repository owns one boundary; do not reproduce its work manually in the
 Proxmox UI.
 
+**Full factory-reset rebuild** (wipe guests/storage, then recreate): use the
+single checklist in [lab-refresh-runbook.md](lab-refresh-runbook.md) and the
+failure log in [lab-refresh-issues.md](lab-refresh-issues.md). This page stays
+the incremental / first-time deploy order.
+
 ## Ownership and order
 
 ```text
@@ -28,6 +33,13 @@ Kubernetes follows later: Terraform creates Debian VMs (q35 + OVMF + VirtIO SCSI
 cluster, and Argo CD owns in-cluster applications.
 
 ## 0. Control-machine prerequisites
+
+**On the home LAN:** use this Mac as the control plane (commands below).
+
+**Off-LAN / travel:** use the operator jump box instead —
+[infra01-remote-access.md](infra01-remote-access.md) (`ssh infra01` via
+Cloudflare Access). Do not assume `192.168.68.x` is reachable from the internet.
+No WAN SSH port-forward.
 
 ```bash
 cd ~/homelab
@@ -97,12 +109,20 @@ before the Proxmox login page.
 
 ## 3. Create infrastructure with Terraform
 
-Review the plan before applying it. A saved plan prevents applying something
-different from what was reviewed.
+After a factory-reset that kept Proxmox users/tokens (default), **adopt** those
+objects into state before apply — otherwise create fails with “already exists”.
+If the data disk still has leftover GPT from a destroyed `data01`, wipe it via
+the same script.
 
 ```bash
 cd ~/homelab/terraform-lab
 cp -n credentials.auto.tfvars.example credentials.auto.tfvars
+
+# After factory-reset / empty state:
+./scripts/adopt-existing.sh --check
+./scripts/adopt-existing.sh
+# If ZFS create failed with "device already in use":
+# ./scripts/adopt-existing.sh --wipe-stale-zfs-disks
 
 terraform init
 terraform fmt -check -recursive
@@ -113,9 +133,21 @@ terraform apply tfplan
 rm -f tfplan
 
 terraform output
-ssh nasr@192.168.68.10 hostname
-ssh nasr@192.168.68.11 hostname
-ssh nasr@192.168.68.12 hostname
+```
+
+After any wipe or guest recreate, **clear stale SSH host keys** before Ansible
+(otherwise OpenSSH fails with “REMOTE HOST IDENTIFICATION HAS CHANGED”):
+
+```bash
+cd ~/homelab/ansible-lab
+./scripts/refresh-ssh-known-hosts.sh --check
+./scripts/refresh-ssh-known-hosts.sh
+# optional once guests answer on :22:
+./scripts/refresh-ssh-known-hosts.sh --accept-new
+
+ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.10 hostname
+ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.11 hostname
+ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.12 hostname
 ```
 
 Important:
@@ -149,7 +181,21 @@ ansible-playbook playbooks/dns.yml -e @secrets.yml
 ansible-playbook playbooks/infra.yml --syntax-check
 ansible-playbook playbooks/infra.yml
 ansible-playbook playbooks/infra.yml # expect changed=0
+
+# Core redesign hosts (after Vault/AIStor + GitLab when those are in scope)
+ansible-playbook playbooks/object-storage.yml -e @secrets.yml
+ansible-playbook playbooks/gitlab.yml -e @secrets.yml
+ansible-playbook playbooks/database.yml -e @secrets.yml
+ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml
+ansible-playbook playbooks/sonarqube.yml -e @secrets.yml
+ansible-playbook playbooks/elastic.yml -e @secrets.yml
+ansible-playbook playbooks/monitoring.yml -e @secrets.yml
+ansible-playbook playbooks/podman-host.yml
+ansible-playbook playbooks/dockhand.yml
 ```
+
+Full wipe rebuild: [lab-refresh-runbook.md](lab-refresh-runbook.md).  
+Greenfield core hosts: [first-time-lab-runbook.md](first-time-lab-runbook.md).
 
 The playbook uses application APIs for AdGuard and Technitium policy. Do not
 replace their generated configuration files directly. Permanent UI changes must

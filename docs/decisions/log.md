@@ -38,6 +38,13 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | 2026-07 | Cosign keyed signing in CI (not keyless v1)                    | Simpler; pre-k8s Vault bootstrap, then Phase 9 ESO integration                                                 |
 | 2026-07 | AMD GPU PT: `iommu=pt` only (no `amd_iommu=on`)                | Official Proxmox; AMD IOMMU default-on; 890M AI VMs later                                                      |
 | 2026-07 | Cmdline via `/etc/kernel/cmdline` + boot-tool                  | ZFS+UEFI uses proxmox-boot-tool; GRUB alone would not apply                                                    |
+| 2026-07 | Central Postgres on `database-01` + PgCat                      | No per-app embedded PG; Keycloak/Infisical/Sonar share data plane                                              |
+| 2026-07 | Infisical on `docker-01` (retire `infisical-01`)               | One app Compose host; DB external                                                                              |
+| 2026-07 | Sonar on dedicated VM + Tunnel like GitLab                     | Max ES performance; no NPM/Access on that path                                                                 |
+| 2026-07 | Elastic dedicated VM; Loki stays primary logs (Option A)       | Correctly sized ES; ops logs stay light on monitoring-01                                                       |
+| 2026-07 | Single fleeting `runner-01` (drop `runner-02`)                 | Manager + ephemeral workers; not concurrent=40 on fat VM                                                       |
+| 2026-07 | Homelab PVE oversubscription OK                                | Single node; guests idle/burst asynchronously                                                                  |
+| 2026-07 | NPM on docker-01; Caddy on podman-01                           | UI edge vs config-as-code practice                                                                             |
 | 2026-07 | Guest agent via cloud-init/Ansible only                        | No Proxmox VMID host script; TF enables agent, guest installs pkg                                              |
 | 2026-07 | GPU attach per VM via Terraform when needed                    | Host IOMMU first; VFIO + hostpci for one AI VM at a time                                                       |
 | 2026-07 | Archive OPNsense VLAN pilot; keep flat LAN                     | Stage too early for second firewall; Mac Wi-Fi only; DNS enough                                                |
