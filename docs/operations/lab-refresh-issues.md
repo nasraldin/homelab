@@ -221,6 +221,18 @@ terraform apply
 | **Prevention** | Read factory-reset “what is protected / opt-in” tables before destroy |
 | **Verify** | After default wipe: tokens still on node; adopt → plan clean |
 
+### REF-011 — Full guest boot storm OOMs ~91 GiB node (host unreachable)
+
+| | |
+| --- | --- |
+| **Status** | Mitigated in code; needs host power-cycle if still down |
+| **When** | 2026-07-25 redesign refresh — after `terraform apply` started all 110–123 + CT 200 |
+| **Symptom** | `pve01` stops answering SSH/ICMP; Mac dig to DNS VMs fails; tunnel origins 530; `database-01` / `docker-01` SSH timeouts |
+| **Root cause** | Design sizes sum ~174 GiB dedicated RAM with ballooning **off** (`floating` omitted). Concurrent start pinned more RAM than physical (~91 GiB) |
+| **Fix** | Enable ballooning: `memory.floating = dedicated` in `terraform-lab/modules/vm`. After host recovers: stop heaviest VMs (`123,119,118,122,121,…`), `terraform apply` balloon change, start spine → database → apps in order |
+| **Prevention** | Never boot every max-sized guest cold without ballooning; prefer staggered `startup_up_delay`; keep host ~8 GiB free |
+| **Verify** | `free -h` on `pve01` shows free/buff; `qm list` all running; `ansible all -m ping` |
+
 ---
 
 ## Refresh timeline (condensed)
