@@ -22,6 +22,7 @@ Statuses: `resolved` | `workaround` | `open` | `expected`.
 | [REF-010](#ref-010-lan-dns-death-while-replacing-adguard) | LAN DNS death while replacing AdGuard | resolved |
 | [REF-011](#ref-011-vzdump-backups-opt-in-wipe) | vzdump backups accidentally wiped | resolved |
 | [REF-012](#ref-012-factory-reset-keeps-users-by-design) | Confusion: users/tokens “left behind” | resolved |
+| [REF-013](#ref-013-factory-reset-residual-wipe-hit-os-disk-nvme0n1) | Factory-reset GPT wipe hit OS disk | resolved (script) |
 
 ---
 
@@ -221,17 +222,20 @@ terraform apply
 | **Prevention** | Read factory-reset “what is protected / opt-in” tables before destroy |
 | **Verify** | After default wipe: tokens still on node; adopt → plan clean |
 
-### REF-011 — Full guest boot storm OOMs ~91 GiB node (host unreachable)
+---
 
-| | |
-| --- | --- |
-| **Status** | Mitigated in code; needs host power-cycle if still down |
-| **When** | 2026-07-25 redesign refresh — after `terraform apply` started all 110–123 + CT 200 |
-| **Symptom** | `pve01` stops answering SSH/ICMP; Mac dig to DNS VMs fails; tunnel origins 530; `database-01` / `docker-01` SSH timeouts |
-| **Root cause** | Design sizes sum ~174 GiB dedicated RAM with ballooning **off** (`floating` omitted). Concurrent start pinned more RAM than physical (~91 GiB) |
-| **Fix** | Enable ballooning: `memory.floating = dedicated` in `terraform-lab/modules/vm`. After host recovers: stop heaviest VMs (`123,119,118,122,121,…`), `terraform apply` balloon change, start spine → database → apps in order |
-| **Prevention** | Never boot every max-sized guest cold without ballooning; prefer staggered `startup_up_delay`; keep host ~8 GiB free |
-| **Verify** | `free -h` on `pve01` shows free/buff; `qm list` all running; `ansible all -m ping` |
+## REF-013: Factory-reset residual wipe hit OS disk (`nvme0n1`)
+
+| Field | Detail |
+| ----- | ------ |
+| **Status** | resolved (script); node needs rescue/reinstall |
+| **When** | 2026-07-25 redesign refresh — `factory-reset-lab.sh --yes --i-understand-destroy` |
+| **Symptom** | After later crash/reboot, machine looks like “no OS / disks wiped”; Proxmox does not boot |
+| **Root cause (verified in log)** | After `zpool destroy data01`, orphan GPT wipe ran `wipefs` + `sgdisk --zap-all` on **`/dev/nvme0n1`** (Samsung / `rpool`) as well as `nvme1n1`. Guard used `basename` (`nvme0n1`) against `zpool status` **by-id** paths, so the rpool check failed open. Pool stayed imported in memory → Terraform/Ansible still worked until reboot |
+| **Not verified** | Live hang / SSH timeouts were **not** proven as OOM. No `dmesg` OOM lines or `free -h` were collected (SSH already timed out). Oversubscription (~174 GiB dedicated vs ~91 GiB) remains a **hypothesis** for the mid-run unresponsiveness only |
+| **Fix** | `proxmox-bootstrap`: refuse wipe if disk belongs to `rpool` via `readlink` / `lsblk PKNAME` (commit on main). Docs note in `14-factory-reset.md` |
+| **Prevention** | Never wipe by short device name alone; always map to rpool vdevs; `--check` must list every wipe target |
+| **Verify** | Rescue: `zpool import`; confirm script dry-run never plans wipe of rpool’s disk |
 
 ---
 

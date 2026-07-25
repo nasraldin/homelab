@@ -19,7 +19,7 @@
 3. **Per-stack Compose** under `/opt/<stack>/` — not one mega compose file.
 4. **Sole-tenant VMs** for SonarQube and Elastic (performance).
 5. **Latest stable** images/channels; pin tags in Ansible; no deprecated apt/`ansible_*` facts.
-6. **Homelab oversubscription** on single-node `pve01` is accepted (guests do not peak together). Terraform enables **QEMU ballooning** (`memory.floating = dedicated`) so the host is not forced to pin every guest’s full dedicated RAM at once. After a full boot storm, stop the heaviest guests first if the node becomes unresponsive.
+6. **Homelab oversubscription** on single-node `pve01` is accepted (guests do not peak together). Terraform enables **QEMU ballooning** (`memory.floating = dedicated`) so the host is not forced to pin every guest’s full dedicated RAM at once.
 
 ## Inventory
 
