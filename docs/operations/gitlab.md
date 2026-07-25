@@ -29,19 +29,19 @@ Personal Access Token.
 `playbooks/gitlab.yml` ends with a reconcile on `gitlab-01` so registration
 order cannot leave wrong tags:
 
-| Concern                        | Enforced value                              | Where                                   |
-| ------------------------------ | ------------------------------------------- | --------------------------------------- |
-| Root password                  | `vault_gitlab_root_password`                | `application_settings.rb.j2`            |
-| Open signup                    | **off**                                     | `gitlab_signup_enabled: false`          |
-| Default branch                 | `main`                                      | ApplicationSettings                     |
-| Auto DevOps                    | **off**                                     | ApplicationSettings                     |
-| Web IDE extension host         | `cdn.web-ide.gitlab-static.net`             | `gitlab_web_ide_extension_host_domain`  |
-| Web IDE single-origin fallback | **off**                                     | `gitlab_web_ide_single_origin_fallback` |
-| Object store / registry S3     | AIStor `192.168.68.17:9000`                 | `gitlab.rb.j2` object_store             |
-| Runner mint (`glrt-…`)         | `CreateRunnerService` → token files         | `mint_runners.rb.j2` (no Admin UI)      |
-| Runner tags / untagged         | from `host_vars` (`runner-01`)              | `reconcile_runners.rb.j2`               |
-| Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache`         | `config.toml` on each runner            |
-| Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                              | Omnibus reconfigure                     |
+| Concern                        | Enforced value                      | Where                                   |
+| ------------------------------ | ----------------------------------- | --------------------------------------- |
+| Root password                  | `vault_gitlab_root_password`        | `application_settings.rb.j2`            |
+| Open signup                    | **off**                             | `gitlab_signup_enabled: false`          |
+| Default branch                 | `main`                              | ApplicationSettings                     |
+| Auto DevOps                    | **off**                             | ApplicationSettings                     |
+| Web IDE extension host         | `cdn.web-ide.gitlab-static.net`     | `gitlab_web_ide_extension_host_domain`  |
+| Web IDE single-origin fallback | **off**                             | `gitlab_web_ide_single_origin_fallback` |
+| Object store / registry S3     | AIStor `192.168.68.17:9000`         | `gitlab.rb.j2` object_store             |
+| Runner mint (`glrt-…`)         | `CreateRunnerService` → token files | `mint_runners.rb.j2` (no Admin UI)      |
+| Runner tags / untagged         | from `host_vars` (`runner-01`)      | `reconcile_runners.rb.j2`               |
+| Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache` | `config.toml` on each runner            |
+| Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                      | Omnibus reconfigure                     |
 
 Ansible mints instance runners on `gitlab-01` and writes tokens under
 `/etc/gitlab/ansible-runner-tokens/` (mode `0770`, group `git` — mint runs as
@@ -74,8 +74,8 @@ wildcard DNS + TLS path into Omnibus (see
 
 ## Runners
 
-| Host | Specs | Role |
-| ---- | ----- | ---- |
+| Host        | Specs               | Role                                              |
+| ----------- | ------------------- | ------------------------------------------------- |
 | `runner-01` | **2c / 4G** manager | `docker-autoscaler` + fleeting; untagged + tagged |
 
 Ephemeral workers (~2c/4G) provide concurrency. See

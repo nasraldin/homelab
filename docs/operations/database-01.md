@@ -7,18 +7,18 @@ Postgres inside Keycloak / Infisical / Sonar Compose stacks.
 
 ## Stacks (`/opt/`)
 
-| Path | Services | Ports (LAN) |
-| ---- | -------- | ----------- |
+| Path            | Services                                       | Ports (LAN)                            |
+| --------------- | ---------------------------------------------- | -------------------------------------- |
 | `/opt/postgres` | Postgres 18, PgCat, PgAdmin, postgres-exporter | 5432, 6432, 5433 (pgAdmin), 9187, 9930 |
-| `/opt/redis` | redis-stack + redis-exporter | 6379, 9121 |
-| `/opt/mariadb` | MariaDB + phpMyAdmin + mysqld-exporter | 3306, 3366, 9104 |
+| `/opt/redis`    | redis-stack + redis-exporter                   | 6379, 9121                             |
+| `/opt/mariadb`  | MariaDB + phpMyAdmin + mysqld-exporter         | 3306, 3366, 9104                       |
 
 ## PgCat pools (day-one)
 
-| Pool | Mode | DB / user |
-| ---- | ---- | --------- |
-| `postgres` | transaction | admin |
-| `keycloak` | transaction | keycloak |
+| Pool        | Mode        | DB / user |
+| ----------- | ----------- | --------- |
+| `postgres`  | transaction | admin     |
+| `keycloak`  | transaction | keycloak  |
 | `infisical` | transaction | infisical |
 | `sonarqube` | **session** | sonarqube |
 

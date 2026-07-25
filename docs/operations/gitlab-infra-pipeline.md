@@ -71,23 +71,23 @@ Script: `scripts/ci-run.sh`
 
 ## Guest → TF target → Ansible cheat sheet
 
-| Guest                     | `TF_TARGET_GUESTS` | Typical playbook               | `ANSIBLE_LIMIT`       |
-| ------------------------- | ------------------ | ------------------------------ | --------------------- |
-| `adguard-01`              | `adguard-01`       | `playbooks/dns.yml`            | `adguard-01` or `dns` |
-| `technitium-01`           | `technitium-01`    | `playbooks/dns.yml`            | `technitium-01`       |
-| `infra01`                 | `infra01`          | `playbooks/infra.yml`          | `infra01`             |
-| `vault-seal`              | `vault-seal`       | `playbooks/object-storage.yml` | `vault-seal`          |
-| `vault-01`                | `vault-01`         | `playbooks/object-storage.yml` | `vault-01`            |
-| `aistor-01`               | `aistor-01`        | `playbooks/object-storage.yml` | `aistor-01`           |
-| `gitlab-01`               | `gitlab-01`        | `playbooks/gitlab.yml`         | `gitlab-01`           |
-| `runner-01`               | `runner-01`        | `playbooks/gitlab.yml`         | `runners` or name     |
-| `database-01`             | `database-01`      | `playbooks/database.yml`       | `database-01`         |
-| `docker-01` / Infisical   | `docker-01`        | `playbooks/docker-hosts.yml`   | `docker-01`           |
-| `sonarqube-01`            | `sonarqube-01`     | `playbooks/sonarqube.yml`      | `sonarqube-01`        |
-| `elastic-01`              | `elastic-01`       | `playbooks/elastic.yml`        | `elastic-01`          |
-| `monitoring-01`           | `monitoring-01`    | `playbooks/monitoring.yml`     | `monitoring-01`       |
-| `podman-01`               | `podman-01`        | `playbooks/podman-host.yml`    | `podman-01`           |
-| `dockhand` (CT)           | `dockhand`         | `playbooks/dockhand.yml`       | `dockhand`            |
+| Guest                   | `TF_TARGET_GUESTS` | Typical playbook               | `ANSIBLE_LIMIT`       |
+| ----------------------- | ------------------ | ------------------------------ | --------------------- |
+| `adguard-01`            | `adguard-01`       | `playbooks/dns.yml`            | `adguard-01` or `dns` |
+| `technitium-01`         | `technitium-01`    | `playbooks/dns.yml`            | `technitium-01`       |
+| `infra01`               | `infra01`          | `playbooks/infra.yml`          | `infra01`             |
+| `vault-seal`            | `vault-seal`       | `playbooks/object-storage.yml` | `vault-seal`          |
+| `vault-01`              | `vault-01`         | `playbooks/object-storage.yml` | `vault-01`            |
+| `aistor-01`             | `aistor-01`        | `playbooks/object-storage.yml` | `aistor-01`           |
+| `gitlab-01`             | `gitlab-01`        | `playbooks/gitlab.yml`         | `gitlab-01`           |
+| `runner-01`             | `runner-01`        | `playbooks/gitlab.yml`         | `runners` or name     |
+| `database-01`           | `database-01`      | `playbooks/database.yml`       | `database-01`         |
+| `docker-01` / Infisical | `docker-01`        | `playbooks/docker-hosts.yml`   | `docker-01`           |
+| `sonarqube-01`          | `sonarqube-01`     | `playbooks/sonarqube.yml`      | `sonarqube-01`        |
+| `elastic-01`            | `elastic-01`       | `playbooks/elastic.yml`        | `elastic-01`          |
+| `monitoring-01`         | `monitoring-01`    | `playbooks/monitoring.yml`     | `monitoring-01`       |
+| `podman-01`             | `podman-01`        | `playbooks/podman-host.yml`    | `podman-01`           |
+| `dockhand` (CT)         | `dockhand`         | `playbooks/dockhand.yml`       | `dockhand`            |
 
 **Order still matters for new stacks:** DNS → vault-seal → vault-01 → aistor →
 GitLab → **database** → docker-hosts (Infisical/Keycloak) → sonar/elastic/monitoring.

@@ -4,14 +4,14 @@ LAN: `192.168.68.25` · VMID **121** · **4c / 16G / 100G**
 
 ## Stack (`/opt/monitoring`)
 
-| Component | Role |
-| --------- | ---- |
-| Prometheus | Metrics TSDB |
-| Grafana | Dashboards (provisioned) |
-| Loki | **Primary** lab logs (Option A vs Elastic) |
-| Alloy (central) | Receive / scrape |
-| blackbox_exporter | HTTP/TCP probes |
-| prometheus-pve-exporter | Proxmox API metrics |
+| Component               | Role                                       |
+| ----------------------- | ------------------------------------------ |
+| Prometheus              | Metrics TSDB                               |
+| Grafana                 | Dashboards (provisioned)                   |
+| Loki                    | **Primary** lab logs (Option A vs Elastic) |
+| Alloy (central)         | Receive / scrape                           |
+| blackbox_exporter       | HTTP/TCP probes                            |
+| prometheus-pve-exporter | Proxmox API metrics                        |
 
 ## Fleet agents
 

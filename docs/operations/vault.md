@@ -30,10 +30,10 @@ Ansible: `ansible-lab/roles/vault/` via `playbooks/object-storage.yml`
 **Full comparison:** [vault-vs-infisical.md](../architecture/vault-vs-infisical.md)
 (mental models, feature table, use cases, lab secret mapping).
 
-| Option                  | Role here                                 | Decision                                                                                        |
-| ----------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **HashiCorp Vault OSS** | Secrets plane + seal helper               | **Keep** — already deployed, Raft/AppRole/Transit match enterprise patterns                     |
-| **OpenBao**             | Vault FOSS fork (MPL) after HashiCorp BSL | **Not switching now** — same class as Vault; see comparison doc                                 |
+| Option                  | Role here                                 | Decision                                                                                   |
+| ----------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **HashiCorp Vault OSS** | Secrets plane + seal helper               | **Keep** — already deployed, Raft/AppRole/Transit match enterprise patterns                |
+| **OpenBao**             | Vault FOSS fork (MPL) after HashiCorp BSL | **Not switching now** — same class as Vault; see comparison doc                            |
 | **Infisical**           | App/dev env-secrets platform              | **On `docker-01`** — monorepo envs via PgCat; not seal/infra; [infisical.md](infisical.md) |
 
 ### OpenBao — when it would win

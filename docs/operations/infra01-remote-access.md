@@ -14,12 +14,12 @@ Related: [remote-connectivity.md](remote-connectivity.md) (RDP / desktop tools) 
 
 ## What it is / what it is not
 
-| It **is** | It is **not** |
-| --------- | ------------- |
-| Hardened Debian 13 **jump box** + ops toolchain | DNS, GitLab, Vault, AIStor, or app hosting |
-| Secure **SSH from anywhere** via Cloudflare Access | A place to store API tokens or `secrets.yml` |
-| Path to administer **Proxmox** (`pve01`) with a short-lived forwarded agent | A second Mac — prefer the Mac when you are on LAN |
-| Always-on host for long Terraform/Ansible jobs without leaving a laptop awake | Where Docker Compose *apps* should live long-term |
+| It **is**                                                                     | It is **not**                                     |
+| ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| Hardened Debian 13 **jump box** + ops toolchain                               | DNS, GitLab, Vault, AIStor, or app hosting        |
+| Secure **SSH from anywhere** via Cloudflare Access                            | A place to store API tokens or `secrets.yml`      |
+| Path to administer **Proxmox** (`pve01`) with a short-lived forwarded agent   | A second Mac — prefer the Mac when you are on LAN |
+| Always-on host for long Terraform/Ansible jobs without leaving a laptop awake | Where Docker Compose _apps_ should live long-term |
 
 If Cloudflare Access is down and you are **on LAN**, fall back to
 `ssh nasr@192.168.68.12`. If `infra01` itself is down, use LAN SSH to `pve01`
@@ -29,15 +29,15 @@ or `https://homelab.nasraldin.com` (Proxmox UI).
 
 ## When to use (decision table)
 
-| Your situation | Prefer | Why |
-| -------------- | ------ | --- |
-| Mac on home LAN | Local `terraform` / `ansible` / `ssh` to guests and `root@192.168.68.13` | Lowest friction; no Access OTP |
-| Away from home, phone hotspot, travel | `ssh infra01` then work from the VM | Outbound-only Tunnel; no WAN `:22` |
-| Need Proxmox CLI off-LAN | `ssh infra01-admin` + `ssh pve01 …` | Agent-forward `~/.ssh/pve01` only for that session |
-| Need private Git clone on the VM | `ssh infra01-admin` with GitHub key in agent | No durable deploy key on disk |
-| Break-glass “see the console” | Proxmox UI / OpsHub noVNC | Does not replace SSH for day-2 automation |
-| Coding agent with no LAN to the lab | Instruct operator to use `infra01` path; do not invent direct `192.168.68.x` SSH from the internet | Agents often assume LAN reachability |
-| Brand-new laptop, never on home Wi‑Fi | [New local machine (outside the lab)](#new-local-machine-outside-the-lab) — Tunnel client + key + Access | No non-tunnel SSH path exists |
+| Your situation                        | Prefer                                                                                                   | Why                                                |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Mac on home LAN                       | Local `terraform` / `ansible` / `ssh` to guests and `root@192.168.68.13`                                 | Lowest friction; no Access OTP                     |
+| Away from home, phone hotspot, travel | `ssh infra01` then work from the VM                                                                      | Outbound-only Tunnel; no WAN `:22`                 |
+| Need Proxmox CLI off-LAN              | `ssh infra01-admin` + `ssh pve01 …`                                                                      | Agent-forward `~/.ssh/pve01` only for that session |
+| Need private Git clone on the VM      | `ssh infra01-admin` with GitHub key in agent                                                             | No durable deploy key on disk                      |
+| Break-glass “see the console”         | Proxmox UI / OpsHub noVNC                                                                                | Does not replace SSH for day-2 automation          |
+| Coding agent with no LAN to the lab   | Instruct operator to use `infra01` path; do not invent direct `192.168.68.x` SSH from the internet       | Agents often assume LAN reachability               |
+| Brand-new laptop, never on home Wi‑Fi | [New local machine (outside the lab)](#new-local-machine-outside-the-lab) — Tunnel client + key + Access | No non-tunnel SSH path exists                      |
 
 ```text
 On home LAN?
@@ -51,20 +51,20 @@ On home LAN?
 
 ## Identity card
 
-| Property | Value |
-| -------- | ----- |
-| Guest name | `infra01` |
-| VMID | `112` |
-| LAN | `192.168.68.12/22` |
-| Remote SSH hostname | `infra.nasraldin.com` |
-| OS user | `nasr` (passwordless sudo; root SSH disabled) |
-| Compute | 4 vCPU / 8 GiB / 80 GiB (see `terraform-lab`) |
+| Property            | Value                                         |
+| ------------------- | --------------------------------------------- |
+| Guest name          | `infra01`                                     |
+| VMID                | `112`                                         |
+| LAN                 | `192.168.68.12/22`                            |
+| Remote SSH hostname | `infra.nasraldin.com`                         |
+| OS user             | `nasr` (passwordless sudo; root SSH disabled) |
+| Compute             | 4 vCPU / 8 GiB / 80 GiB (see `terraform-lab`) |
 
-| Layer | Owns |
-| ----- | ---- |
-| **Terraform** (`terraform-lab`) | VM hardware, cloud-init, static IP |
-| **Ansible** (`ansible-lab` · `playbooks/infra.yml`) | Packages, UFW, SSH policy, `/etc/hosts` pin for `pve01`, sudo |
-| **Cloudflare Tunnel** | Public hostname + Access policy for SSH; **no** WAN port-forward |
+| Layer                                               | Owns                                                             |
+| --------------------------------------------------- | ---------------------------------------------------------------- |
+| **Terraform** (`terraform-lab`)                     | VM hardware, cloud-init, static IP                               |
+| **Ansible** (`ansible-lab` · `playbooks/infra.yml`) | Packages, UFW, SSH policy, `/etc/hosts` pin for `pve01`, sudo    |
+| **Cloudflare Tunnel**                               | Public hostname + Access policy for SSH; **no** WAN port-forward |
 
 Apply notes for the guest OS live in
 [ansible-lab/docs/infra01.md](https://github.com/nasraldin/ansible-lab/blob/main/docs/infra01.md).
@@ -92,12 +92,12 @@ New machine (anywhere on Internet)
 
 ### Prerequisites
 
-| Need | Notes |
-| ---- | ----- |
-| macOS + Homebrew | `install-ssh-client.sh` uses `brew install cloudflared` |
-| Cloudflare Access allowlist | Your email must be allowed for the SSH Access app (same family as Proxmox UI) |
+| Need                            | Notes                                                                                                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| macOS + Homebrew                | `install-ssh-client.sh` uses `brew install cloudflared`                                                                                                                      |
+| Cloudflare Access allowlist     | Your email must be allowed for the SSH Access app (same family as Proxmox UI)                                                                                                |
 | SSH private key on this machine | Default client config uses `IdentityFile ~/.ssh/pve01` — copy that key from your password manager / old Mac, or generate a new key and authorize it on `infra01` (see below) |
-| Network | Any Internet path; you do **not** need VPN or home Wi‑Fi |
+| Network                         | Any Internet path; you do **not** need VPN or home Wi‑Fi                                                                                                                     |
 
 ### Step 1 — Get the tunnel client repo (or full homelab)
 
@@ -143,7 +143,7 @@ ssh-add --apple-use-keychain ~/.ssh/pve01
 **New key on a brand-new machine** (old key lost):
 
 1. `ssh-keygen -t ed25519 -f ~/.ssh/pve01 -C "infra01-from-<machine>"`
-2. Authorize the **public** key on `infra01` while you still have *some* admin path:
+2. Authorize the **public** key on `infra01` while you still have _some_ admin path:
    - On LAN from another machine: `ssh nasr@192.168.68.12` and append to
      `~/.ssh/authorized_keys`, or
    - Off-LAN: Proxmox UI → `infra01` console → same append, or
@@ -176,12 +176,12 @@ if you will clone private repos onto `infra01`).
 
 ### What you must not do from outside
 
-| Anti-pattern | Why |
-| ------------ | --- |
-| `ssh nasr@192.168.68.12` from a café / hotspot | Private LAN — unreachable; not a misconfiguration |
-| Open router WAN port `:22` to “make it easier” | Forbidden; use Tunnel only |
-| Skip Access and “just use the IP of the tunnel” | Access is the identity gate; OTP is expected |
-| Copy `secrets.yml` permanently onto the new laptop *and* onto `infra01` | Prefer password manager + short-lived session files |
+| Anti-pattern                                                            | Why                                                 |
+| ----------------------------------------------------------------------- | --------------------------------------------------- |
+| `ssh nasr@192.168.68.12` from a café / hotspot                          | Private LAN — unreachable; not a misconfiguration   |
+| Open router WAN port `:22` to “make it easier”                          | Forbidden; use Tunnel only                          |
+| Skip Access and “just use the IP of the tunnel”                         | Access is the identity gate; OTP is expected        |
+| Copy `secrets.yml` permanently onto the new laptop _and_ onto `infra01` | Prefer password manager + short-lived session files |
 
 ### After you are inside `infra01`
 
@@ -210,10 +210,10 @@ The script installs `cloudflared` and writes managed snippets under
 
 **Expected:**
 
-| Alias | `ForwardAgent` | Use for |
-| ----- | -------------- | ------- |
-| `infra01` | `no` | Everyday shell, tooling, LAN-side SSH from the VM to guests |
-| `infra01-admin` | `yes` | Only when the VM must use a key that lives on the Mac (`pve01`, GitHub) |
+| Alias           | `ForwardAgent` | Use for                                                                 |
+| --------------- | -------------- | ----------------------------------------------------------------------- |
+| `infra01`       | `no`           | Everyday shell, tooling, LAN-side SSH from the VM to guests             |
+| `infra01-admin` | `yes`          | Only when the VM must use a key that lives on the Mac (`pve01`, GitHub) |
 
 Both aliases target `infra.nasraldin.com` through `cloudflared access ssh`.
 
@@ -341,30 +341,30 @@ ansible-playbook playbooks/infra.yml   # expect changed=0
 
 ## Security rules (locked)
 
-| Rule | Detail |
-| ---- | ------ |
-| No WAN SSH port-forward | Only Cloudflare Tunnel + Access to `infra.nasraldin.com` |
-| No durable secrets on disk | No Proxmox API token, Cloudflare token, GitHub PAT, or `secrets.yml` left on the VM |
-| Agent forward is opt-in | Use `infra01-admin` only for PVE/GitHub keys; disconnect after |
-| Password SSH / root SSH off | Ansible enforces; login as `nasr` with key + sudo |
-| Prefer Mac on LAN | Less blast radius; Tunnel path is for remote and always-on jobs |
+| Rule                        | Detail                                                                              |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| No WAN SSH port-forward     | Only Cloudflare Tunnel + Access to `infra.nasraldin.com`                            |
+| No durable secrets on disk  | No Proxmox API token, Cloudflare token, GitHub PAT, or `secrets.yml` left on the VM |
+| Agent forward is opt-in     | Use `infra01-admin` only for PVE/GitHub keys; disconnect after                      |
+| Password SSH / root SSH off | Ansible enforces; login as `nasr` with key + sudo                                   |
+| Prefer Mac on LAN           | Less blast radius; Tunnel path is for remote and always-on jobs                     |
 
 ---
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Fix |
-| ------- | ------------ | --- |
-| Browser Access / OTP loop | First login or expired Access session | Complete OTP; retry `ssh infra01` |
-| `cloudflared: command not found` / ProxyCommand fails | Client not installed | Re-run `cloudflare-tunnel/mac/install-ssh-client.sh` |
+| Symptom                                                   | Likely cause                                           | Fix                                                                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Browser Access / OTP loop                                 | First login or expired Access session                  | Complete OTP; retry `ssh infra01`                                                                                                |
+| `cloudflared: command not found` / ProxyCommand fails     | Client not installed                                   | Re-run `cloudflare-tunnel/mac/install-ssh-client.sh`                                                                             |
 | New laptop: Access OK but `Permission denied (publickey)` | Key on this machine not in `infra01` `authorized_keys` | Restore `~/.ssh/pve01` or authorize new pubkey (console / LAN / Ansible) — see [new machine](#new-local-machine-outside-the-lab) |
-| Trying `ssh 192.168.68.12` from outside | Expected failure | Use `ssh infra01` (Tunnel) only |
-| Host key verification failed | VM recreated after wipe | `ssh-keygen -R infra.nasraldin.com` and `ssh-keygen -R 192.168.68.12` (or ansible-lab `refresh-ssh-known-hosts.sh`) |
-| `Permission denied (publickey)` to infra01 | Wrong key / Access OK but SSH key mismatch | Confirm Mac key is the one cloud-init/Ansible authorized |
-| `ssh pve01` fails from infra01 | No agent / wrong alias | Use `infra01-admin` after `ssh-add ~/.ssh/pve01` |
-| Off-LAN cannot reach `192.168.68.12` directly | Expected | Use `infra.nasraldin.com` via Tunnel — never open WAN `:22` |
-| Tunnel / Access outage while at home | CF path down | LAN: `ssh nasr@192.168.68.12` or Proxmox UI |
-| infra01 down | Guest stopped or broken | Proxmox UI / LAN `qm` on `pve01`; rebuild TF + `infra.yml` + tunnel |
+| Trying `ssh 192.168.68.12` from outside                   | Expected failure                                       | Use `ssh infra01` (Tunnel) only                                                                                                  |
+| Host key verification failed                              | VM recreated after wipe                                | `ssh-keygen -R infra.nasraldin.com` and `ssh-keygen -R 192.168.68.12` (or ansible-lab `refresh-ssh-known-hosts.sh`)              |
+| `Permission denied (publickey)` to infra01                | Wrong key / Access OK but SSH key mismatch             | Confirm Mac key is the one cloud-init/Ansible authorized                                                                         |
+| `ssh pve01` fails from infra01                            | No agent / wrong alias                                 | Use `infra01-admin` after `ssh-add ~/.ssh/pve01`                                                                                 |
+| Off-LAN cannot reach `192.168.68.12` directly             | Expected                                               | Use `infra.nasraldin.com` via Tunnel — never open WAN `:22`                                                                      |
+| Tunnel / Access outage while at home                      | CF path down                                           | LAN: `ssh nasr@192.168.68.12` or Proxmox UI                                                                                      |
+| infra01 down                                              | Guest stopped or broken                                | Proxmox UI / LAN `qm` on `pve01`; rebuild TF + `infra.yml` + tunnel                                                              |
 
 ---
 
@@ -400,11 +400,11 @@ ansible-playbook playbooks/infra.yml   # expect changed=0
 
 ## OpsHub vs infra01
 
-| Need | Use |
-| ---- | --- |
-| Browser Proxmox / guest console | OpsHub or `https://homelab.nasraldin.com` |
-| Interactive SSH + CLI toolchain from anywhere | **infra01** (this page) |
-| Remote Proxmox **API** from OpsHub | Access Service Auth (see OpsHub / tunnel docs) |
+| Need                                          | Use                                            |
+| --------------------------------------------- | ---------------------------------------------- |
+| Browser Proxmox / guest console               | OpsHub or `https://homelab.nasraldin.com`      |
+| Interactive SSH + CLI toolchain from anywhere | **infra01** (this page)                        |
+| Remote Proxmox **API** from OpsHub            | Access Service Auth (see OpsHub / tunnel docs) |
 
 OpsHub Terminal → Console opens Proxmox xterm.js via the UI hostname. SSH inside
 OpsHub still needs a reachable address (LAN or this Tunnel path) — it does not

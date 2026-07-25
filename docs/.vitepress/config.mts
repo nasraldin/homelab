@@ -172,7 +172,10 @@ export default defineConfig({
             { text: 'Guest OS choices', link: '/guest-os/' },
             { text: 'QEMU Guest Agent', link: '/guest-os/#qemu-guest-agent' },
             { text: 'Decision log', link: '/decisions/log' },
-            { text: 'Core hosts design (2026-07-25)', link: '/superpowers/specs/2026-07-25-core-container-hosts-design' },
+            {
+              text: 'Core hosts design (2026-07-25)',
+              link: '/superpowers/specs/2026-07-25-core-container-hosts-design',
+            },
             { text: 'Status symbols', link: '/conventions/status-legend' },
             { text: 'Old plan (moved)', link: '/homelab-plan' },
           ],

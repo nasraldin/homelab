@@ -4,51 +4,51 @@ Date: 2026-07-24 · Living checklist after workspace audit.
 
 ## Ownership (DRY)
 
-| Concern | Owner |
-| ------- | ----- |
-| Host bootstrap, firewall, update timer, host cleanup timer, factory-reset | `proxmox-bootstrap` |
-| Guests, storages, vzdump jobs | `terraform-lab` |
-| Guest config | `ansible-lab` |
-| Public ingress | `cloudflare-tunnel` |
-| Ops UI | `opshub` |
-| Docs site | `homelab` (+ `homelab-docs` clone helper) |
+| Concern                                                                   | Owner                                     |
+| ------------------------------------------------------------------------- | ----------------------------------------- |
+| Host bootstrap, firewall, update timer, host cleanup timer, factory-reset | `proxmox-bootstrap`                       |
+| Guests, storages, vzdump jobs                                             | `terraform-lab`                           |
+| Guest config                                                              | `ansible-lab`                             |
+| Public ingress                                                            | `cloudflare-tunnel`                       |
+| Ops UI                                                                    | `opshub`                                  |
+| Docs site                                                                 | `homelab` (+ `homelab-docs` clone helper) |
 
 Do **not** put host systemd timers in Terraform, or guest inventory in bootstrap.
 
 ## Secrets hygiene
 
-| Repo | Secrets stay out of git via |
-| ---- | --------------------------- |
-| ansible-lab | `secrets.yml`, `*.vault`, `.env*`, licenses |
-| terraform-lab | `credentials.auto.tfvars`, `*.tfstate`, `.env*` |
-| proxmox-bootstrap | `config.env`, `.env*`, `*.pem` / `*.key` |
-| cloudflare-tunnel | `config.env`, `.env*`, `state/` |
-| opshub | `.env`, `.env.local`, `data/`, `*.db` |
+| Repo              | Secrets stay out of git via                     |
+| ----------------- | ----------------------------------------------- |
+| ansible-lab       | `secrets.yml`, `*.vault`, `.env*`, licenses     |
+| terraform-lab     | `credentials.auto.tfvars`, `*.tfstate`, `.env*` |
+| proxmox-bootstrap | `config.env`, `.env*`, `*.pem` / `*.key`        |
+| cloudflare-tunnel | `config.env`, `.env*`, `state/`                 |
+| opshub            | `.env`, `.env.local`, `data/`, `*.db`           |
 
 Never commit live tokens. Prefer GitLab/GitHub **masked protected** CI variables.
 
 ## CI/CD readiness
 
-| Repo | CI | Jobs |
-| ---- | -- | ---- |
-| ansible-lab | GitLab | ansible-lint + syntax-check all playbooks + manual run |
-| terraform-lab | GitLab | fmt / validate / tflint / checkov (soft) / plan / apply |
-| proxmox-bootstrap | GitHub Actions | bash -n, shellcheck, shfmt |
-| cloudflare-tunnel | GitHub Actions | shell lint + unit tests |
-| opshub | GitHub Actions | lint, typecheck, **build** |
-| homebrew-tools | GitHub Actions | `brew style` + `brew audit` |
-| docker-lab / camunda-lab | GitHub Actions | existing |
-| homelab (workspace) | GitHub Actions | clone-labs shellcheck/shfmt + actionlint + yamllint |
-| homelab (docs) | GitHub Actions | markdownlint + VitePress build |
-| homelab-docs | archived | superseded by VitePress docs in `homelab` |
+| Repo                     | CI             | Jobs                                                    |
+| ------------------------ | -------------- | ------------------------------------------------------- |
+| ansible-lab              | GitLab         | ansible-lint + syntax-check all playbooks + manual run  |
+| terraform-lab            | GitLab         | fmt / validate / tflint / checkov (soft) / plan / apply |
+| proxmox-bootstrap        | GitHub Actions | bash -n, shellcheck, shfmt                              |
+| cloudflare-tunnel        | GitHub Actions | shell lint + unit tests                                 |
+| opshub                   | GitHub Actions | lint, typecheck, **build**                              |
+| homebrew-tools           | GitHub Actions | `brew style` + `brew audit`                             |
+| docker-lab / camunda-lab | GitHub Actions | existing                                                |
+| homelab (workspace)      | GitHub Actions | clone-labs shellcheck/shfmt + actionlint + yamllint     |
+| homelab (docs)           | GitHub Actions | markdownlint + VitePress build                          |
+| homelab-docs             | archived       | superseded by VitePress docs in `homelab`               |
 
 ## Destructive / privileged scripts
 
-| Script | Guardrails |
-| ------ | ---------- |
-| `factory-reset-lab.sh` | `--check`, `--i-understand-destroy`, typed `DESTROY` |
-| `host-cleanup.sh` | no guests/pools; `--check` / `--yes` |
-| Timer `pve-host-cleanup` | safe defaults; EXTRA_ARGS allowlisted |
+| Script                   | Guardrails                                           |
+| ------------------------ | ---------------------------------------------------- |
+| `factory-reset-lab.sh`   | `--check`, `--i-understand-destroy`, typed `DESTROY` |
+| `host-cleanup.sh`        | no guests/pools; `--check` / `--yes`                 |
+| Timer `pve-host-cleanup` | safe defaults; EXTRA_ARGS allowlisted                |
 
 ## Known debt (non-blocking)
 

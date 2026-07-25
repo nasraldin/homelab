@@ -161,10 +161,10 @@ In this homelab: **Vault** for infra/crypto (live); **Infisical** for app envs
 story after HashiCorp’s BSL change). Same _class_ of tool as Vault (engines,
 Transit, Raft-style thinking), **not** the same class as Infisical.
 
-| Option    | Role in this lab                    | Decision                                                                      |
-| --------- | ----------------------------------- | ----------------------------------------------------------------------------- |
-| Vault OSS | Secrets plane + Transit seal helper | **Keep**                                                                      |
-| OpenBao   | Vault-compatible FOSS alternative   | **Not switching now** — revisit only for a pure-open mandate                  |
+| Option    | Role in this lab                    | Decision                                                                           |
+| --------- | ----------------------------------- | ---------------------------------------------------------------------------------- |
+| Vault OSS | Secrets plane + Transit seal helper | **Keep**                                                                           |
+| OpenBao   | Vault-compatible FOSS alternative   | **Not switching now** — revisit only for a pure-open mandate                       |
 | Infisical | App/env secrets UX                  | **On `docker-01`** (PgCat) — apply via `docker-hosts.yml`; not a Vault replacement |
 
 Using OpenBao **only** as seal while Vault holds secrets is API-possible but

@@ -3,15 +3,15 @@
 Single checklist for a **full lab rebuild** on an existing Proxmox node (`pve01`)
 after the **core container hosts** redesign (VMIDs **110–123** + CT **200**).
 
-| Related | Role |
-| ------- | ---- |
-| [first-time-lab-runbook.md](first-time-lab-runbook.md) | Greenfield (no wipe) |
-| [deploy-and-rebuild.md](deploy-and-rebuild.md) | Incremental / day-1 order |
-| [Factory-reset](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/14-factory-reset.md) | What wipe destroys / protects |
-| [lab-refresh-issues.md](lab-refresh-issues.md) | Symptom → cause → fix |
-| [guest-vmid-map.md](guest-vmid-map.md) | VMID / IP / boot order |
-| [core-hosts-acceptance.md](core-hosts-acceptance.md) | Final pass/fail gates |
-| [lan-dns-resilience.md](lan-dns-resilience.md) | DNS failover while AdGuard is down |
+| Related                                                                                            | Role                                           |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [first-time-lab-runbook.md](first-time-lab-runbook.md)                                             | Fresh Proxmox ISO → day-one (no factory-reset) |
+| [deploy-and-rebuild.md](deploy-and-rebuild.md)                                                     | Incremental / day-1 order                      |
+| [Factory-reset](https://github.com/nasraldin/proxmox-bootstrap/blob/main/docs/14-factory-reset.md) | What wipe destroys / protects                  |
+| [lab-refresh-issues.md](lab-refresh-issues.md)                                                     | Symptom → cause → fix                          |
+| [guest-vmid-map.md](guest-vmid-map.md)                                                             | VMID / IP / boot order                         |
+| [core-hosts-acceptance.md](core-hosts-acceptance.md)                                               | Final pass/fail gates                          |
+| [lan-dns-resilience.md](lan-dns-resilience.md)                                                     | DNS failover while AdGuard is down             |
 
 **Ownership (do not mix):**
 
@@ -113,43 +113,43 @@ unset CLOUDFLARE_API_TOKEN
 
 Passwords live in `~/homelab/ansible-lab/secrets.yml` (gitignored) unless noted.
 
-| Service | URL | Username | Password / how to get it | Tick |
-| ------- | --- | -------- | ------------------------ | ---- |
-| **Proxmox UI (LAN)** | `https://192.168.68.13:8006` | `root` (`pam`) | Host root (password manager) | [ ] |
-| **Proxmox UI (remote)** | `https://homelab.nasraldin.com` | same | Access OTP → Proxmox | [ ] |
-| **AdGuard Home** | `http://192.168.68.10:3000` | `admin` | `vault_adguard_admin_password` | [ ] |
-| **Technitium DNS** | `http://192.168.68.11:5380` | `admin` | `vault_technitium_admin_password` | [ ] |
-| **Vault primary UI** | `http://192.168.68.18:8200` | *(token)* | `/root/vault-init.json` `root_token` on `vault-01` | [ ] |
-| **Vault seal helper** | `http://192.168.68.19:8200` | — | UI disabled; Shamir keys on seal | [ ] |
-| **AIStor console** | `http://192.168.68.17:9001` | `vault_aistor_root_user` | `vault_aistor_root_password` | [ ] |
-| **AIStor S3 API** | `http://192.168.68.17:9000` | — | `curl …/minio/health/live` → 200 | [ ] |
-| **GitLab** | `https://gitlab.nasraldin.com` | `root` | `vault_gitlab_root_password` | [ ] |
-| **GitLab registry** | `https://gregistry.nasraldin.com` | GitLab user | Same GitLab account / deploy token | [ ] |
-| **PgAdmin** | `http://192.168.68.21:5433` | `vault_pgadmin_email` | `vault_pgadmin_password` | [ ] |
-| **phpMyAdmin** | `http://192.168.68.21:3366` | `root` | `vault_mariadb_root_password` | [ ] |
-| **NPM admin** | `http://192.168.68.22:81` | *first signup* | NPM creates admin on first visit | [ ] |
-| **Infisical** | `http://192.168.68.22` | *first signup* | Stack keys ≠ UI login; create admin in browser | [ ] |
-| **Keycloak** | `http://192.168.68.22:8080` | `vault_keycloak_admin_user` | `vault_keycloak_admin_password` | [ ] |
-| **it-tools** | via NPM / LAN port per host_vars | — | Smoke-load UI | [ ] |
-| **Mailpit** | via NPM / LAN port per host_vars | — | UI shows empty inbox | [ ] |
-| **SonarQube** | `https://sonar.nasraldin.com` | `admin` | Default `admin` then force change; **no** Access | [ ] |
-| **Kibana** | `https://kibana.nasraldin.com` | `elastic` | `vault_elastic_password`; **no** Access | [ ] |
-| **Grafana** | `http://192.168.68.25:3000` | `admin` | `vault_grafana_admin_password` | [ ] |
-| **Dockhand** | `https://docker.nasraldin.com` | — | Access OTP → `:3000` | [ ] |
+| Service                 | URL                               | Username                    | Password / how to get it                           | Tick |
+| ----------------------- | --------------------------------- | --------------------------- | -------------------------------------------------- | ---- |
+| **Proxmox UI (LAN)**    | `https://192.168.68.13:8006`      | `root` (`pam`)              | Host root (password manager)                       | [ ]  |
+| **Proxmox UI (remote)** | `https://homelab.nasraldin.com`   | same                        | Access OTP → Proxmox                               | [ ]  |
+| **AdGuard Home**        | `http://192.168.68.10:3000`       | `admin`                     | `vault_adguard_admin_password`                     | [ ]  |
+| **Technitium DNS**      | `http://192.168.68.11:5380`       | `admin`                     | `vault_technitium_admin_password`                  | [ ]  |
+| **Vault primary UI**    | `http://192.168.68.18:8200`       | _(token)_                   | `/root/vault-init.json` `root_token` on `vault-01` | [ ]  |
+| **Vault seal helper**   | `http://192.168.68.19:8200`       | —                           | UI disabled; Shamir keys on seal                   | [ ]  |
+| **AIStor console**      | `http://192.168.68.17:9001`       | `vault_aistor_root_user`    | `vault_aistor_root_password`                       | [ ]  |
+| **AIStor S3 API**       | `http://192.168.68.17:9000`       | —                           | `curl …/minio/health/live` → 200                   | [ ]  |
+| **GitLab**              | `https://gitlab.nasraldin.com`    | `root`                      | `vault_gitlab_root_password`                       | [ ]  |
+| **GitLab registry**     | `https://gregistry.nasraldin.com` | GitLab user                 | Same GitLab account / deploy token                 | [ ]  |
+| **PgAdmin**             | `http://192.168.68.21:5433`       | `vault_pgadmin_email`       | `vault_pgadmin_password`                           | [ ]  |
+| **phpMyAdmin**          | `http://192.168.68.21:3366`       | `root`                      | `vault_mariadb_root_password`                      | [ ]  |
+| **NPM admin**           | `http://192.168.68.22:81`         | _first signup_              | NPM creates admin on first visit                   | [ ]  |
+| **Infisical**           | `http://192.168.68.22`            | _first signup_              | Stack keys ≠ UI login; create admin in browser     | [ ]  |
+| **Keycloak**            | `http://192.168.68.22:8080`       | `vault_keycloak_admin_user` | `vault_keycloak_admin_password`                    | [ ]  |
+| **it-tools**            | via NPM / LAN port per host_vars  | —                           | Smoke-load UI                                      | [ ]  |
+| **Mailpit**             | via NPM / LAN port per host_vars  | —                           | UI shows empty inbox                               | [ ]  |
+| **SonarQube**           | `https://sonar.nasraldin.com`     | `admin`                     | Default `admin` then force change; **no** Access   | [ ]  |
+| **Kibana**              | `https://kibana.nasraldin.com`    | `elastic`                   | `vault_elastic_password`; **no** Access            | [ ]  |
+| **Grafana**             | `http://192.168.68.25:3000`       | `admin`                     | `vault_grafana_admin_password`                     | [ ]  |
+| **Dockhand**            | `https://docker.nasraldin.com`    | —                           | Access OTP → `:3000`                               | [ ]  |
 
 ### Secrets quick reference
 
-| Key | Used for |
-| --- | -------- |
-| `vault_adguard_admin_password` / `vault_technitium_admin_password` | DNS UIs |
-| `vault_aistor_root_*` / `vault_gitlab_s3_*` | AIStor + GitLab object store |
-| `vault_gitlab_root_password` | GitLab `root` |
-| `vault_postgres_password` / `vault_pgadmin_*` / `vault_redis_password` / `vault_mariadb_root_password` | `database-01` |
-| `vault_keycloak_db_password` / `vault_infisical_postgres_password` / `vault_sonarqube_db_password` | App DBs via PgCat |
-| `vault_infisical_encryption_key` / `vault_infisical_auth_secret` | Infisical crypto (not UI login) |
-| `vault_keycloak_admin_*` | Keycloak UI |
-| `vault_elastic_password` / `vault_kibana_system_password` | Elastic stack |
-| `vault_grafana_admin_password` | Grafana |
+| Key                                                                                                    | Used for                        |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| `vault_adguard_admin_password` / `vault_technitium_admin_password`                                     | DNS UIs                         |
+| `vault_aistor_root_*` / `vault_gitlab_s3_*`                                                            | AIStor + GitLab object store    |
+| `vault_gitlab_root_password`                                                                           | GitLab `root`                   |
+| `vault_postgres_password` / `vault_pgadmin_*` / `vault_redis_password` / `vault_mariadb_root_password` | `database-01`                   |
+| `vault_keycloak_db_password` / `vault_infisical_postgres_password` / `vault_sonarqube_db_password`     | App DBs via PgCat               |
+| `vault_infisical_encryption_key` / `vault_infisical_auth_secret`                                       | Infisical crypto (not UI login) |
+| `vault_keycloak_admin_*`                                                                               | Keycloak UI                     |
+| `vault_elastic_password` / `vault_kibana_system_password`                                              | Elastic stack                   |
+| `vault_grafana_admin_password`                                                                         | Grafana                         |
 
 ```bash
 python3 -c 'import yaml; print(yaml.safe_load(open("secrets.yml"))["vault_gitlab_root_password"])'
@@ -157,13 +157,13 @@ python3 -c 'import yaml; print(yaml.safe_load(open("secrets.yml"))["vault_gitlab
 
 ### Not a browser UI (SSH / health)
 
-| Guest | Check |
-| ----- | ----- |
-| `infra01` `.12` | `ssh nasr@192.168.68.12` · remote: `ssh infra01` |
-| `runner-01` `.15` | GitLab → **Admin → Runners** (green); fleeting scaffold until API wired |
-| `podman-01` `.23` | `curl -fsS http://192.168.68.23/` (Caddy) |
-| `elastic-01` `.27:9200` | LAN-only; not Tunnel-public |
-| `pve01` `.13` | `ssh root@192.168.68.13` |
+| Guest                   | Check                                                                   |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `infra01` `.12`         | `ssh nasr@192.168.68.12` · remote: `ssh infra01`                        |
+| `runner-01` `.15`       | GitLab → **Admin → Runners** (green); fleeting scaffold until API wired |
+| `podman-01` `.23`       | `curl -fsS http://192.168.68.23/` (Caddy)                               |
+| `elastic-01` `.27:9200` | LAN-only; not Tunnel-public                                             |
+| `pve01` `.13`           | `ssh root@192.168.68.13`                                                |
 
 ---
 
@@ -224,12 +224,12 @@ cd ~/homelab/ansible-lab
 ./scripts/refresh-ssh-known-hosts.sh --accept-new
 ```
 
-| Flag | Effect |
-| ---- | ------ |
-| `--check` | Dry-run only |
-| (none) | Remove stale IP entries |
-| `--accept-new` | `ssh-keyscan -H` re-learns keys |
-| `--ips 10,11,12,21,22` | Limit last octets |
+| Flag                   | Effect                          |
+| ---------------------- | ------------------------------- |
+| `--check`              | Dry-run only                    |
+| (none)                 | Remove stale IP entries         |
+| `--accept-new`         | `ssh-keyscan -H` re-learns keys |
+| `--ips 10,11,12,21,22` | Limit last octets               |
 
 ### 6. Configure guests
 
@@ -312,14 +312,14 @@ acceptance → optional DHCP cutover
 
 ## What not to do
 
-| Anti-pattern | Why |
-| ------------ | --- |
-| Skip known_hosts refresh | Host-key mismatch breaks Ansible |
-| Expect VMs 110–119 only | Redesign ends at 123 + CT 200 |
-| Recreate `infisical-01` / `runner-02` | Removed; Infisical on docker-01 |
-| Apply docker apps before database | PgCat not ready |
-| Access on GitLab/Sonar/Kibana | Design forbids it |
-| Commit `vault-init.json` / `secrets.yml` | Offline password manager only |
+| Anti-pattern                             | Why                              |
+| ---------------------------------------- | -------------------------------- |
+| Skip known_hosts refresh                 | Host-key mismatch breaks Ansible |
+| Expect VMs 110–119 only                  | Redesign ends at 123 + CT 200    |
+| Recreate `infisical-01` / `runner-02`    | Removed; Infisical on docker-01  |
+| Apply docker apps before database        | PgCat not ready                  |
+| Access on GitLab/Sonar/Kibana            | Design forbids it                |
+| Commit `vault-init.json` / `secrets.yml` | Offline password manager only    |
 
 ---
 
@@ -331,11 +331,11 @@ Failures from prior refreshes: **[lab-refresh-issues.md](lab-refresh-issues.md)*
 
 ## Related scripts
 
-| Script | Repo | Purpose |
-| ------ | ---- | ------- |
-| `mac/factory-reset-lab.sh` | proxmox-bootstrap | Destructive wipe + residual GPT |
-| `scripts/adopt-existing.sh` | terraform-lab | Import kept OpsHub; wipe stale ZFS GPT |
-| `scripts/refresh-ssh-known-hosts.sh` | ansible-lab | Clear / re-learn guest SSH host keys |
-| `scripts/dns-failover-public.sh` | ansible-lab | Mac DNS → Cloudflare while AdGuard down |
-| `scripts/dns-restore-adguard.sh` | ansible-lab | Mac DNS → AdGuard after `dns.yml` |
-| `mac/bootstrap.sh` | cloudflare-tunnel | Tunnel + Access for Dockhand; no Access on GitLab/Sonar/Kibana |
+| Script                               | Repo              | Purpose                                                        |
+| ------------------------------------ | ----------------- | -------------------------------------------------------------- |
+| `mac/factory-reset-lab.sh`           | proxmox-bootstrap | Destructive wipe + residual GPT                                |
+| `scripts/adopt-existing.sh`          | terraform-lab     | Import kept OpsHub; wipe stale ZFS GPT                         |
+| `scripts/refresh-ssh-known-hosts.sh` | ansible-lab       | Clear / re-learn guest SSH host keys                           |
+| `scripts/dns-failover-public.sh`     | ansible-lab       | Mac DNS → Cloudflare while AdGuard down                        |
+| `scripts/dns-restore-adguard.sh`     | ansible-lab       | Mac DNS → AdGuard after `dns.yml`                              |
+| `mac/bootstrap.sh`                   | cloudflare-tunnel | Tunnel + Access for Dockhand; no Access on GitLab/Sonar/Kibana |

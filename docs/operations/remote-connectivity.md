@@ -11,12 +11,12 @@ Cloudflare Access). **New laptop that has never been on home Wi‑Fi:** use the
 section there. Do not open WAN `:22` or assume `192.168.68.x` is reachable
 from the internet.
 
-| Already in this lab | Doc                                                                          |
-| ------------------- | ---------------------------------------------------------------------------- |
-| Proxmox UI + Access | Cloudflare Tunnel (`homelab.nasraldin.com`)                                  |
+| Already in this lab    | Doc                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Proxmox UI + Access    | Cloudflare Tunnel (`homelab.nasraldin.com`)                                  |
 | Operator SSH (off-LAN) | [infra01-remote-access.md](infra01-remote-access.md) (`infra.nasraldin.com`) |
-| Guest console       | OpsHub / Proxmox noVNC (break-glass)                                         |
-| Mesh VPN (optional) | NetBird — ⏳ not required for day-to-day LAN                                 |
+| Guest console          | OpsHub / Proxmox noVNC (break-glass)                                         |
+| Mesh VPN (optional)    | NetBird — ⏳ not required for day-to-day LAN                                 |
 
 ## Lab policy (locked)
 

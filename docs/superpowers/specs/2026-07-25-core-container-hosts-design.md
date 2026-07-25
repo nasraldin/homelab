@@ -23,23 +23,23 @@
 
 ## Inventory
 
-| VMID | Guest | LAN | Size | Role |
-| ---- | ----- | --- | ---- | ---- |
-| 110 | `adguard-01` | `.10` | 1c/2G/20G | DNS filter |
-| 111 | `technitium-01` | `.11` | 1c/2G/20G | Authoritative DNS |
-| 112 | `infra01` | `.12` | 4c/8G/80G | Ops |
-| 113 | `vault-01` | `.18` | 1c/2G/50G | Vault Raft |
-| 114 | `vault-seal` | `.19` | 1c/2G/20G | Transit seal |
-| 115 | `aistor-01` | `.17` | 4c/8G/300G | S3 |
-| 116 | `gitlab-01` | `.14` | 6c/16G/120G | GitLab CE |
-| 117 | `runner-01` | `.15` | 2c/4G/40G | Fleeting manager |
-| 118 | `database-01` | `.21` | 6c/24G/200G | Postgres+PgCat+PgAdmin, Redis, MariaDB |
-| 119 | `docker-01` | `.22` | 8c/32G/120G | NPM, Infisical, Keycloak, it-tools, mailpit |
-| 120 | `podman-01` | `.23` | 4c/8G/80G | Podman + Caddy |
-| 121 | `monitoring-01` | `.25` | 4c/16G/100G | Prom/Grafana/Loki/Alloy |
-| 122 | `sonarqube-01` | `.26` | 4c/16G/80G | Sonar Compose → PgCat |
-| 123 | `elastic-01` | `.27` | 8c/32G/200G | ES + Kibana |
-| 200 | `dockhand` | `.24` | 1c/2G/20G | Dockhand LXC |
+| VMID | Guest           | LAN   | Size        | Role                                        |
+| ---- | --------------- | ----- | ----------- | ------------------------------------------- |
+| 110  | `adguard-01`    | `.10` | 1c/2G/20G   | DNS filter                                  |
+| 111  | `technitium-01` | `.11` | 1c/2G/20G   | Authoritative DNS                           |
+| 112  | `infra01`       | `.12` | 4c/8G/80G   | Ops                                         |
+| 113  | `vault-01`      | `.18` | 1c/2G/50G   | Vault Raft                                  |
+| 114  | `vault-seal`    | `.19` | 1c/2G/20G   | Transit seal                                |
+| 115  | `aistor-01`     | `.17` | 4c/8G/300G  | S3                                          |
+| 116  | `gitlab-01`     | `.14` | 6c/16G/120G | GitLab CE                                   |
+| 117  | `runner-01`     | `.15` | 2c/4G/40G   | Fleeting manager                            |
+| 118  | `database-01`   | `.21` | 6c/24G/200G | Postgres+PgCat+PgAdmin, Redis, MariaDB      |
+| 119  | `docker-01`     | `.22` | 8c/32G/120G | NPM, Infisical, Keycloak, it-tools, mailpit |
+| 120  | `podman-01`     | `.23` | 4c/8G/80G   | Podman + Caddy                              |
+| 121  | `monitoring-01` | `.25` | 4c/16G/100G | Prom/Grafana/Loki/Alloy                     |
+| 122  | `sonarqube-01`  | `.26` | 4c/16G/80G  | Sonar Compose → PgCat                       |
+| 123  | `elastic-01`    | `.27` | 8c/32G/200G | ES + Kibana                                 |
+| 200  | `dockhand`      | `.24` | 1c/2G/20G   | Dockhand LXC                                |
 
 **Removed:** `infisical-01`, `runner-02` (static fat runner).
 
@@ -57,13 +57,13 @@ dockhand:     Dockhand install
 
 ## Public hostnames
 
-| Hostname | Origin | Access |
-| -------- | ------ | ------ |
-| `gitlab.nasraldin.com` | `.14:80` | No (GitLab login) |
-| `sonar.nasraldin.com` | `.26:9000` | No (Sonar login) |
-| `kibana.nasraldin.com` | `.27:5601` | No (Kibana login) |
-| `docker.nasraldin.com` | `.24` Dockhand | Yes |
-| NPM apps on docker-01 | via NPM → Tunnel as catalogued | As needed |
+| Hostname               | Origin                         | Access            |
+| ---------------------- | ------------------------------ | ----------------- |
+| `gitlab.nasraldin.com` | `.14:80`                       | No (GitLab login) |
+| `sonar.nasraldin.com`  | `.26:9000`                     | No (Sonar login)  |
+| `kibana.nasraldin.com` | `.27:5601`                     | No (Kibana login) |
+| `docker.nasraldin.com` | `.24` Dockhand                 | Yes               |
+| NPM apps on docker-01  | via NPM → Tunnel as catalogued | As needed         |
 
 ES `:9200` is **LAN only**.
 

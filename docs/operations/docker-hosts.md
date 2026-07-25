@@ -7,13 +7,13 @@ Primary edge proxy: **Nginx Proxy Manager** (`/opt/npm`). Relational DBs live on
 
 ## Stacks
 
-| Path | App |
-| ---- | --- |
-| `/opt/npm` | Nginx Proxy Manager |
+| Path             | App                          |
+| ---------------- | ---------------------------- |
+| `/opt/npm`       | Nginx Proxy Manager          |
 | `/opt/infisical` | Infisical (Postgres → PgCat) |
-| `/opt/keycloak` | Keycloak (Postgres → PgCat) |
-| `/opt/it-tools` | it-tools |
-| `/opt/mailpit` | Mailpit (SMTP 1025, UI 8025) |
+| `/opt/keycloak`  | Keycloak (Postgres → PgCat)  |
+| `/opt/it-tools`  | it-tools                     |
+| `/opt/mailpit`   | Mailpit (SMTP 1025, UI 8025) |
 
 ## Expose recipe
 

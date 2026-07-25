@@ -10,39 +10,39 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 - Links to repo runbooks on GitHub
 - Planned homelab-agent scope (not built yet)
 
-| Doc                                                             | Topic                                                |
-| --------------------------------------------------------------- | ---------------------------------------------------- |
-| [deploy-and-rebuild.md](deploy-and-rebuild.md)                  | Canonical repo order, commands, and acceptance       |
-| [lab-refresh-runbook.md](lab-refresh-runbook.md)                | Full wipe → adopt → TF → SSH keys → Ansible checklist |
-| [lab-refresh-issues.md](lab-refresh-issues.md)                  | Refresh failures: symptom → cause → fix (REF-*)      |
+| Doc                                                             | Topic                                                       |
+| --------------------------------------------------------------- | ----------------------------------------------------------- |
+| [deploy-and-rebuild.md](deploy-and-rebuild.md)                  | Canonical repo order, commands, and acceptance              |
+| [lab-refresh-runbook.md](lab-refresh-runbook.md)                | Full wipe → adopt → TF → SSH keys → Ansible checklist       |
+| [lab-refresh-issues.md](lab-refresh-issues.md)                  | Refresh failures: symptom → cause → fix (REF-*)             |
 | [infra01-remote-access.md](infra01-remote-access.md)            | **Off-LAN operator path** — jump box, Access SSH, PVE admin |
-| [proxmox-updates.md](proxmox-updates.md)                        | Daily check, manual upgrade, n8n layer               |
-| [backups.md](backups.md)                                        | vzdump stages, drills, migration                     |
-| [backup-platform.md](backup-platform.md)                        | PBS, Velero, MinIO — Veeam-equivalent                |
-| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)                      | TP-Link DHCP DNS → AdGuard (+ Secondary)             |
-| [lan-dns-resilience.md](lan-dns-resilience.md)                  | DNS outages, autostart, replace without LAN death    |
-| [mac-dns.md](mac-dns.md)                                        | Mac: scutil / networksetup failover & restore        |
-| [remote-connectivity.md](remote-connectivity.md)                | Mac → SSH / RDP / RustDesk / NoMachine (no WAN)      |
-| [gitlab.md](gitlab.md)                                          | Omnibus + runners: S3, mint, login, CI               |
-| [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md)            | TF/Ansible CI: TF_TARGET_GUESTS, ANSIBLE_LIMIT       |
-| [repo-audit-checklist.md](repo-audit-checklist.md)              | Secrets hygiene, CI coverage, ownership (DRY)        |
-| [object-storage.md](object-storage.md)                          | AIStor Free shared S3 (`aistor-01`)                  |
-| [vault.md](vault.md)                                            | HashiCorp Vault OSS Raft (`vault-01` + seal)         |
-| [infisical.md](infisical.md)                                    | Infisical app env-secrets (`docker-01` + PgCat)      |
-| [Vault vs Infisical](../architecture/vault-vs-infisical.md)     | Secrets platforms: features, use cases, decision     |
-| [Secret ownership map](../architecture/secret-ownership-map.md) | Vault only / Infisical only / Either per secret type |
-| [guest-vmid-map.md](guest-vmid-map.md)                          | Core VMID 110–123 + CT 200, boot order            |
-| [database-01.md](database-01.md)                                | Central Postgres/PgCat/Redis/MariaDB              |
-| [docker-hosts.md](docker-hosts.md)                              | docker-01 / NPM / apps                            |
-| [keycloak.md](keycloak.md)                                      | IdP on docker-01                                  |
-| [sonarqube.md](sonarqube.md)                                    | Dedicated Sonar + Tunnel                          |
-| [elastic.md](elastic.md)                                        | Elastic + Kibana (Option A vs Loki)               |
-| [monitoring.md](monitoring.md)                                  | Prometheus/Grafana/Loki fleet                     |
-| [dockhand.md](dockhand.md)                                      | Dockhand CT + Access                              |
-| [core-hosts-acceptance.md](core-hosts-acceptance.md)            | Factory-reset prove-out checklist                 |
-| [first-time-lab-runbook.md](first-time-lab-runbook.md)          | Greenfield core hosts bring-up                    |
-| [lab-refresh-runbook.md](lab-refresh-runbook.md)                | Wipe + rebuild (110–123 + CT 200)                 |
-| [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)    | Fleeting core (not follow-up)                     |
+| [proxmox-updates.md](proxmox-updates.md)                        | Daily check, manual upgrade, n8n layer                      |
+| [backups.md](backups.md)                                        | vzdump stages, drills, migration                            |
+| [backup-platform.md](backup-platform.md)                        | PBS, Velero, MinIO — Veeam-equivalent                       |
+| [dns-dhcp-cutover.md](dns-dhcp-cutover.md)                      | TP-Link DHCP DNS → AdGuard (+ Secondary)                    |
+| [lan-dns-resilience.md](lan-dns-resilience.md)                  | DNS outages, autostart, replace without LAN death           |
+| [mac-dns.md](mac-dns.md)                                        | Mac: scutil / networksetup failover & restore               |
+| [remote-connectivity.md](remote-connectivity.md)                | Mac → SSH / RDP / RustDesk / NoMachine (no WAN)             |
+| [gitlab.md](gitlab.md)                                          | Omnibus + runners: S3, mint, login, CI                      |
+| [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md)            | TF/Ansible CI: TF_TARGET_GUESTS, ANSIBLE_LIMIT              |
+| [repo-audit-checklist.md](repo-audit-checklist.md)              | Secrets hygiene, CI coverage, ownership (DRY)               |
+| [object-storage.md](object-storage.md)                          | AIStor Free shared S3 (`aistor-01`)                         |
+| [vault.md](vault.md)                                            | HashiCorp Vault OSS Raft (`vault-01` + seal)                |
+| [infisical.md](infisical.md)                                    | Infisical app env-secrets (`docker-01` + PgCat)             |
+| [Vault vs Infisical](../architecture/vault-vs-infisical.md)     | Secrets platforms: features, use cases, decision            |
+| [Secret ownership map](../architecture/secret-ownership-map.md) | Vault only / Infisical only / Either per secret type        |
+| [guest-vmid-map.md](guest-vmid-map.md)                          | Core VMID 110–123 + CT 200, boot order                      |
+| [database-01.md](database-01.md)                                | Central Postgres/PgCat/Redis/MariaDB                        |
+| [docker-hosts.md](docker-hosts.md)                              | docker-01 / NPM / apps                                      |
+| [keycloak.md](keycloak.md)                                      | IdP on docker-01                                            |
+| [sonarqube.md](sonarqube.md)                                    | Dedicated Sonar + Tunnel                                    |
+| [elastic.md](elastic.md)                                        | Elastic + Kibana (Option A vs Loki)                         |
+| [monitoring.md](monitoring.md)                                  | Prometheus/Grafana/Loki fleet                               |
+| [dockhand.md](dockhand.md)                                      | Dockhand CT + Access                                        |
+| [core-hosts-acceptance.md](core-hosts-acceptance.md)            | Factory-reset prove-out checklist                           |
+| [first-time-lab-runbook.md](first-time-lab-runbook.md)          | Fresh PVE install → bootstrap → TF → Ansible                |
+| [lab-refresh-runbook.md](lab-refresh-runbook.md)                | Wipe + rebuild (110–123 + CT 200)                           |
+| [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)    | Fleeting core (not follow-up)                               |
 
 Architecture: [vm-best-practices.md](../architecture/vm-best-practices.md) (q35, OVMF, VirtIO SCSI, startup order).
 

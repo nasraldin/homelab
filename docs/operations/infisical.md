@@ -7,12 +7,12 @@ Application secrets plane on **`docker-01`** (`192.168.68.22`, **VMID 119**).
 Postgres is **central** on [database-01](database-01.md) via PgCat (`:6432`) —
 not embedded in the Infisical Compose stack.
 
-| Item | Value |
-| ---- | ----- |
-| Guest | `docker-01` (VMID 119) |
+| Item     | Value                                                   |
+| -------- | ------------------------------------------------------- |
+| Guest    | `docker-01` (VMID 119)                                  |
 | UI / API | `http://192.168.68.22` (LAN; NPM/Tunnel optional later) |
-| Stack | Compose under `/opt/infisical` + local Redis |
-| DB | PgCat → `infisical` database on `192.168.68.21:6432` |
+| Stack    | Compose under `/opt/infisical` + local Redis            |
+| DB       | PgCat → `infisical` database on `192.168.68.21:6432`    |
 
 Comparison and ownership:
 [vault-vs-infisical.md](../architecture/vault-vs-infisical.md) ·
