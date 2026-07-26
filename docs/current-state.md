@@ -9,6 +9,7 @@ the checkmarks mean something; the approved next sequence is tracked in the
 [infra01 remote access](operations/infra01-remote-access.md)
 (`infra.nasraldin.com`) — do not open WAN SSH. OPNsense VLAN pilot **archived**
 (2026-07-23) — code on `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
+Core container hosts redesign ✅ verified **2026-07-26**.
 **Next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
 NetBird remains optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
 Vault (`vault-01` `.18`) + AIStor Free (`aistor-01` `.17`) ✅ as core Layer-1.
@@ -57,9 +58,10 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | GitLab          | Omnibus `gitlab-01` VMID **116** `.14` + `runner-01` VMID **117** `.15` → AIStor ✅                                                 |
 | Vault           | OSS Raft on `vault-01` VMID 113 `.18` + seal VMID 114 `.19` — AppRole ✅                                                            |
 | Object storage  | AIStor Free on `aistor-01` VMID **115** `.17` — GitLab buckets + runner cache ✅                                                    |
-| Infisical       | App env-secrets on **`docker-01` `.22`** (PgCat DB) — code ready ⏳; live after refresh                                             |
-| Platform hosts  | `database-01` / `docker-01` / `podman-01` / `monitoring-01` / `sonarqube-01` / `elastic-01` / `dockhand` — TF+Ansible scaffolded ⏳ |
-| Runner          | Single `runner-01` fleeting manager (no `runner-02`) — scaffold ⏳                                                                  |
+| Infisical       | App env-secrets on **`docker-01` `.22`** (PgCat DB) — HTTP `:8090` ✅ (first UI admin signup if needed)                          |
+| Platform hosts  | `database-01` / `docker-01` / `podman-01` / `monitoring-01` / `sonarqube-01` / `elastic-01` / `dockhand` — ✅ verified 2026-07-26 |
+| Observability   | Grafana community dashboards + exporters (PVE/AdGuard/Technitium/Vault/GitLab/Sonar) ✅ — [monitoring.md](operations/monitoring.md); logs → Kibana |
+| Runner          | Single `runner-01` docker executor online; fleeting manager scaffold ⏳                                                         |
 | Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)                                                                   |
 | Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean                                                                         |
 | Restore drill   | First proof done (weekly cadence continues)                                                                                         |
@@ -84,14 +86,14 @@ Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storag
 | --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | 1   | GitLab Omnibus + Docker runner   | ✅ — `https://gitlab.nasraldin.com` + `runner-01` (no `runner-02`)                                                             |
 | 2   | Vault + AIStor (core)            | ✅ — [vault.md](operations/vault.md) · [object-storage.md](operations/object-storage.md)                                       |
-| 3   | Core container hosts redesign    | ⏳ factory-reset prove-out — [first-time](operations/first-time-lab-runbook.md) / [refresh](operations/lab-refresh-runbook.md) |
+| 3   | Core container hosts redesign    | ✅ verified 2026-07-26 — [acceptance](operations/core-hosts-acceptance.md)                                                         |
 | 4   | NetBird remote access (optional) | ⏳                                                                                                                             |
 | 5   | kubeadm Stage A                  | ⏳ after GitLab CI path is usable                                                                                              |
 
-**Active focus** — factory-reset refresh of core hosts, then Terraform CI on GitLab
-(optional), then kubeadm Stage A. GitLab: Tunnel HTTPS, no Access; S3 via AIStor;
-secrets via Vault; Infisical on `docker-01`. Keep flat LAN + AdGuard. Fleeting
-autoscaler: [gitlab-runner-autoscaling.md](operations/gitlab-runner-autoscaling.md).
+**Active focus** — Terraform CI on GitLab (optional), then kubeadm Stage A.
+GitLab: Tunnel HTTPS, no Access; S3 via AIStor; secrets via Vault; Infisical on
+`docker-01`. Keep flat LAN + AdGuard. Fleeting autoscaler:
+[gitlab-runner-autoscaling.md](operations/gitlab-runner-autoscaling.md).
 
 ---
 

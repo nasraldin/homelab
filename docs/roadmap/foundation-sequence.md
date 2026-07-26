@@ -35,10 +35,10 @@ archived · next = Terraform CI (optional) → kubeadm (NetBird optional).
 | 14  | OPNsense VLAN Pilot                                             | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                                   |
 | 15  | NetBird remote access                                           | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                                      |
 | 16  | Vault (`vault-01` + `vault-seal`)                               | ✅      | **core** — secrets `.18` VMID **113**, Transit seal `.19` VMID **114**; [vault.md](../operations/vault.md)                                                   |
-| 16b | Infisical (on `docker-01`)                                      | ⏳      | App env-secrets via PgCat — [infisical.md](../operations/infisical.md) · design [core hosts](../superpowers/specs/2026-07-25-core-container-hosts-design.md) |
-| 17  | GitLab Omnibus + fleeting `runner-01`                           | ✅ / ⏳ | GitLab ✅; resize + fleeting manager after refresh; [gitlab-runner-autoscaling.md](../operations/gitlab-runner-autoscaling.md)                               |
+| 16b | Infisical (on `docker-01`)                                      | ✅      | App up on `:8090` via PgCat — complete first admin signup in UI if not done · [infisical.md](../operations/infisical.md)                                     |
+| 17  | GitLab Omnibus + fleeting `runner-01`                           | ✅ / ⏳ | GitLab ✅; runner docker executor online; fleeting manager scaffold until API wired                                                                          |
 | 17a | AIStor Free (`aistor-01`)                                       | ✅      | **core** — VMID **115**, `.17` (after redesign map)                                                                                                          |
-| 17b | Core container hosts (DB/docker/monitor/sonar/elastic/dockhand) | ⏳      | TF+Ansible ready — prove via [core-hosts-acceptance.md](../operations/core-hosts-acceptance.md)                                                              |
+| 17b | Core container hosts (DB/docker/monitor/sonar/elastic/dockhand) | ✅      | verified after factory-reset refresh **2026-07-26** — [core-hosts-acceptance.md](../operations/core-hosts-acceptance.md)                                    |
 | 18  | kubeadm Stage A (1 CP + 2 workers)                              | ⏳      | after GitLab CI path; [kubeadm](../kubernetes/kubeadm-architecture.md)                                                                                       |
 | 19  | GitOps (Argo CD)                                                | ⏳      | Phase 7                                                                                                                                                      |
 | 20  | Platform services                                               | ⏳      | Phases 8+ (in-cluster object store optional; AIStor remains Layer-1 S3)                                                                                      |
@@ -46,9 +46,9 @@ archived · next = Terraform CI (optional) → kubeadm (NetBird optional).
 ## Next approved sequence
 
 Keep the lab simple on the flat TP-Link LAN with AdGuard + Technitium. GitLab,
-Vault, and AIStor are **core** Layer-1 services (outside Kubernetes). NetBird
-remains optional. Next: optional Terraform CI on GitLab, then kubeadm Stage A.
-See [phases.md](phases.md).
+Vault, AIStor, and the core container hosts redesign are **core** Layer-1
+services (outside Kubernetes). NetBird remains optional. Next: optional Terraform
+CI on GitLab, then kubeadm Stage A. See [phases.md](phases.md).
 
 Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.13`,
 AdGuard `.10`, Technitium `.11`, Vault `.18`, vault-seal `.19`, Infisical `.20`, AIStor `.17`, and Cloudflare Tunnel.

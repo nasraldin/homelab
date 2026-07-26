@@ -12,6 +12,11 @@ small **Transit seal helper** on **`vault-seal`** (`192.168.68.19`, **VMID 114**
 | Seal          | **Transit auto-unseal** on `vault-01` via `vault-seal`; seal helper stays **Shamir 5/3** |
 | Swap          | Disabled on both VMs (Raft guidance)                                                     |
 | UI            | Enabled on `vault-01`; disabled on `vault-seal`                                          |
+| Metrics       | Prometheus scrape `http://192.168.68.18:8200/v1/sys/metrics?format=prometheus`           |
+
+Telemetry: listener `unauthenticated_metrics_access` + top-level
+`prometheus_retention_time` (see `vault.hcl.j2`). Grafana → **Security** /
+Hashicorp Vault ([monitoring.md](monitoring.md)).
 
 Ansible: `ansible-lab/roles/vault/` via `playbooks/object-storage.yml`
 (seal host first, then primary, then AIStor).

@@ -141,11 +141,16 @@ cd ~/homelab/terraform-lab
 # Confirm terraform.tfvars: VMs 110–123 + CT dockhand 200
 # No infisical-01 / runner-02
 
+# First apply imports built-in `local` storage, enables snippets+import, and
+# creates /var/lib/vz/snippets (local-storage.tf). No manual pvesm needed.
+# Requires SSH agent: ssh-add ~/.ssh/pve01
+
 terraform init && terraform validate
 terraform plan -out=tfplan    # review cores/RAM/disk; oversubscription is intentional
 terraform apply tfplan && rm -f tfplan
 
 ssh pve01 'qm list; pct list'
+ssh pve01 'pvesm status; test -d /var/lib/vz/snippets && echo snippets_ok'
 ```
 
 | VMID | Name          | IP  |
@@ -234,7 +239,7 @@ ansible-playbook playbooks/dockhand.yml
 | [ ]  | `ssh nasr@192.168.68.18 'sudo vault status'` → Sealed `false`         |
 | [ ]  | `curl -fsS http://192.168.68.17:9000/minio/health/live` → 200         |
 | [ ]  | `nc -vz 192.168.68.21 6432` → PgCat up                                |
-| [ ]  | Infisical `http://192.168.68.22/api/status` healthy                   |
+| [ ]  | Infisical `http://192.168.68.22:8090/api/status` healthy              |
 | [ ]  | Sonar LAN `:9000`, Elastic `:9200`, Grafana `:3000`, Dockhand `:3000` |
 
 ---

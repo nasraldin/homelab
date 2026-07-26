@@ -83,7 +83,10 @@ ansible-playbook playbooks/object-storage.yml -e @secrets.yml
 # Offline backup of vault-init.json (seal .19 + primary .18)
 
 ansible-playbook playbooks/gitlab.yml -e @secrets.yml
+# GitLab LAN should be 200 here; public HTTPS needs step F (REF-018).
+# First-boot traps: REF-014 (LE), REF-015 (Vault audit), REF-016 (runner URL).
 ansible-playbook playbooks/database.yml -e @secrets.yml
+# First-boot traps: REF-017 (Postgres 18 mount/init); MariaDB is by design (REF-019).
 ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml
 ansible-playbook playbooks/sonarqube.yml -e @secrets.yml
 ansible-playbook playbooks/elastic.yml -e @secrets.yml
@@ -93,6 +96,7 @@ ansible-playbook playbooks/dockhand.yml
 ```
 
 Prefer **`docker-hosts.yml`** over standalone `infisical.yml` (Infisical is on `docker-01`).
+On failure, use **[lab-refresh-issues.md](lab-refresh-issues.md)** (REF-\*) before re-running blindly.
 
 ### F. Tunnel + acceptance
 
@@ -127,8 +131,8 @@ Passwords live in `~/homelab/ansible-lab/secrets.yml` (gitignored) unless noted.
 | **GitLab registry**     | `https://gregistry.nasraldin.com` | GitLab user                 | Same GitLab account / deploy token                 | [ ]  |
 | **PgAdmin**             | `http://192.168.68.21:5433`       | `vault_pgadmin_email`       | `vault_pgadmin_password`                           | [ ]  |
 | **phpMyAdmin**          | `http://192.168.68.21:3366`       | `root`                      | `vault_mariadb_root_password`                      | [ ]  |
-| **NPM admin**           | `http://192.168.68.22:81`         | _first signup_              | NPM creates admin on first visit                   | [ ]  |
-| **Infisical**           | `http://192.168.68.22`            | _first signup_              | Stack keys ≠ UI login; create admin in browser     | [ ]  |
+| **NPM admin**           | `http://192.168.68.22:81`         | `vault_npm_admin_*`         | Auto Initial User Creation (empty volume only)     | [ ]  |
+| **Infisical**           | `http://192.168.68.22:8090`       | _first signup_              | Stack keys ≠ UI login; create admin in browser     | [ ]  |
 | **Keycloak**            | `http://192.168.68.22:8080`       | `vault_keycloak_admin_user` | `vault_keycloak_admin_password`                    | [ ]  |
 | **it-tools**            | via NPM / LAN port per host_vars  | —                           | Smoke-load UI                                      | [ ]  |
 | **Mailpit**             | via NPM / LAN port per host_vars  | —                           | UI shows empty inbox                               | [ ]  |
@@ -243,6 +247,8 @@ ansible-playbook playbooks/dns.yml -e @secrets.yml
 ansible-playbook playbooks/infra.yml
 ansible-playbook playbooks/object-storage.yml -e @secrets.yml
 ansible-playbook playbooks/gitlab.yml -e @secrets.yml
+# After GitLab LAN is healthy, refresh public hostnames (REF-018):
+#   cd ~/homelab/cloudflare-tunnel && ./mac/bootstrap.sh --check && ./mac/bootstrap.sh --yes
 ansible-playbook playbooks/database.yml -e @secrets.yml
 ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml
 ansible-playbook playbooks/sonarqube.yml -e @secrets.yml
@@ -252,7 +258,9 @@ ansible-playbook playbooks/podman-host.yml
 ansible-playbook playbooks/dockhand.yml
 ```
 
-Playbook order: DNS → infra → Vault/AIStor → GitLab → **database** → docker apps → sonar/elastic/monitoring → podman/dockhand.
+Playbook order: DNS → infra → Vault/AIStor → GitLab → **Tunnel bootstrap (GitLab/gregistry)** → **database** → docker apps → sonar/elastic/monitoring → podman/dockhand.
+
+Known Ansible first-boot traps: [REF-014…019](lab-refresh-issues.md) (GitLab LE, Vault audit SIGPIPE, runner LAN URL, Postgres 18 mount/init, public 530, MariaDB-by-design).
 
 ### 7. Acceptance commands (copy/paste)
 
@@ -271,17 +279,19 @@ done
 # Vault / AIStor / GitLab
 ssh nasr@192.168.68.18 'sudo vault status'          # Sealed false
 curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.17:9000/minio/health/live
-curl -fsS -o /dev/null -w '%{http_code}\n' https://gitlab.nasraldin.com/users/sign_in
+curl -fsS -o /dev/null -w 'lan:%{http_code}\n' http://192.168.68.14/users/sign_in
+curl -fsS -o /dev/null -w 'public:%{http_code}\n' https://gitlab.nasraldin.com/users/sign_in
+# If lan=200 and public=530 → Tunnel (REF-018), not Omnibus
 
 # Central DB + apps
-nc -vz 192.168.68.21 6432                           # PgCat
-curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.22/api/status   # Infisical
+nc -vz 192.168.68.21 5432 6432 3306 6379            # Postgres / PgCat / MariaDB / Redis
+curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.22:8090/api/status   # Infisical
 curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.26:9000         # Sonar LAN
 curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.27:5601         # Kibana LAN
 curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.24:3000         # Dockhand
 ```
 
-**Expected:** no `FAIL.*` lines; health curls return `200` (or Sonar/Kibana first-boot redirect `302`/`303` acceptable if documented).
+**Expected:** no `FAIL.*` lines; LAN GitLab `200`; public GitLab `200`/`302` only after Tunnel; DB ports open (MariaDB is intentional — REF-019).
 
 ---
 
@@ -299,11 +309,12 @@ terraform apply    (VMs 110–123 + CT 200)
 refresh-ssh-known-hosts.sh
         ↓
 ansible: dns → infra → object-storage → gitlab
+         → cloudflare-tunnel (gitlab/gregistry)
          → database → docker-hosts
          → sonarqube → elastic → monitoring
          → podman-host → dockhand
         ↓
-cloudflare-tunnel bootstrap (sonar/kibana/docker)
+cloudflare-tunnel bootstrap (sonar/kibana/docker + remaining hostnames)
         ↓
 acceptance → optional DHCP cutover
 ```
@@ -318,6 +329,9 @@ acceptance → optional DHCP cutover
 | Expect VMs 110–119 only                  | Redesign ends at 123 + CT 200    |
 | Recreate `infisical-01` / `runner-02`    | Removed; Infisical on docker-01  |
 | Apply docker apps before database        | PgCat not ready                  |
+| Install GitLab with public `EXTERNAL_URL` / LE | Half-config behind Tunnel (REF-014) |
+| Register runners only via public HTTPS   | 530 before Tunnel (REF-016)      |
+| Mount Postgres 18 at `/var/lib/postgresql/data` | Unhealthy container (REF-017) |
 | Access on GitLab/Sonar/Kibana            | Design forbids it                |
 | Commit `vault-init.json` / `secrets.yml` | Offline password manager only    |
 
@@ -325,7 +339,8 @@ acceptance → optional DHCP cutover
 
 ## Issue log
 
-Failures from prior refreshes: **[lab-refresh-issues.md](lab-refresh-issues.md)**.
+Failures from prior refreshes: **[lab-refresh-issues.md](lab-refresh-issues.md)**
+(REF-001…013 bootstrap/TF; **REF-014…019** Ansible GitLab/Vault/database from the 2026-07 redesign refresh).
 
 ---
 

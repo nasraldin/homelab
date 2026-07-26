@@ -10,9 +10,10 @@ not embedded in the Infisical Compose stack.
 | Item     | Value                                                   |
 | -------- | ------------------------------------------------------- |
 | Guest    | `docker-01` (VMID 119)                                  |
-| UI / API | `http://192.168.68.22` (LAN; NPM/Tunnel optional later) |
+| UI / API | `http://192.168.68.22:8090` (LAN; NPM `:80` is edge — proxy later) |
 | Stack    | Compose under `/opt/infisical` + local Redis            |
 | DB       | PgCat → `infisical` database on `192.168.68.21:6432`    |
+| Host port| **8090** → container `8080` (do not use `:80` — NPM)    |
 
 Comparison and ownership:
 [vault-vs-infisical.md](../architecture/vault-vs-infisical.md) ·

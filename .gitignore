@@ -39,3 +39,7 @@ node_modules/
 
 # Local scratch (not a sibling lab repo)
 dashboard/
+
+# Local operator credential cheat sheet (never commit)
+CREDENTIALS.md
+*CREDENTIALS*.local.md

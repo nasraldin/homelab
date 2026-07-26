@@ -37,7 +37,7 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | [keycloak.md](keycloak.md)                                      | IdP on docker-01                                            |
 | [sonarqube.md](sonarqube.md)                                    | Dedicated Sonar + Tunnel                                    |
 | [elastic.md](elastic.md)                                        | Elastic + Kibana (Option A vs Loki)                         |
-| [monitoring.md](monitoring.md)                                  | Prometheus/Grafana/Loki fleet                               |
+| [monitoring.md](monitoring.md)                                  | Prometheus/Grafana day-one dashboards + exporters           |
 | [dockhand.md](dockhand.md)                                      | Dockhand CT + Access                                        |
 | [core-hosts-acceptance.md](core-hosts-acceptance.md)            | Factory-reset prove-out checklist                           |
 | [first-time-lab-runbook.md](first-time-lab-runbook.md)          | Fresh PVE install → bootstrap → TF → Ansible                |

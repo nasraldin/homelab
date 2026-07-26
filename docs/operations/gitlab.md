@@ -155,12 +155,46 @@ ansible-playbook playbooks/gitlab.yml -e @secrets.yml
 # Expect mostly changed=0 on a healthy stack
 ```
 
+## Fresh-install failures (debug → fix)
+
+Full write-ups live in [lab-refresh-issues.md](lab-refresh-issues.md):
+
+| ID | Symptom | Tracker |
+| -- | ------- | ------- |
+| REF-014 | `gitlab-ce` half-configured / LE ACME / “public attributes” | [link](lab-refresh-issues.md#ref-014-gitlab-omnibus-lets-encrypt-half-configured) |
+| REF-015 | `vault-seal` → Enable file audit device (`no_log`) | [link](lab-refresh-issues.md#ref-015-vault-file-audit-pipefail-sigpipe) |
+| REF-016 | Runner register fails; public HTTPS 530 | [link](lab-refresh-issues.md#ref-016-gitlab-runner-register-via-public-url-530) |
+| REF-018 | LAN GitLab 200, public `gitlab.nasraldin.com` 530 | [link](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild) |
+
+Quick triage: if LAN `:80` works and public does not → Tunnel ([REF-018](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild)), not Omnibus.
+
+## Prometheus metrics (scraped by `monitoring-01`)
+
+Ansible enables Omnibus exporters (bundled Prometheus stays **off**):
+
+| Endpoint | Port | Notes |
+| -------- | ---- | ----- |
+| `gitlab-exporter` | `:9168` | `gitlab_exporter['listen_address'] = '0.0.0.0'` |
+| Gitaly | `:9236` | `gitaly['configuration']['prometheus_listen_addr']` |
+| Workhorse | `:9229` | |
+| Registry debug | `:5001` | `registry['debug_addr']` |
+| Sidekiq | `:8082` | |
+| Runner | `:9252` | `listen_address` in `config.toml` on `runner-01` |
+
+UFW allows those ports from `lab_cidr`. Dashboards: Grafana → **GitLab** folder
+([monitoring.md](monitoring.md)).
+
 ## Health checks
 
 ```bash
 ssh nasr@192.168.68.14 'sudo gitlab-ctl status'
 ssh nasr@192.168.68.15 'sudo gitlab-runner status; docker info >/dev/null && echo docker-ok'
-curl -fsS -o /dev/null -w '%{http_code}\n' https://gitlab.nasraldin.com/users/sign_in
+# Prefer LAN until Tunnel is re-applied after a rebuild
+curl -fsS -o /dev/null -w 'lan:%{http_code}\n' http://192.168.68.14/users/sign_in
+curl -fsS -o /dev/null -w 'public:%{http_code}\n' https://gitlab.nasraldin.com/users/sign_in
+# Metrics (from monitoring CIDR / localhost)
+curl -fsS -o /dev/null -w 'gitlab-exporter:%{http_code}\n' http://192.168.68.14:9168/metrics
+curl -fsS -o /dev/null -w 'runner:%{http_code}\n' http://192.168.68.15:9252/metrics
 ```
 
-Expect HTTP 200 (or 302) for sign-in — not a Cloudflare Access challenge page.
+Expect LAN `200`. Public `200`/`302` only after Cloudflare Tunnel bootstrap (not Access).
