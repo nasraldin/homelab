@@ -29,16 +29,15 @@ commands live in the
                            │ sync
 ┌──────────────────────────┴──────────────────────────────────┐
 │  Layer 2 — Cluster bootstrap                                │
-│  cloud-init / Cluster API / Talos / kubeadm                 │
-│  Install Kubernetes ONCE (kubelet, CNI, CSI)                  │
-│  Here: terraform-lab/ VMs + Ansible/kubeadm for cluster install │
+│  kubeadm + containerd + Cilium (once) + Argo CD (once)       │
+│  Here: k8s-lab/ansible + k8s-lab/scripts                    │
 └──────────────────────────▲──────────────────────────────────┘
                            │ boots
 ┌──────────────────────────┴──────────────────────────────────┐
 │  Layer 1 — Infrastructure                                   │
 │  Terraform / OpenTofu                                       │
-│  Disks, pools, VMs, LXC, networks, cloud images             │
-│  Here: terraform-lab/                                           │
+│  Non-k8s guests: terraform-lab/                             │
+│  k8s HAProxy + nodes: k8s-lab/terraform (own state)         │
 └─────────────────────────────────────────────────────────────┘
 
 Side path (not Layer 3):
@@ -46,13 +45,14 @@ Side path (not Layer 3):
             (packages, users, Docker, GitLab Runner on a VM, …)
 ```
 
-| Layer | Tool in this repo                               | Owns                                                              | Does **not** own                            |
-| ----- | ----------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------- |
-| 0     | `proxmox-bootstrap/`                            | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload | VMs, pools, k8s apps                        |
-| 1     | `terraform-lab/`                                | ZFS pools, resource pools, images, VMs, LXC, backups              | Helm charts, Ingress rules, app Deployments |
-| 2     | Ansible / kubeadm (on VMs)                      | Kubernetes install on Debian VMs                                  | Day-2 cluster config via GitOps             |
-| 3     | Argo CD (planned under `argocd/` / Git)         | Everything _in_ the cluster                                       | Creating Proxmox VMs                        |
-| side  | Ansible (`ansible-lab/` roles, later dedicated) | Non-k8s guest config                                              | k8s manifests / Helm                        |
+| Layer | Tool                                                  | Owns                                                              | Does **not** own                            |
+| ----- | ----------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------- |
+| 0     | `proxmox-bootstrap/`                                  | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload | VMs, pools, k8s apps                        |
+| 1a    | `terraform-lab/`                                      | ZFS pools, non-k8s VMs/LXC, shared images                         | k8s node VMs, Helm charts                   |
+| 1b    | `k8s-lab/terraform`                                   | HAProxy + 3 CP + 3 worker VMs (own state)                         | Non-k8s guests, day-2 Helm                  |
+| 2     | `k8s-lab` Ansible + scripts                           | containerd, kubeadm HA, Cilium once, Argo once, etcd backup       | Day-2 platform charts                       |
+| 3     | Argo CD + `homelab-gitops`                            | Everything _in_ the cluster after bootstrap                       | Creating Proxmox VMs                        |
+| side  | Ansible (`ansible-lab/`)                              | Non-k8s guest config                                              | k8s manifests / Helm                        |
 
 Guiding rule: **don’t manually configure anything the layer above can own.**
 A full rebuild is:
@@ -74,7 +74,8 @@ After the API server is up:
 
 1. Bootstrap **Argo CD once** (small exception: one-time install, then Argo manages itself).
 2. Put every other component in Git (Application / ApplicationSet / Helm / Kustomize).
-3. Argo syncs: cert-manager, **NGINX Ingress**, monitoring, Harbor, GitLab Runner (in-cluster), your apps.
+3. Argo syncs: cert-manager, **Cilium Gateway API routes**, monitoring, Harbor, your apps.
+   (North-south HTTP is Cilium Gateway API — not NGINX Ingress. Istio is mesh-only.)
 
 **Do not** use Terraform `kubernetes`/`helm` providers for long-lived platform
 charts if Argo CD is the plan — you get two sources of truth and painful drift.
@@ -86,7 +87,8 @@ That pattern does not scale and is not how platform teams operate day-2.
 
 | Task                             | Tool                                                                                           |
 | -------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Add a VM / disk / kubeadm node   | Terraform (`terraform.tfvars` + apply)                                                         |
+| Add a kubeadm node / resize k8s VM | `k8s-lab` Terraform (`terraform.tfvars` + apply)                                           |
+| Add a non-k8s VM / disk            | `terraform-lab` (`terraform.tfvars` + apply)                                               |
 | Change a Deployment / Helm value | Git commit → Argo CD sync                                                                      |
 | Install packages on a GitLab VM  | Ansible                                                                                        |
 | Install qemu-guest-agent in a VM | cloud-init (new) or Ansible (existing) — [guest-os](guest-os/#qemu-guest-agent)                |
@@ -103,14 +105,14 @@ provisioning and does not replace Terraform or Argo CD.
 | ---------------------------------------------- | -------------------------------------------------------------- |
 | Create / wipe ZFS `data01`, resource pools     | `terraform-lab/`                                               |
 | Create an Ubuntu VM or LXC                     | `terraform-lab/terraform.tfvars` (`vms` / `containers`)        |
-| Create a kubeadm cluster                       | `terraform-lab` VM entries + kubeadm docs                      |
+| Create a kubeadm cluster                       | `k8s-lab` (Terraform + Ansible + scripts) + `homelab-gitops`   |
 | Upload a local `.iso` with no public URL       | `proxmox-bootstrap/mac/upload-isos.sh`                         |
 | Download Ubuntu cloud image from the internet  | `terraform-lab/` (`cloud_images`)                              |
 | Harden Proxmox host / SSH / APT                | `proxmox-bootstrap/`                                           |
 | Configure AdGuard / GitLab _VM_ packages       | Ansible                                                        |
 | Install qemu-guest-agent in guests             | cloud-init / Ansible — **not** a Proxmox VMID script           |
 | Pass GPU into one AI VM                        | Terraform + [gpu-passthrough](architecture/gpu-passthrough.md) |
-| Install cert-manager, ingress, Grafana, Harbor | **Argo CD** (Git) — **NGINX Ingress**, not Traefik             |
+| Install cert-manager, Gateway routes, Grafana  | **Argo CD** via `homelab-gitops` — Cilium Gateway API          |
 | Deploy my application                          | **Argo CD** (Git)                                              |
 | One-off debug on a pod                         | `kubectl` / k9s (then fix it in Git)                           |
 

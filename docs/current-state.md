@@ -94,9 +94,9 @@ These pieces are live and treated as complete unless a refresh runbook says othe
 | 2   | Vault + AIStor (core secrets + S3) | Done — [vault](operations/vault.md) · [object storage](operations/object-storage.md) |
 | 3   | Core container hosts redesign      | Done — verified 2026-07-26 — [acceptance](operations/core-hosts-acceptance.md)       |
 | 4   | NetBird remote access              | Optional — not started                                                               |
-| 5   | kubeadm Stage A                    | Next major build after optional GitLab Terraform CI                                  |
+| 5   | kubeadm HA (`k8s-lab`)         | **Next major build** — sibling repos scaffolded; see design `2026-07-26-k8s-lab-design` |
 
-**Focus now:** optional Terraform CI pipelines on GitLab, then kubeadm Stage A.
+**Focus now:** bring up `k8s-lab` (Terraform → Ansible → Cilium → Argo) and sync `homelab-gitops`.
 Keep the flat LAN and AdGuard. Runner autoscaling notes:
 [gitlab-runner-autoscaling](operations/gitlab-runner-autoscaling.md).
 
@@ -109,8 +109,9 @@ Keep the flat LAN and AdGuard. Runner autoscaling notes:
 | Hypervisor   | Proxmox VE 9.x on ZFS                                           |
 | VM disks     | Only on `data01` (FURY) — never on `rpool`                      |
 | Kubernetes   | kubeadm on Debian VMs (CKA path) — not k3s for the main cluster |
-| Ingress      | NGINX — not Traefik                                             |
-| GitOps       | Argo CD after the cluster exists                                |
+| Ingress      | **Cilium Gateway API** for k8s (not NGINX/Traefik as primary) |
+| GitOps       | Argo CD + `homelab-gitops` after cluster bootstrap            |
+| k8s VMs      | Owned by `k8s-lab/terraform` (not terraform-lab)              |
 | Registry     | Harbor (proxy cache + CI push)                                  |
 | GitLab       | Dedicated VM — not inside Kubernetes                            |
 | Public UI    | Cloudflare Tunnel → Proxmox — not WAN port `:8006`              |
