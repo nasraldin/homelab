@@ -15,6 +15,8 @@ Clone them as siblings so local scripts and the docs site can see everything.
 | Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private                          |
 | Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private                          |
 | Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private                          |
+| HA kubeadm lab                     | https://github.com/nasraldin/k8s-lab           | Private                          |
+| Homelab GitOps (Argo CD apps)      | https://github.com/nasraldin/homelab-gitops    | Private                          |
 | Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private                          |
 | Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public                           |
 | Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public                           |

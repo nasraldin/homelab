@@ -9,6 +9,8 @@ homelab-docs/
 proxmox-bootstrap/
 homebrew/
 terraform-lab/
+k8s-lab/
+homelab-gitops/
 
 # Local installers / large blobs (never commit)
 homelab-binaries/
