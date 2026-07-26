@@ -1,6 +1,6 @@
 # SonarQube (`sonarqube-01`)
 
-LAN: `192.168.68.26` · VMID **122** · **4c / 16G / 80G**
+LAN: `192.168.68.26` · VMID **122** · **2c / 8G / 80G** (right-sized 2026-07-26)
 
 ## Design
 

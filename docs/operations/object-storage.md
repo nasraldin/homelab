@@ -17,13 +17,13 @@ Ansible role: `ansible-lab/roles/aistor/`. Buckets also catalogued in
 
 ## Consumers
 
-| Consumer       | How                                               |
-| -------------- | ------------------------------------------------- |
-| GitLab Omnibus | `object_store` + registry layers → AIStor buckets |
-| GitLab Runner  | Distributed S3 cache bucket `runner-cache`        |
-| Vault          | Raft snapshots → `vault-raft-snapshots`           |
+| Consumer       | How                                                |
+| -------------- | -------------------------------------------------- |
+| GitLab Omnibus | `object_store` + registry layers → AIStor buckets  |
+| GitLab Runner  | Distributed S3 cache bucket `runner-cache`         |
+| Vault          | Raft snapshots → `vault-raft-snapshots`            |
 | Elasticsearch  | Snapshot repo `aistor` → `elasticsearch-snapshots` |
-| Lab apps       | `objects`, `tables`, `files`, …                   |
+| Lab apps       | `objects`, `tables`, `files`, …                    |
 
 ## What Ansible enforces
 

@@ -7,11 +7,11 @@ LXC **VMID 200** · LAN `192.168.68.24` · UI: `https://docker.nasraldin.com` (*
 Dockhand + **Hawser** agents manage Docker engines on lab hosts. Do **not** expose
 the Docker TCP API on the WAN (or plain `:2375` on the LAN).
 
-| Environment | How it connects |
-| ----------- | --------------- |
-| `dockhand-local` | Unix socket on the Dockhand CT (`/var/run/docker.sock`) |
-| `docker-01`, `database-01`, `monitoring-01`, `sonarqube-01`, `elastic-01` | Hawser **Edge** (outbound WebSocket to Dockhand) |
-| `podman-01` | Not supported (Docker API / Hawser target) |
+| Environment                                                               | How it connects                                         |
+| ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `dockhand-local`                                                          | Unix socket on the Dockhand CT (`/var/run/docker.sock`) |
+| `docker-01`, `database-01`, `monitoring-01`, `sonarqube-01`, `elastic-01` | Hawser **Edge** (outbound WebSocket to Dockhand)        |
+| `podman-01`                                                               | Not supported (Docker API / Hawser target)              |
 
 ## Automate environments (no UI “Add environment”)
 
@@ -28,10 +28,10 @@ ansible-playbook playbooks/dockhand-agents.yml
 
 API surface used:
 
-| Method | Path | Purpose |
-| ------ | ---- | ------- |
-| `GET`/`POST`/`DELETE` | `/api/environments` | List / create / remove environments |
-| `POST` | `/api/hawser/tokens` | Mint agent token (`environmentId`) — plaintext once |
+| Method                | Path                 | Purpose                                             |
+| --------------------- | -------------------- | --------------------------------------------------- |
+| `GET`/`POST`/`DELETE` | `/api/environments`  | List / create / remove environments                 |
+| `POST`                | `/api/hawser/tokens` | Mint agent token (`environmentId`) — plaintext once |
 
 With auth **disabled** (default first launch), no Bearer token is required. After you
 enable Authentication in Settings, create an API token and pass

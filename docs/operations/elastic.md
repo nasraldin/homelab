@@ -1,6 +1,6 @@
 # Elastic Stack (`elastic-01`)
 
-LAN: `192.168.68.27` · VMID **123** · **8c / 32G / 200G**
+LAN: `192.168.68.27` · VMID **123** · **2c / 16G / 200G** (right-sized 2026-07-26)
 
 ## Design
 
@@ -19,11 +19,11 @@ LAN: `192.168.68.27` · VMID **123** · **8c / 32G / 200G**
 
 ## URLs
 
-| Service         | URL |
-| --------------- | --- |
-| Kibana          | `https://kibana.nasraldin.com` → Tunnel → `http://192.168.68.27:5601` |
-| Elasticvue      | `http://192.168.68.27:8080` (LAN) |
-| Elasticsearch   | `http://192.168.68.27:9200` (LAN only) |
+| Service       | URL                                                                   |
+| ------------- | --------------------------------------------------------------------- |
+| Kibana        | `https://kibana.nasraldin.com` → Tunnel → `http://192.168.68.27:5601` |
+| Elasticvue    | `http://192.168.68.27:8080` (LAN)                                     |
+| Elasticsearch | `http://192.168.68.27:9200` (LAN only)                                |
 
 (GitLab-style: no Access, no NPM on this VM for Kibana)
 

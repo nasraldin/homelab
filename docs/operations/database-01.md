@@ -7,11 +7,11 @@ Postgres inside Keycloak / Infisical / Sonar Compose stacks.
 
 ## Stacks (`/opt/`)
 
-| Path            | Services                                       | Ports (LAN)                            |
-| --------------- | ---------------------------------------------- | -------------------------------------- |
-| `/opt/postgres` | Postgres 18, PgCat, PgAdmin, postgres-exporter | 5432, 6432, 5433 (pgAdmin), 9187, 9930 |
-| `/opt/redis`    | redis-stack + redis-exporter                   | 6379, 9121                             |
-| `/opt/mariadb`  | **MariaDB** (MySQL protocol) + phpMyAdmin + mysqld-exporter | 3306, 3366, 9104 |
+| Path            | Services                                                    | Ports (LAN)                            |
+| --------------- | ----------------------------------------------------------- | -------------------------------------- |
+| `/opt/postgres` | Postgres 18, PgCat, PgAdmin, postgres-exporter              | 5432, 6432, 5433 (pgAdmin), 9187, 9930 |
+| `/opt/redis`    | redis-stack + redis-exporter                                | 6379, 9121                             |
+| `/opt/mariadb`  | **MariaDB** (MySQL protocol) + phpMyAdmin + mysqld-exporter | 3306, 3366, 9104                       |
 
 > **MariaDB, not Oracle MySQL** — intentional. Same wire protocol for apps that
 > expect MySQL; see [REF-019](lab-refresh-issues.md#ref-019-mariadb-not-oracle-mysql-by-design).

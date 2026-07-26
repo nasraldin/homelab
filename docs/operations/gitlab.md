@@ -159,12 +159,12 @@ ansible-playbook playbooks/gitlab.yml -e @secrets.yml
 
 Full write-ups live in [lab-refresh-issues.md](lab-refresh-issues.md):
 
-| ID | Symptom | Tracker |
-| -- | ------- | ------- |
-| REF-014 | `gitlab-ce` half-configured / LE ACME / “public attributes” | [link](lab-refresh-issues.md#ref-014-gitlab-omnibus-lets-encrypt-half-configured) |
-| REF-015 | `vault-seal` → Enable file audit device (`no_log`) | [link](lab-refresh-issues.md#ref-015-vault-file-audit-pipefail-sigpipe) |
-| REF-016 | Runner register fails; public HTTPS 530 | [link](lab-refresh-issues.md#ref-016-gitlab-runner-register-via-public-url-530) |
-| REF-018 | LAN GitLab 200, public `gitlab.nasraldin.com` 530 | [link](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild) |
+| ID      | Symptom                                                     | Tracker                                                                              |
+| ------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| REF-014 | `gitlab-ce` half-configured / LE ACME / “public attributes” | [link](lab-refresh-issues.md#ref-014-gitlab-omnibus-lets-encrypt-half-configured)    |
+| REF-015 | `vault-seal` → Enable file audit device (`no_log`)          | [link](lab-refresh-issues.md#ref-015-vault-file-audit-pipefail-sigpipe)              |
+| REF-016 | Runner register fails; public HTTPS 530                     | [link](lab-refresh-issues.md#ref-016-gitlab-runner-register-via-public-url-530)      |
+| REF-018 | LAN GitLab 200, public `gitlab.nasraldin.com` 530           | [link](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild) |
 
 Quick triage: if LAN `:80` works and public does not → Tunnel ([REF-018](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild)), not Omnibus.
 
@@ -172,14 +172,14 @@ Quick triage: if LAN `:80` works and public does not → Tunnel ([REF-018](lab-r
 
 Ansible enables Omnibus exporters (bundled Prometheus stays **off**):
 
-| Endpoint | Port | Notes |
-| -------- | ---- | ----- |
-| `gitlab-exporter` | `:9168` | `gitlab_exporter['listen_address'] = '0.0.0.0'` |
-| Gitaly | `:9236` | `gitaly['configuration']['prometheus_listen_addr']` |
-| Workhorse | `:9229` | |
-| Registry debug | `:5001` | `registry['debug_addr']` |
-| Sidekiq | `:8082` | |
-| Runner | `:9252` | `listen_address` in `config.toml` on `runner-01` |
+| Endpoint          | Port    | Notes                                               |
+| ----------------- | ------- | --------------------------------------------------- |
+| `gitlab-exporter` | `:9168` | `gitlab_exporter['listen_address'] = '0.0.0.0'`     |
+| Gitaly            | `:9236` | `gitaly['configuration']['prometheus_listen_addr']` |
+| Workhorse         | `:9229` |                                                     |
+| Registry debug    | `:5001` | `registry['debug_addr']`                            |
+| Sidekiq           | `:8082` |                                                     |
+| Runner            | `:9252` | `listen_address` in `config.toml` on `runner-01`    |
 
 UFW allows those ports from `lab_cidr`. Dashboards: Grafana → **GitLab** folder
 ([monitoring.md](monitoring.md)).

@@ -14,13 +14,13 @@ existing admin.
 
 ## Stacks
 
-| Path             | App                          |
-| ---------------- | ---------------------------- |
+| Path             | App                                                    |
+| ---------------- | ------------------------------------------------------ |
 | `/opt/npm`       | Nginx Proxy Manager (**owns host `:80`/`:443`/`:81`**) |
-| `/opt/infisical` | Infisical on **`:8090`** (Postgres → PgCat) |
-| `/opt/keycloak`  | Keycloak on **`:8080`** (Postgres → PgCat)  |
-| `/opt/it-tools`  | it-tools                     |
-| `/opt/mailpit`   | Mailpit (SMTP 1025, UI 8025) |
+| `/opt/infisical` | Infisical on **`:8090`** (Postgres → PgCat)            |
+| `/opt/keycloak`  | Keycloak on **`:8080`** (Postgres → PgCat)             |
+| `/opt/it-tools`  | it-tools                                               |
+| `/opt/mailpit`   | Mailpit (SMTP 1025, UI 8025)                           |
 
 ## Expose recipe
 

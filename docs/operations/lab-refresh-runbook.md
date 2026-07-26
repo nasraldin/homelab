@@ -323,17 +323,17 @@ acceptance → optional DHCP cutover
 
 ## What not to do
 
-| Anti-pattern                             | Why                              |
-| ---------------------------------------- | -------------------------------- |
-| Skip known_hosts refresh                 | Host-key mismatch breaks Ansible |
-| Expect VMs 110–119 only                  | Redesign ends at 123 + CT 200    |
-| Recreate `infisical-01` / `runner-02`    | Removed; Infisical on docker-01  |
-| Apply docker apps before database        | PgCat not ready                  |
-| Install GitLab with public `EXTERNAL_URL` / LE | Half-config behind Tunnel (REF-014) |
-| Register runners only via public HTTPS   | 530 before Tunnel (REF-016)      |
-| Mount Postgres 18 at `/var/lib/postgresql/data` | Unhealthy container (REF-017) |
-| Access on GitLab/Sonar/Kibana            | Design forbids it                |
-| Commit `vault-init.json` / `secrets.yml` | Offline password manager only    |
+| Anti-pattern                                    | Why                                 |
+| ----------------------------------------------- | ----------------------------------- |
+| Skip known_hosts refresh                        | Host-key mismatch breaks Ansible    |
+| Expect VMs 110–119 only                         | Redesign ends at 123 + CT 200       |
+| Recreate `infisical-01` / `runner-02`           | Removed; Infisical on docker-01     |
+| Apply docker apps before database               | PgCat not ready                     |
+| Install GitLab with public `EXTERNAL_URL` / LE  | Half-config behind Tunnel (REF-014) |
+| Register runners only via public HTTPS          | 530 before Tunnel (REF-016)         |
+| Mount Postgres 18 at `/var/lib/postgresql/data` | Unhealthy container (REF-017)       |
+| Access on GitLab/Sonar/Kibana                   | Design forbids it                   |
+| Commit `vault-init.json` / `secrets.yml`        | Offline password manager only       |
 
 ---
 

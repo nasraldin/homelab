@@ -40,15 +40,15 @@ resolver before app VMs.
 
 ## Sizing (right-sized 2026-07-26)
 
-| Guest | Cores | CPU limit | RAM | Disk |
-| ----- | ----- | --------- | --- | ---- |
-| `adguard-01` / `technitium-01` / `vault-*` | 1 | 0.5 | 1G | 20–50G |
-| `dockhand` (LXC) | 1 | — | 1G | 20G |
-| `runner-01` / `podman-01` | 1 | — | 2G | 40–80G |
-| `infra01` / `aistor-01` | 2 | — | 4G | 80–300G |
-| `monitoring-01` | 2 | — | 6G | 100G |
-| `gitlab-01` / `database-01` / `docker-01` / `sonarqube-01` | 2 | — | 8G | 80–200G |
-| `elastic-01` | 2 | — | 16G | 200G |
+| Guest                                                      | Cores | CPU limit | RAM | Disk    |
+| ---------------------------------------------------------- | ----- | --------- | --- | ------- |
+| `adguard-01` / `technitium-01` / `vault-*`                 | 1     | 0.5       | 1G  | 20–50G  |
+| `dockhand` (LXC)                                           | 1     | —         | 1G  | 20G     |
+| `runner-01` / `podman-01`                                  | 1     | —         | 2G  | 40–80G  |
+| `infra01` / `aistor-01`                                    | 2     | —         | 4G  | 80–300G |
+| `monitoring-01`                                            | 2     | —         | 6G  | 100G    |
+| `gitlab-01` / `database-01` / `docker-01` / `sonarqube-01` | 2     | —         | 8G  | 80–200G |
+| `elastic-01`                                               | 2     | —         | 16G | 200G    |
 
 Homelab **oversubscription** on single-node `pve01` remains intentional — guests do not peak together. See the capacity report for old→new deltas.
 
