@@ -9,7 +9,9 @@ the checkmarks mean something; the approved next sequence is tracked in the
 [infra01 remote access](operations/infra01-remote-access.md)
 (`infra.nasraldin.com`) — do not open WAN SSH. OPNsense VLAN pilot **archived**
 (2026-07-23) — code on `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
-Core container hosts redesign ✅ verified **2026-07-26**.
+Core container hosts redesign ✅ verified **2026-07-26**. Guest CPU/RAM
+right-sized from live metrics same day —
+[capacity-rightsizing](operations/capacity-rightsizing-2026-07-26.md).
 **Next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
 NetBird remains optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
 Vault (`vault-01` `.18`) + AIStor Free (`aistor-01` `.17`) ✅ as core Layer-1.

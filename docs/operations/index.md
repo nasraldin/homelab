@@ -32,6 +32,7 @@ Scripts and timers live in `proxmox-bootstrap` and `terraform-lab` today. A sing
 | [Vault vs Infisical](../architecture/vault-vs-infisical.md)     | Secrets platforms: features, use cases, decision            |
 | [Secret ownership map](../architecture/secret-ownership-map.md) | Vault only / Infisical only / Either per secret type        |
 | [guest-vmid-map.md](guest-vmid-map.md)                          | Core VMID 110–123 + CT 200, boot order                      |
+| [capacity-rightsizing-2026-07-26.md](capacity-rightsizing-2026-07-26.md) | Live CPU/RAM right-size (old → new)                  |
 | [database-01.md](database-01.md)                                | Central Postgres/PgCat/Redis/MariaDB                        |
 | [docker-hosts.md](docker-hosts.md)                              | docker-01 / NPM / apps                                      |
 | [keycloak.md](keycloak.md)                                      | IdP on docker-01                                            |
