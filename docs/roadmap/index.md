@@ -1,41 +1,50 @@
-# Follow the Homelab Roadmap from Foundation to Platform
+# Roadmap — foundation first, then platform
 
-Forward path after Phase 0: phases, repo ownership, and what comes before Kubernetes. Don’t start here on day one — read [current state](../current-state.md) and the [build story](../build-story.md) so the phases match what you already have. Status symbols: [status legend](../conventions/status-legend.md). Last reviewed: 2026-07-23.
+This is the **forward plan** after Phase 0: which phase is which, which repo
+owns the work, and what must exist before Kubernetes.
 
-Goals stay fixed: a Platform Engineering portfolio you can explain (Terraform, GitOps, observability, security), automation over click-ops, clear ownership ([platform tooling](../platform-tooling.md)), safe ops (backups, notify-only update checks, manual hypervisor upgrades), and DNS that scales (AdGuard + Technitium + Cloudflare).
+Don’t start here on day one. Read [where things stand](../current-state.md) and
+the [build story](../build-story.md) first so the phase table matches what you
+already have. Status symbols are explained in the
+[status legend](../conventions/status-legend.md). Last reviewed: 2026-07-26.
+
+**Goals that stay fixed:** a Platform Engineering portfolio you can explain
+(Terraform, GitOps, observability, security), automation over click-ops, clear
+ownership ([platform tooling](../platform-tooling.md)), safe ops (backups,
+notify-only update checks, manual hypervisor upgrades), and DNS that can grow
+(AdGuard + Technitium + Cloudflare).
 
 ## What this page covers
 
-- Phase overview table (0 → 11) with status and links
+- Phase overview (0 → 11) with status and links
 - Ordered foundation work before Kubernetes ([foundation sequence](foundation-sequence.md))
-- Repository map (bootstrap, Terraform, tunnel, Ansible, docs)
-- Approved order: GitLab → Vault + AIStor (core) → optional NetBird → kubeadm
+- Which Git repos own which layer
+- Approved order after the foundation
 
 ---
 
 ## Phase overview
 
-| Phase | Name                 | Status  | Doc                                                                          |
-| ----- | -------------------- | ------- | ---------------------------------------------------------------------------- |
-| 0     | Proxmox foundation   | ✅ / ⏸️ | [phases.md §0](phases.md#phase-0--proxmox-foundation) — closed; `aux01` hold |
-| 1     | Control plane & IaC  | ✅ / ⏸️ | [phases.md §1](phases.md#phase-1--control-plane--iac) — `aux01` hold         |
-| 2     | Source control       | ✅      | GitLab Omnibus + runner — [gitlab.md](../operations/gitlab.md)               |
-| 3     | DNS & networking     | ✅      | IPv4 DHCP → AdGuard; Deco no IPv6 DNS UI — Mac pinned to AdGuard             |
-| 4     | OPNsense VLAN pilot  | ⏸️      | archived on `archive/opnsense-vlan-pilot` (2026-07-23)                       |
-| 5     | Monitoring           | ⏳      | needs k8s                                                                    |
-| 6     | Kubernetes (kubeadm) | ⏳      | [kubernetes/](../kubernetes/index.md)                                        |
-| 7     | GitOps               | ⏳      | Argo CD                                                                      |
-| 8     | Core platform        | ⏳      | Harbor, Keycloak, …                                                          |
-| 9     | K8s operations       | ⏳      | Kyverno, Velero, …                                                           |
-| 10    | AI platform          | ⏳      |                                                                              |
-| 11    | Developer platform   | ⏳      |                                                                              |
+| Phase | Name                    | Status      | Notes                                                                                       |
+| ----- | ----------------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| 0     | Proxmox foundation      | Done / hold | Closed; `aux01` waiting on Slot 3 disk — [phases §0](phases.md#phase-0--proxmox-foundation) |
+| 1     | Control plane & IaC     | Done / hold | Same `aux01` hold — [phases §1](phases.md#phase-1--control-plane--iac)                      |
+| 2     | Source control          | Done        | GitLab Omnibus + runner — [gitlab](../operations/gitlab.md)                                 |
+| 3     | DNS & networking        | Done        | DHCP → AdGuard; Mac pin when Deco lacks IPv6 DNS UI                                         |
+| 4     | OPNsense VLAN pilot     | On hold     | Archived on `archive/opnsense-vlan-pilot` (2026-07-23)                                      |
+| 5     | Monitoring (in-cluster) | Not started | Needs Kubernetes                                                                            |
+| 6     | Kubernetes (kubeadm)    | Not started | [kubernetes/](../kubernetes/index.md)                                                       |
+| 7     | GitOps                  | Not started | Argo CD                                                                                     |
+| 8     | Core platform           | Not started | Harbor, Keycloak in-cluster, …                                                              |
+| 9     | K8s operations          | Not started | Kyverno, Velero, …                                                                          |
+| 10    | AI platform             | Not started |                                                                                             |
+| 11    | Developer platform      | Not started |                                                                                             |
 
-**🔄 = next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
-NetBird optional. OPNsense/VLANs stay deferred.
+**Next focus:** optional Terraform CI on GitLab, then kubeadm Stage A. NetBird
+is optional. OPNsense / VLANs stay deferred.
 
-**Approved sequence:** GitLab + runners ✅ → Vault + AIStor ✅ (core secrets +
-S3) → NetBird (optional) → kubeadm Stage A. See the
-[foundation sequence](foundation-sequence.md).
+**Already shipped in the foundation:** GitLab + runners → Vault + AIStor (core
+secrets + S3). See the [foundation sequence](foundation-sequence.md).
 
 ---
 
@@ -53,14 +62,14 @@ S3) → NetBird (optional) → kubeadm Stage A. See the
 
 ## What to do next
 
-See [current-state.md](../current-state.md) for the live board. Keep the lab
-simple: flat LAN + AdGuard + Technitium. Do not reintroduce OPNsense until you
-need real VLAN segmentation (typically with Kubernetes).
+Use [where things stand](../current-state.md) as the live board. Keep the lab
+simple: flat LAN + AdGuard + Technitium. Do not bring OPNsense back until you
+need real VLAN segmentation (usually with Kubernetes).
 
 ---
 
 ## Related
 
-- [build-story.md](../build-story.md)
+- [Build story](../build-story.md)
 - [Target topology](../architecture/target-topology.md)
 - [Decision log](../decisions/log.md)

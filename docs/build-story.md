@@ -1,15 +1,21 @@
-# Tell the Homelab Story from Zero to Platform
+# Homelab story — from bare metal to platform
 
-Narrative spine of the lab: order of events and why each call was made. Technical depth lives in the linked docs. I’m [Nasr Aldin](https://nasraldin.com) — Platform Engineering portfolio on real hardware, not a throwaway laptop VM.
+This is the **story** of the lab: what happened in order, and why each call was
+made. Deep runbooks live in the linked pages. I’m
+[Nasr Aldin](https://nasraldin.com) — this is a Platform Engineering portfolio
+on real hardware, not a throwaway laptop VM.
 
-Read this first if you’re new. Then use [current state](current-state.md) for the live checklist, and the [install journal](installation/index.md) / [roadmap](roadmap/index.md) when you need commands or phase status.
+**New here?** Read this page first. Then check
+[where things stand](current-state.md) for the live checklist. Use the
+[install journal](installation/index.md) and [roadmap](roadmap/index.md) when
+you need commands or phase status.
 
 ## What this page covers
 
 - Why the lab exists and the principles locked early
 - Hardware / storage design and install lessons
-- Phase 0a–0b: install + host automation applied (`aux01` deferred — no Slot 3 disk)
-- What comes next (Terraform CI optional → kubeadm; NetBird optional; Vault/AIStor ✅)
+- Phase 0: install + host automation (`aux01` still waiting on Slot 3 disk)
+- What already shipped after Phase 0, and what is still ahead
 
 ---
 
@@ -95,19 +101,21 @@ are ✅ core Layer-1. NetBird optional. OPNsense/VLANs archived on
 
 ---
 
-## Chapter 5 — DNS foundation (flat LAN) ✅ / ⏳
+## Chapter 5 — DNS and early platform services ✅
 
-**Current and next:**
+**What we settled on:**
 
-- AdGuard `192.168.68.10` + Technitium `192.168.68.11` are live on the
-  unchanged `192.168.68.0/22` LAN.
-- IPv4 DHCP already points clients at AdGuard; IPv6 RDNSS polish remains.
-- OPNsense VLAN pilot was proven then archived (2026-07-23) to keep the lab
-  simple for Wi-Fi-only Mac admin and kubeadm practice.
-- **GitLab CE on a dedicated VM** (`data01`) remains a later recoverability
-  choice, not the next deployment.
+- AdGuard `192.168.68.10` + Technitium `192.168.68.11` on the flat
+  `192.168.68.0/22` LAN (no VLAN router in the path today).
+- Home DHCP hands IPv4 clients to AdGuard; Deco still has no IPv6 DNS UI, so the
+  Mac pins AdGuard when needed.
+- An OPNsense VLAN pilot was proven, then archived (2026-07-23) so Wi-Fi Mac
+  admin and kubeadm practice stay simple.
+- **GitLab CE**, **Vault**, and **AIStor** now run as dedicated VMs on
+  `data01` — that recoverability choice shipped; next focus is kubeadm.
 
-→ [architecture/network-dns-ingress.md](architecture/network-dns-ingress.md)
+→ [network, DNS & ingress](architecture/network-dns-ingress.md)  
+→ [where things stand](current-state.md)
 
 ---
 
@@ -189,8 +197,8 @@ Task tables: [roadmap/phases.md](roadmap/phases.md)
 
 ## Reading order for newcomers
 
-1. [current-state.md](current-state.md) — where we are **now**
-2. [build-story.md](build-story.md) — this page
-3. [installation/next-steps.md](installation/next-steps.md) — what to run next
-4. [platform-tooling.md](platform-tooling.md) — who owns what
-5. Deep dives by topic from [README.md](index.md)
+1. This page — the story and the “why”
+2. [Where things stand](current-state.md) — what is live **today**
+3. [Install next steps](installation/next-steps.md) — commands after Phase 0
+4. [Platform tooling](platform-tooling.md) — which tool owns each layer
+5. Topic deep dives from the [docs home](index.md)

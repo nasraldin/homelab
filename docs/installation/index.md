@@ -1,21 +1,26 @@
-# Install Proxmox from Scratch — Phase 0 Journal
+# Install journal — Phase 0 on Proxmox
 
-Phase 0 journal for `pve01`: planning choices, installer traps, fixes, and the checks that meant “done.” Read the [build story](../build-story.md) install chapters first if you want the why; use [current state](../current-state.md) for the live checklist.
+This is the **historical record** of installing `pve01`: planning choices,
+installer traps, fixes, and the checks that meant “done.”
 
-Operational runbooks live in the private **proxmox-bootstrap** repo. These pages are the historical record you can walk in order.
+Want the “why” first? Read the [build story](../build-story.md) install
+chapters. Want the live board? Use [where things stand](../current-state.md).
+
+Operational runbooks for day-1 scripts live in the private **proxmox-bootstrap**
+repo. Walk these pages in order if you are recreating the install story.
 
 ## What this page covers
 
-- Reading order for the install journal (journey → issues → verified state → next steps)
-- Links into proxmox-bootstrap deep dives (installer, DNS, SSH, Terraform API)
-- Where this sits relative to hardware, network, and the foundation sequence
+- Reading order for the install journal
+- Links into proxmox-bootstrap deep dives
+- How this fits hardware, network, and the foundation sequence
 
 ## Read in this order
 
 | #   | Doc                                 | Purpose                                    |
 | --- | ----------------------------------- | ------------------------------------------ |
 | 1   | [Journey timeline](journey.md)      | Planning → install → fixes, in sequence    |
-| 2   | [Issues tracker](issues-tracker.md) | Symptom, cause, fix for each problem       |
+| 2   | [Issues tracker](issues-tracker.md) | Symptom, cause, and fix for each problem   |
 | 3   | [Verified state](verified-state.md) | Known-good checks for the live node        |
 | 4   | [Next steps](next-steps.md)         | Bootstrap, tunnel, Terraform after install |
 

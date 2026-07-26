@@ -1,6 +1,13 @@
 # Monitoring (`monitoring-01`)
 
-LAN: `192.168.68.25` · VMID **121** · **2c / 6G / 100G** (right-sized 2026-07-26)
+Prometheus + Grafana live on a dedicated VM so the lab has metrics from day one
+— before Kubernetes exists.
+
+|          |                                                           |
+| -------- | --------------------------------------------------------- |
+| **LAN**  | `192.168.68.25`                                           |
+| **VMID** | 121                                                       |
+| **Size** | 2 CPU / 6 GiB RAM / 100 GiB disk (right-sized 2026-07-26) |
 
 ## Stack (`/opt/monitoring`)
 

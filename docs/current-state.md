@@ -1,141 +1,144 @@
-# See Where the Homelab Stands Right Now
+# Where things stand today
 
-Live status board for the lab. Read the [build story](build-story.md) first so
-the checkmarks mean something; the approved next sequence is tracked in the
+This page is the **status board** for the live lab — what is finished, what is
+on hold, and what comes next.
+
+If you are new here, read the [build story](build-story.md) first so the
+checkmarks make sense. The approved work order lives in the
 [foundation sequence](roadmap/foundation-sequence.md).
 
-**Overall:** Phase 0 ✅ closed (except Slot 3 / `aux01` ⏸️). DNS VMs and
-`infra01` ✅. Off-LAN ops: use
-[infra01 remote access](operations/infra01-remote-access.md)
-(`infra.nasraldin.com`) — do not open WAN SSH. OPNsense VLAN pilot **archived**
-(2026-07-23) — code on `archive/opnsense-vlan-pilot`, live VMs and `vmbr1` removed.
-Core container hosts redesign ✅ verified **2026-07-26**. Guest CPU/RAM
-right-sized from live metrics same day —
-[capacity-rightsizing](operations/capacity-rightsizing-2026-07-26.md).
-**Next focus:** Terraform CI on GitLab (optional), then kubeadm Stage A.
-NetBird remains optional. GitLab CE ✅ at `https://gitlab.nasraldin.com`.
-Vault (`vault-01` `.18`) + AIStor Free (`aistor-01` `.17`) ✅ as core Layer-1.
-DNS: IPv4 DHCP → AdGuard Primary + **Secondary `1.1.1.1`** (resilience) ✅;
-Deco has no IPv6 DNS UI — Mac pin optional — [lan-dns-resilience](operations/lan-dns-resilience.md).
-**Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**.
+## In one paragraph
+
+The Proxmox foundation is done. DNS, remote access, GitLab, Vault, object
+storage, and the core app VMs are up. Guest CPU and RAM were right-sized from
+live metrics on **2026-07-26**. The next big build is **Kubernetes (kubeadm)**;
+optional Terraform CI on GitLab can come first. One disk slot (`aux01`) is still
+empty on purpose.
+
+|                   |                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Node**          | `pve01.lab.nasraldin.com` · `192.168.68.13/22` · Proxmox VE **9.2.4**                                                     |
+| **Public GitLab** | `https://gitlab.nasraldin.com`                                                                                            |
+| **Off-LAN admin** | [infra01 remote access](operations/infra01-remote-access.md) (`infra.nasraldin.com`) — do **not** open WAN SSH to Proxmox |
+| **DNS**           | LAN DHCP → AdGuard; secondary resolver `1.1.1.1` for resilience — [lan-dns-resilience](operations/lan-dns-resilience.md)  |
+| **Right-sizing**  | [capacity-rightsizing-2026-07-26](operations/capacity-rightsizing-2026-07-26.md)                                          |
 
 ## What this page covers
 
-- Hardware slots and pool roles (`rpool` / `data01` / `aux01`)
-- What is already ✅ on the node
-- What is ⏸️ deferred (documented reason)
-- What is still ⏳ (Phase 2+), plus decisions that won’t be redone
+- Physical disks and what each pool is for
+- Finished work (safe to treat as “already built”)
+- Deferred work (waiting on hardware or a deliberate pause)
+- Next tasks in the approved order
+- Decisions we will not reopen
 
 ---
 
 ## Hardware (installed)
 
-| Slot | PCIe | Disk                        | Role                   | Status                                        |
-| ---- | ---- | --------------------------- | ---------------------- | --------------------------------------------- |
-| 1    | ×4   | Samsung 990 PRO 2 TB        | `rpool` — Proxmox OS   | ✅                                            |
-| 2    | ×4   | Kingston FURY Renegade 4 TB | `data01` — VM disks    | ✅                                            |
-| 3    | ×1   | Kingston OM8TAP 2 TB (OEM)  | `aux01` — backups, ISO | ⏸️ disk **not installed** — hold until Slot 3 |
+| Slot | PCIe | Disk                        | Role                    | Status                           |
+| ---- | ---- | --------------------------- | ----------------------- | -------------------------------- |
+| 1    | ×4   | Samsung 990 PRO 2 TB        | `rpool` — Proxmox OS    | Done                             |
+| 2    | ×4   | Kingston FURY Renegade 4 TB | `data01` — all VM disks | Done                             |
+| 3    | ×1   | Kingston OM8TAP 2 TB (OEM)  | `aux01` — backups / ISO | On hold — disk not installed yet |
 
-Details: [architecture/hardware-and-storage.md](architecture/hardware-and-storage.md)
-
----
-
-## What is done (✅)
-
-| Area            | Item                                                                                                                                               |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Install         | Proxmox 9.2.4 on **990 PRO only** (`rpool` ~1.8 TB, single disk)                                                                                   |
-| Network         | Static IP, FQDN, `vmbr0` on flat TP-Link LAN                                                                                                       |
-| DNS (lab)       | AdGuard `.10` + Technitium `.11` (`lab.nasraldin.com`); dig proofs ✅                                                                              |
-| DNS (IPv4 DHCP) | TP-Link primary DNS = AdGuard `192.168.68.10`                                                                                                      |
-| DNS (Mac path)  | Wi-Fi DNS pinned to `192.168.68.10` (Deco has no IPv6 DNS controls)                                                                                |
-| SSH             | Key auth Mac → `root@192.168.68.13` + admin user                                                                                                   |
-| APT             | deb822, no-subscription enabled, enterprise disabled                                                                                               |
-| API             | `terraform@pve!provider` token                                                                                                                     |
-| Host bootstrap  | ZFS tune, ARC 16 GiB, packages, admin, mail endpoint, `iommu=pt`                                                                                   |
-| Updates         | `pve-update-check.timer` enabled (daily check + notify)                                                                                            |
-| Storage         | `data01` ONLINE + Proxmox `zfspool`; Stage 1 `local-backup` on rpool                                                                               |
-| Operator VM     | `infra01` `.12`: hardened management toolchain + PVE access — off-LAN: [infra01-remote-access](operations/infra01-remote-access.md)                |
-| Tunnel          | Proxmox UI + `infra` SSH + **`gitlab.nasraldin.com`** (no Access) + sonar/kibana/docker                                                            |
-| GitLab          | Omnibus `gitlab-01` VMID **116** `.14` + `runner-01` VMID **117** `.15` → AIStor ✅                                                                |
-| Vault           | OSS Raft on `vault-01` VMID 113 `.18` + seal VMID 114 `.19` — AppRole ✅                                                                           |
-| Object storage  | AIStor Free on `aistor-01` VMID **115** `.17` — GitLab buckets + runner cache ✅                                                                   |
-| Infisical       | App env-secrets on **`docker-01` `.22`** (PgCat DB) — HTTP `:8090` ✅ (first UI admin signup if needed)                                            |
-| Platform hosts  | `database-01` / `docker-01` / `podman-01` / `monitoring-01` / `sonarqube-01` / `elastic-01` / `dockhand` — ✅ verified 2026-07-26                  |
-| Observability   | Grafana community dashboards + exporters (PVE/AdGuard/Technitium/Vault/GitLab/Sonar) ✅ — [monitoring.md](operations/monitoring.md); logs → Kibana |
-| Runner          | Single `runner-01` docker executor online; fleeting manager scaffold ⏳                                                                            |
-| Firewall        | Datacenter + node firewall enabled (LAN SSH/API + loopback rules)                                                                                  |
-| Drift check     | `bootstrap.sh --check` + `enable-firewall.sh --check` clean                                                                                        |
-| Restore drill   | First proof done (weekly cadence continues)                                                                                                        |
-| Documentation   | Split repos, roadmap, architecture, install journal                                                                                                |
-| Git             | Lab repos pushed to `nasraldin/*`                                                                                                                  |
+Details: [hardware and storage](architecture/hardware-and-storage.md).
 
 ---
 
-## Deferred (⏸️)
+## What is done
 
-| Task                         | Reason                               | When to resume                                             |
-| ---------------------------- | ------------------------------------ | ---------------------------------------------------------- |
-| Storage `aux01` (OEM Slot 3) | OEM NVMe **not installed** in Slot 3 | Install disk → `terraform apply` for `aux01`               |
-| Stage 2 `aux-backup` migrate | Blocked on `aux01`                   | After `aux01` exists — [backups.md](operations/backups.md) |
-| OPNsense / VLANs             | Intentionally simplified for stage   | Restore from `archive/opnsense-vlan-pilot` when needed     |
+These pieces are live and treated as complete unless a refresh runbook says otherwise.
 
----
-
-## Next (approved order)
-
-| #   | Task                             | Status                                                                                   |
-| --- | -------------------------------- | ---------------------------------------------------------------------------------------- |
-| 1   | GitLab Omnibus + Docker runner   | ✅ — `https://gitlab.nasraldin.com` + `runner-01` (no `runner-02`)                       |
-| 2   | Vault + AIStor (core)            | ✅ — [vault.md](operations/vault.md) · [object-storage.md](operations/object-storage.md) |
-| 3   | Core container hosts redesign    | ✅ verified 2026-07-26 — [acceptance](operations/core-hosts-acceptance.md)               |
-| 4   | NetBird remote access (optional) | ⏳                                                                                       |
-| 5   | kubeadm Stage A                  | ⏳ after GitLab CI path is usable                                                        |
-
-**Active focus** — Terraform CI on GitLab (optional), then kubeadm Stage A.
-GitLab: Tunnel HTTPS, no Access; S3 via AIStor; secrets via Vault; Infisical on
-`docker-01`. Keep flat LAN + AdGuard. Fleeting autoscaler:
-[gitlab-runner-autoscaling.md](operations/gitlab-runner-autoscaling.md).
-
----
-
-## Decisions locked (won’t redo)
-
-| Topic        | Choice                                                        |
-| ------------ | ------------------------------------------------------------- |
-| Hypervisor   | Proxmox VE 9.x on ZFS                                         |
-| VM disks     | **`data01` (FURY) only** — not `rpool`                        |
-| Kubernetes   | **kubeadm** on Debian VMs (CKA) — not k3s for primary cluster |
-| Ingress      | **NGINX** — not Traefik                                       |
-| GitOps       | Argo CD after cluster exists                                  |
-| Registry     | Harbor (proxy cache + CI push)                                |
-| GitLab       | **Dedicated VM** — not inside k8s                             |
-| Public UI    | Tunnel → Proxmox — not WAN `:8006`                            |
-| GPU / IOMMU  | AMD: `iommu=pt` only (no `amd_iommu=on`); VFIO later for 890M |
-| Updates      | Check + notify; **manual** hypervisor upgrade                 |
-| ITSM         | Zammad for customer tickets; **n8n automates only**           |
-| Edge / VLANs | Flat TP-Link for now; OPNsense pilot archived                 |
-
-Full log: [decisions/log.md](decisions/log.md)
+| Area           | What you get                                                                         |
+| -------------- | ------------------------------------------------------------------------------------ |
+| Install        | Proxmox 9.2.4 on the 990 PRO only (`rpool` ~1.8 TB)                                  |
+| Network        | Static IP, FQDN, bridge `vmbr0` on the flat TP-Link LAN                              |
+| Lab DNS        | AdGuard `.10` + Technitium `.11` for `lab.nasraldin.com`                             |
+| Home DNS       | TP-Link DHCP hands out AdGuard `192.168.68.10` as primary DNS                        |
+| Mac DNS        | Wi-Fi pinned to AdGuard (Deco has no IPv6 DNS UI)                                    |
+| SSH            | Key login from Mac to `root@192.168.68.13` and the admin user                        |
+| APT            | No-subscription repos enabled; enterprise repo off                                   |
+| Terraform API  | Token user `terraform@pve!provider`                                                  |
+| Host bootstrap | ZFS tune, 16 GiB ARC, packages, admin, mail, `iommu=pt`                              |
+| Updates        | Daily Proxmox update check + notify (upgrade stays manual)                           |
+| Storage        | `data01` online; Stage 1 `local-backup` still on `rpool`                             |
+| Operator VM    | `infra01` (`.12`) — jump box for off-LAN work                                        |
+| Tunnel         | Public routes for Proxmox UI, infra SSH, GitLab, Sonar, Kibana, Dockhand             |
+| GitLab         | Omnibus on `gitlab-01` + `runner-01`, backed by AIStor                               |
+| Vault          | Raft on `vault-01` + seal VM — AppRole ready                                         |
+| Object storage | AIStor Free on `aistor-01` — GitLab buckets and runner cache                         |
+| Infisical      | App env secrets on `docker-01` (HTTP `:8090`)                                        |
+| Platform hosts | database, docker, podman, monitoring, Sonar, Elastic, Dockhand — verified 2026-07-26 |
+| Observability  | Grafana community dashboards + exporters — [monitoring](operations/monitoring.md)    |
+| Firewall       | Datacenter + node firewall on (LAN SSH/API + loopback)                               |
+| Drift checks   | `bootstrap.sh --check` and `enable-firewall.sh --check` clean                        |
+| Docs / Git     | Lab repos on GitHub under `nasraldin/*`                                              |
 
 ---
 
-## Repository status
+## On hold
 
-| Repo                | Role                         | Git    | Applied on node                    |
-| ------------------- | ---------------------------- | ------ | ---------------------------------- |
-| `homelab`           | Plans, story, architecture   | synced | n/a                                |
-| `proxmox-bootstrap` | Layer 0 host                 | synced | ✅ firewall; pilot `vmbr1` removed |
-| `terraform-lab`     | Layer 1–2 infra              | synced | ✅ DNS + `infra01`; ⏸️ `aux01`     |
-| `cloudflare-tunnel` | Remote UI + operator SSH     | synced | ✅ UI and SSH routes               |
-| `opshub` (sibling)  | Ops shell / Terminal / noVNC | synced | n/a (dev on Mac)                   |
-| `ansible-lab`       | Guest policy                 | synced | ✅ DNS and `infra01`               |
+| Task                         | Why                                 | When to resume                                                        |
+| ---------------------------- | ----------------------------------- | --------------------------------------------------------------------- |
+| Storage `aux01` (OEM Slot 3) | OEM NVMe not in the chassis yet     | Install the disk, then `terraform apply` for `aux01`                  |
+| Stage 2 `aux-backup` migrate | Needs `aux01`                       | After `aux01` exists — [backups](operations/backups.md)               |
+| OPNsense / VLANs             | Lab kept simple on flat LAN for now | Restore branch `archive/opnsense-vlan-pilot` when you need real VLANs |
 
 ---
 
-## Validate node (anytime)
+## What comes next
 
-Copy-paste checks: [installation/verified-state.md](installation/verified-state.md)
+| #   | Task                               | Status                                                                               |
+| --- | ---------------------------------- | ------------------------------------------------------------------------------------ |
+| 1   | GitLab Omnibus + Docker runner     | Done — `https://gitlab.nasraldin.com`                                                |
+| 2   | Vault + AIStor (core secrets + S3) | Done — [vault](operations/vault.md) · [object storage](operations/object-storage.md) |
+| 3   | Core container hosts redesign      | Done — verified 2026-07-26 — [acceptance](operations/core-hosts-acceptance.md)       |
+| 4   | NetBird remote access              | Optional — not started                                                               |
+| 5   | kubeadm Stage A                    | Next major build after optional GitLab Terraform CI                                  |
+
+**Focus now:** optional Terraform CI pipelines on GitLab, then kubeadm Stage A.
+Keep the flat LAN and AdGuard. Runner autoscaling notes:
+[gitlab-runner-autoscaling](operations/gitlab-runner-autoscaling.md).
+
+---
+
+## Locked decisions (do not reopen casually)
+
+| Topic        | Choice                                                          |
+| ------------ | --------------------------------------------------------------- |
+| Hypervisor   | Proxmox VE 9.x on ZFS                                           |
+| VM disks     | Only on `data01` (FURY) — never on `rpool`                      |
+| Kubernetes   | kubeadm on Debian VMs (CKA path) — not k3s for the main cluster |
+| Ingress      | NGINX — not Traefik                                             |
+| GitOps       | Argo CD after the cluster exists                                |
+| Registry     | Harbor (proxy cache + CI push)                                  |
+| GitLab       | Dedicated VM — not inside Kubernetes                            |
+| Public UI    | Cloudflare Tunnel → Proxmox — not WAN port `:8006`              |
+| GPU / IOMMU  | AMD: `iommu=pt` only for now; VFIO later for the 890M           |
+| Updates      | Check + notify; **manual** hypervisor upgrade                   |
+| Tickets      | Zammad for humans; n8n for automation only                      |
+| Edge / VLANs | Flat TP-Link for now; OPNsense pilot archived                   |
+
+Full history: [decision log](decisions/log.md).
+
+---
+
+## Repository sync
+
+| Repo                | Role                       | Git    | On the node                                 |
+| ------------------- | -------------------------- | ------ | ------------------------------------------- |
+| `homelab`           | Plans, story, architecture | Synced | n/a                                         |
+| `proxmox-bootstrap` | Host day-1                 | Synced | Applied (firewall on; old `vmbr1` removed)  |
+| `terraform-lab`     | Storage, VMs, backups      | Synced | Applied; `aux01` still on hold              |
+| `cloudflare-tunnel` | Public UI + operator SSH   | Synced | Applied                                     |
+| `opshub`            | Browser ops hub            | Synced | Runs on Mac / deploy target                 |
+| `ansible-lab`       | Guest OS and apps          | Synced | Applied for DNS + infra and platform guests |
+
+---
+
+## Quick health checks
+
+Copy-paste checks: [verified state](installation/verified-state.md).
 
 ```bash
 cd ~/homelab/proxmox-bootstrap && ./mac/bootstrap.sh --remote --check

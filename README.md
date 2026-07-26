@@ -1,57 +1,62 @@
 # Homelab workspace
 
-Root repository for the **Platform Engineering homelab curriculum** and shared
-tooling. Documentation is published as a searchable GitHub Pages site.
+This is the **docs and curriculum hub** for my Platform Engineering homelab.
+The searchable site is on GitHub Pages:
 
-**Docs site:** https://nasraldin.github.io/homelab/ — by [Nasr Aldin](https://nasraldin.com)
+**Docs:** https://nasraldin.github.io/homelab/ — [Nasr Aldin](https://nasraldin.com)
 
-Each lab under this directory is its own repository (gitignored here) with its
-own remote. Clone them as siblings for local development and docs aggregation.
+Each lab under this folder is its **own Git repo** (they are gitignored here).
+Clone them as siblings so local scripts and the docs site can see everything.
 
-| Lab                                | Repo                                           | Notes                                |
-| ---------------------------------- | ---------------------------------------------- | ------------------------------------ |
-| Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages            |
-| OpsHub (homelab dashboard)         | https://github.com/nasraldin/opshub            | Public — service hub, notes, plugins |
-| Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private implementation               |
-| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private implementation               |
-| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private implementation               |
-| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private implementation               |
-| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public community project             |
-| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public community project             |
-| Homebrew taps (nested tap repos)   | local `homebrew/` only                         | Not a single git repo                |
+| Lab                                | Repo                                           | Notes                            |
+| ---------------------------------- | ---------------------------------------------- | -------------------------------- |
+| Docs (this repo)                   | https://github.com/nasraldin/homelab           | Public curriculum + Pages        |
+| OpsHub (homelab dashboard)         | https://github.com/nasraldin/opshub            | Service hub, notes, plugins      |
+| Ansible guest configuration        | https://github.com/nasraldin/ansible-lab       | Private                          |
+| Proxmox day-1 bootstrap            | https://github.com/nasraldin/proxmox-bootstrap | Private                          |
+| Proxmox IaC                        | https://github.com/nasraldin/terraform-lab     | Private                          |
+| Cloudflare Tunnel + Access         | https://github.com/nasraldin/cloudflare-tunnel | Private                          |
+| Docker on Apple Silicon (`ducker`) | https://github.com/nasraldin/docker-lab        | Public                           |
+| Camunda 8 local CLI                | https://github.com/nasraldin/camunda-lab       | Public                           |
+| Homebrew taps                      | local `homebrew/` only                         | Nested tap repos, not one remote |
 
-## Clone all labs (fresh machine)
+## Fresh machine — clone everything
 
 ```bash
 git clone git@github.com:nasraldin/homelab.git ~/homelab
 cd ~/homelab
-./clone-labs.sh              # clone everything in repos.json
-./clone-labs.sh --pull       # also fast-forward update existing clones
+./clone-labs.sh              # clone everything listed in repos.json
+./clone-labs.sh --pull       # also fast-forward existing clones
 ./clone-labs.sh --protocol https
 ```
 
-Add a future lab: one entry in [`repos.json`](repos.json) (`"local/path": "owner/repo"`),
-then re-run `./clone-labs.sh`. Nested paths like `homebrew/homebrew-tools` are supported.
-Requires [`jq`](https://jqlang.org/) (`brew install jq`).
+To add a lab later: one line in [`repos.json`](repos.json)
+(`"local/path": "owner/repo"`), then run `./clone-labs.sh` again. Nested paths
+like `homebrew/homebrew-tools` work. Needs [`jq`](https://jqlang.org/)
+(`brew install jq`).
 
 ## Documentation site
 
-VitePress site with full-text search. Published at
-https://nasraldin.github.io/homelab/
+VitePress with full-text search: https://nasraldin.github.io/homelab/
 
 ```bash
-make docs-install   # once (npm install — VitePress)
+make docs-install   # once
 make docs-serve     # http://localhost:5173/homelab/
 make docs-build     # output: docs/.vitepress/dist
 ```
 
-- Platform guides live in [`docs/`](docs/) (committed).
-- Canonical execution order: [`docs/operations/deploy-and-rebuild.md`](docs/operations/deploy-and-rebuild.md).
-- Secure remote administration: [`docs/operations/infra01-remote-access.md`](docs/operations/infra01-remote-access.md).
-- Community labs (`docker-lab`, `camunda-lab`) keep their **own** MkDocs sites — linked from this hub.
-- Values that look like IPs or hostnames are **[placeholders](docs/conventions/placeholders.md)** — adapt them; never commit secrets.
+Start reading at [docs/](docs/) (or the Pages site). Good first stops:
 
-## Format & lint everything
+- [Where things stand](docs/current-state.md) — live status
+- [Deploy and rebuild](docs/operations/deploy-and-rebuild.md) — command order
+- [Infra01 remote access](docs/operations/infra01-remote-access.md) — off-LAN admin
+
+Community labs (`docker-lab`, `camunda-lab`) keep their **own** MkDocs sites;
+this hub links to them. Values that look like IPs or hostnames are
+[placeholders](docs/conventions/placeholders.md) — adapt them; never commit
+secrets.
+
+## Format and lint
 
 ```bash
 cd ~/homelab
@@ -62,14 +67,14 @@ make format                        # write
 make lint                          # check
 ```
 
-| Tool             | Config                                 | Formats / checks                        |
-| ---------------- | -------------------------------------- | --------------------------------------- |
-| EditorConfig     | [`.editorconfig`](.editorconfig)       | Indent, charset, newlines (all editors) |
-| Prettier         | [`.prettierrc.json`](.prettierrc.json) | Markdown, JSON, YAML                    |
-| yamllint         | [`.yamllint.yaml`](.yamllint.yaml)     | YAML / Ansible / Compose                |
-| ShellCheck       | [`.shellcheckrc`](.shellcheckrc)       | `*.sh`                                  |
-| terraform fmt    | (CLI)                                  | `terraform-lab/**/*.tf`                 |
-| shfmt (optional) | `make format-sh`                       | Shell indent                            |
+| Tool             | Config                                 | What it checks                                     |
+| ---------------- | -------------------------------------- | -------------------------------------------------- |
+| EditorConfig     | [`.editorconfig`](.editorconfig)       | Indent, charset, newlines                          |
+| Prettier         | [`.prettierrc.json`](.prettierrc.json) | Markdown, JSON, YAML                               |
+| yamllint         | [`.yamllint.yaml`](.yamllint.yaml)     | YAML / Ansible / Compose                           |
+| ShellCheck       | [`.shellcheckrc`](.shellcheckrc)       | `*.sh`                                             |
+| terraform fmt    | (CLI)                                  | `terraform-lab/**/*.tf`                            |
+| shfmt (optional) | `make format-sh`                       | Shell indent — use **v3.10.0** flags that match CI |
 
-Secrets (`config.env`, `credentials.auto.tfvars`, …) are in
+Secrets (`config.env`, `credentials.auto.tfvars`, …) stay in
 [`.prettierignore`](.prettierignore) so formatters skip them.

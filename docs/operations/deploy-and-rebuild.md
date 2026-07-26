@@ -1,14 +1,13 @@
-# Deploy or Rebuild the Homelab in the Correct Order
+# Deploy or rebuild — correct order
 
-This is the canonical execution order for the repositories under
-`~/homelab`. Run each layer only after the previous layer passes its checks.
-Each repository owns one boundary; do not reproduce its work manually in the
-Proxmox UI.
+This is the **canonical order** for everything under `~/homelab`. Finish each
+layer’s checks before you start the next. Each repo owns one boundary — do not
+rebuild that work by hand in the Proxmox UI.
 
-**Full factory-reset rebuild** (wipe guests/storage, then recreate): use the
-single checklist in [lab-refresh-runbook.md](lab-refresh-runbook.md) and the
-failure log in [lab-refresh-issues.md](lab-refresh-issues.md). This page stays
-the incremental / first-time deploy order.
+**Full factory-reset rebuild** (wipe guests/storage, then recreate): follow
+[lab-refresh-runbook](lab-refresh-runbook.md) and the failure log in
+[lab-refresh-issues](lab-refresh-issues.md). This page stays the incremental /
+first-time deploy order.
 
 ## Ownership and order
 

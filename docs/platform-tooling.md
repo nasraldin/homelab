@@ -1,9 +1,13 @@
-# Know Which Tool Owns Each Layer — and Stay in Bounds
+# Which tool owns each layer?
 
-This is the ownership map for the lab. Each tool has one job. Crossing layers “because it’s convenient” creates two sources of truth and painful drift — the same failure mode platform teams hit when Terraform and Helm both claim the same chart.
+This page answers one question: **who is allowed to change what?**
 
-Read this before you add a new VM, bootstrap Kubernetes, or put an app in Git.
-The exact commands and gates are in the
+Each tool has one job. If Terraform and Helm both claim the same thing, you get
+two sources of truth and painful drift — the same failure mode platform teams
+hit in production.
+
+Read this before you add a VM, bootstrap Kubernetes, or put an app in Git. Exact
+commands live in the
 [deploy and rebuild runbook](operations/deploy-and-rebuild.md).
 
 ## What this page covers

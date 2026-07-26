@@ -1,14 +1,16 @@
-# Finish the Foundation Before You Touch Kubernetes
+# Foundation first — then Kubernetes
 
-Ordered foundation checklist, corrected for X1 Pro hardware and the current
-repos. Do not start Kubernetes until the core foundation steps are ✅ (or ⏸️
-with a documented hold). Read [current state](../current-state.md) for the live
-board; use [installation/next-steps.md](../installation/next-steps.md) for
-remaining commands.
+Ordered checklist for the lab foundation, corrected for the X1 Pro hardware and
+the current repos. Do **not** start Kubernetes until the core steps below are
+done (or on hold with a written reason).
 
-**Status:** Phase 0 ✅ closed · DNS VMs ✅ · IPv4 DHCP → AdGuard ✅ ·
-GitLab Omnibus + runners ✅ · Vault + AIStor ✅ · `aux01` ⏸️ · OPNsense ⏸️
-archived · next = Terraform CI (optional) → kubeadm (NetBird optional).
+Live board: [where things stand](../current-state.md). Remaining install-era
+commands: [installation next steps](../installation/next-steps.md).
+
+**Snapshot (2026-07-26):** Phase 0 closed · DNS VMs live · DHCP → AdGuard ·
+GitLab + runners · Vault + AIStor · core container hosts verified · `aux01` on
+hold · OPNsense archived · **next** = optional Terraform CI → kubeadm (NetBird
+optional).
 
 ## What this page covers
 

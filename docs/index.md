@@ -2,8 +2,8 @@
 layout: home
 hero:
   name: Nasr Aldin Homelab
-  text: Platform engineering, built and operated for real.
-  tagline: This homelab is my platform engineering playground, run with production principles. Proxmox provides the foundation, Git is the source of truth, Kubernetes is introduced only where it makes sense, and every service is managed with day-two operations in mind.
+  text: Platform engineering on real hardware.
+  tagline: A working homelab run with production habits — Proxmox underneath, Git as source of truth, Kubernetes only when it earns its place, and day-two operations written down so rebuilds stay boring.
   actions:
     - theme: brand
       text: Where things stand
@@ -21,39 +21,47 @@ hero:
 
 <div class="home-intro">
 
-This site documents my working homelab—not a polished showcase. I’m [Nasr Aldin](https://nasraldin.com), and I use this lab to practice platform engineering end to end: build reliable infrastructure, automate repetitive work, keep secrets out of Git, and document failures so the next iteration is faster.
+This site is the notebook for my homelab — not a polished product brochure. I’m
+[Nasr Aldin](https://nasraldin.com). I use this lab to practice platform
+engineering end to end: build reliable infrastructure, automate the boring
+parts, keep secrets out of Git, and write down failures so the next rebuild is
+faster.
 
-If you're following along as a student, read the documentation in order. Start with the MacBook (daily driver), then the build story, current state, and installation journal. The architecture and roadmap make more sense once you understand why the infrastructure exists.
+**How to use the docs:** start with the MacBook page (your laptop is the control
+plane), then the build story, then [where things stand](/current-state). After
+that, architecture and the roadmap make more sense.
 
-Every configuration here is intended as a reference, not a copy-and-paste solution. Replace placeholders with values from your own environment and password manager, and never commit passwords, API keys, or other secrets to Git.
+Treat every config as a **reference**, not a copy-paste kit. Swap in your own
+IPs, hostnames, and secrets from a password manager. Never commit passwords or
+API keys.
 
 </div>
 
-## How to read these docs
+## Suggested reading order
 
-| Step | Go here                                       | Why                                                   |
-| ---- | --------------------------------------------- | ----------------------------------------------------- |
-| 1    | [MacBook workstation](/macbook/)              | Laptop is the control plane for SSH, Git, and tooling |
-| 2    | [Build story](/build-story)                   | Why each choice was made                              |
-| 3    | [Current state](/current-state)               | What’s done, next, or blocked                         |
-| 4    | [Install journal](/installation/)             | Phase 0: Proxmox install, issues, checks              |
-| 5    | [Architecture](/architecture/target-topology) | Storage, network, and services                        |
-| 6    | [Roadmap](/roadmap/)                          | What comes after the foundation                       |
+| Step | Page                                          | What you get                              |
+| ---- | --------------------------------------------- | ----------------------------------------- |
+| 1    | [MacBook workstation](/macbook/)              | SSH, Git, and tooling on the laptop       |
+| 2    | [Build story](/build-story)                   | Why each major choice was made            |
+| 3    | [Where things stand](/current-state)          | What is done, on hold, or next            |
+| 4    | [Install journal](/installation/)             | Phase 0: Proxmox install notes and checks |
+| 5    | [Architecture](/architecture/target-topology) | Storage, network, and service layout      |
+| 6    | [Roadmap](/roadmap/)                          | What comes after the foundation           |
 
-## What’s in the lab
+## What’s running in the lab
 
-- **Hypervisor** — Proxmox VE on its own NVMe; VMs on a separate data pool
-- **Automation** — bootstrap scripts, Terraform for IaC, Ansible for guest configuration
-- **Edge** — Cloudflare Tunnel + Access for UI; no raw `:8006` on the WAN
-- **OpsHub** — sibling [`opshub`](https://github.com/nasraldin/opshub) (clone as `opshub/`); Phase 6 embedded QEMU noVNC on guest rows + Terminal Console via Proxmox/CF URL; remote API needs [Service Auth](https://github.com/nasraldin/cloudflare-tunnel/blob/main/docs/04-service-auth.md); design: [OpsHub](/superpowers/specs/2026-07-22-homelab-dashboard-design)
-- **Cluster (planned)** — kubeadm, Argo CD, Harbor, observability
-- **Public tooling** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/) for Mac day-to-day work
+- **Hypervisor** — Proxmox VE on its own NVMe; guest disks on a separate data pool
+- **Automation** — bootstrap scripts, Terraform for VMs/storage, Ansible for guest config
+- **Edge** — Cloudflare Tunnel (+ Access where needed); Proxmox is never exposed on WAN `:8006`
+- **OpsHub** — sibling [opshub](https://github.com/nasraldin/opshub) start page / consoles (clone as `opshub/`)
+- **Cluster (planned)** — kubeadm, then Argo CD, Harbor, and in-cluster observability
+- **Public Mac tools** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/)
 
-## Keep going
+## Useful runbooks
 
-- [Platform tooling](/platform-tooling) — who owns what (Terraform vs Ansible vs Argo CD)
-- [Deploy and rebuild](/operations/deploy-and-rebuild) — exact cross-repository command order
-- [Lab refresh runbook](/operations/lab-refresh-runbook) — wipe → adopt → TF → SSH keys → Ansible checklist
-- [Infra01 remote access](/operations/infra01-remote-access) — off-LAN operator jump box (`infra.nasraldin.com`)
+- [Platform tooling](/platform-tooling) — which tool owns which layer
+- [Deploy and rebuild](/operations/deploy-and-rebuild) — command order across repos
+- [Lab refresh runbook](/operations/lab-refresh-runbook) — wipe → rebuild checklist
+- [Infra01 remote access](/operations/infra01-remote-access) — admin jump box off the LAN
 - [Community labs](/community-labs) — standalone public projects
-- [Decision log](/decisions/log) — locked choices so we don’t re-debate them
+- [Decision log](/decisions/log) — choices we already locked in
