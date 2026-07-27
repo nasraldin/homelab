@@ -7,7 +7,6 @@
   "docker-lab": "nasraldin/docker-lab",
   "camunda-lab": "nasraldin/camunda-lab",
   "homebrew/homebrew-tools": "nasraldin/homebrew-tools",
-  "homelab-docs": "nasraldin/homelab-docs",
   "k8s-lab": "nasraldin/k8s-lab",
   "homelab-gitops": "nasraldin/homelab-gitops"
 }
