@@ -58,9 +58,14 @@ GitLab (or GitHub Actions)
                   Pod allowed / denied
 ```
 
+**Homelab implementation (dev lab):** see
+[dev-homelab supply chain](https://nasraldin.github.io/dev-homelab/architecture/supply-chain)
+and `lab-home-gitops` (`platform/kyverno`, Harbor Trivy). Secrets for Cosign live
+in Infisical project `pipelines`, not Vault CI vars, for the new lab.
+
 **Not in scope for v1:** Falco, Wazuh, full Sigstore **keyless** with public
 Fulcio (you can add later). Homelab starts with **Cosign key pair** stored in
-Vault or GitLab CI variables.
+Infisical (`pipelines`/`cosign`) or GitLab CI variables.
 
 ---
 

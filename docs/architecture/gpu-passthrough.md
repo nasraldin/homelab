@@ -8,9 +8,15 @@ VMs (Ollama, ROCm guests, etc.). Two stages:
 
 **Owner (host):** [`proxmox-bootstrap`](https://github.com/nasraldin/proxmox-bootstrap)
 (`check_iommu`).  
-**Owner (guest attach):** [`terraform-lab`](https://github.com/nasraldin/terraform-lab)
-(preferred) or documented `qm` one-shot — not a random host script.  
+**Owner (guest attach):** [`lab-home-k8s`](https://github.com/nasraldin/lab-home-k8s)
+(dev-homelab `ai-01`) or [`terraform-lab`](https://github.com/nasraldin/terraform-lab)
+for practice-lab experiments. Prefer Terraform `hostpci` + hardware mappings —
+not a random host script.  
 **Official reference:** [Proxmox PCI(e) Passthrough](<https://pve.proxmox.com/wiki/PCI(e)_Passthrough>).
+
+**Dev-homelab (daily machine):** full AI path — [ai-stack](https://nasraldin.github.io/dev-homelab/architecture/ai-stack) ·
+[gpu-passthrough](https://nasraldin.github.io/dev-homelab/architecture/gpu-passthrough)
+(`ai-01` uses **2 MiB hugepages** + NUMA; ballooning off).
 
 ## What this page covers
 
@@ -23,11 +29,18 @@ VMs (Ollama, ROCm guests, etc.). Two stages:
 
 ## Hardware (this lab)
 
-| Piece | Detail                                                          |
-| ----- | --------------------------------------------------------------- |
-| CPU   | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi)                          |
-| GPU   | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]`               |
-| Use   | Future **AI VMs** (passthrough); host keeps `amdgpu` until then |
+| Piece | Detail                                                                              |
+| ----- | ----------------------------------------------------------------------------------- |
+| CPU   | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi)                                              |
+| GPU   | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]`                                   |
+| Use   | **AI VM** `ai-01` (dev-homelab) with VFIO; host loses `amdgpu` while guest owns GPU |
+
+### Hugepages on AI VMs
+
+For large-model guests, enable Proxmox **2 MiB hugepages** (`hugepages = "2"`),
+**NUMA**, and **disable ballooning**. Prefer 2 MiB over 1 GiB pages unless you
+reserve 1 GiB hugepages on the host. See
+[dev-homelab ai-stack](https://nasraldin.github.io/dev-homelab/architecture/ai-stack).
 
 Passing the iGPU to a VM means the **host loses that GPU** while the guest owns
 it. Keep SSH to `pve01` working (no reliance on local GUI).
@@ -149,9 +162,9 @@ Until you need passthrough, **skip** blacklisting so the host can keep `amdgpu`.
 
 ### 3. Attach GPU to the VM (prefer Terraform)
 
-**Preferred:** encode in `terraform-lab` (VM `hostpci` / machine `q35`) so recreate
-is repeatable. Manual UI/`qm` is for a one-shot experiment only — then fold into
-Terraform.
+**Preferred:** encode in `lab-home-k8s` / `terraform-lab` (VM `hostpci` +
+hardware mapping, machine `q35`) so recreate is repeatable. Manual UI/`qm` is
+for a one-shot experiment only — then fold into Terraform.
 
 **Proxmox UI**
 

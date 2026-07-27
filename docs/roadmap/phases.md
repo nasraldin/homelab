@@ -136,7 +136,10 @@ Harbor, Keycloak, MinIO, PostgreSQL, Redis, RabbitMQ — in k8s via Argo CD (⏳
 
 ## Phase 9 — Kubernetes operations
 
-KEDA, ExternalDNS, ESO, Kyverno, Velero, OpenTelemetry (⏳). Longhorn in Phase 6b.
+KEDA, ExternalDNS, ESO, Kyverno, Velero. **OpenTelemetry** (Collector → Tempo /
+Prometheus / Loki) is enabled on the **dev-homelab** cluster — see
+[opentelemetry](https://nasraldin.github.io/dev-homelab/architecture/opentelemetry).
+Longhorn in Phase 6b.
 
 ---
 

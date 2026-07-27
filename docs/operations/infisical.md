@@ -19,6 +19,10 @@ Comparison and ownership:
 [vault-vs-infisical.md](../architecture/vault-vs-infisical.md) ·
 [secret-ownership-map.md](../architecture/secret-ownership-map.md).
 
+**Dev Homelab note:** on the home machine Infisical runs on **`infra-01:8090`**
+(not `docker-01`). Seed + operator sync:
+[dev-homelab secrets](https://nasraldin.github.io/dev-homelab/architecture/secrets-and-infisical).
+
 ## Ansible
 
 ```bash

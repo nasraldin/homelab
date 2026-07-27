@@ -4,6 +4,8 @@ Wazuh is the SIEM/XDR layer: host agents, log correlation, FIM, vulnerability de
 
 Add it late (Phase 11+) after registry, admission, and cluster runtime tools exist. It complements Falco and Kyverno; it does not replace them.
 
+**Dev Homelab placement:** [wazuh.md](https://nasraldin.github.io/dev-homelab/architecture/wazuh) — not deployed day-one; Kyverno + Harbor path first.
+
 ## What this page covers
 
 - What Wazuh is and the manager/indexer/dashboard path

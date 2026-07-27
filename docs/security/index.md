@@ -16,3 +16,8 @@ Phases stack on purpose: Harbor (8) → CI signing (8b) → Kyverno + Falco (9) 
 | [Wazuh (SIEM/XDR)](wazuh.md)                                    | Where Wazuh fits vs Prometheus, Falco, Kyverno    |
 | [Vault vs Infisical](../architecture/vault-vs-infisical.md)     | Secrets platform comparison + lab decision        |
 | [Secret ownership map](../architecture/secret-ownership-map.md) | Classify each secret: Vault / Infisical / Offline |
+
+**Dev Homelab implementation** (separate machine):
+[secrets](https://nasraldin.github.io/dev-homelab/architecture/secrets-and-infisical) ·
+[supply chain](https://nasraldin.github.io/dev-homelab/architecture/supply-chain) ·
+[Wazuh placement](https://nasraldin.github.io/dev-homelab/architecture/wazuh).
