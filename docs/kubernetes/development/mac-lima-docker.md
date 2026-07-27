@@ -1,14 +1,14 @@
 # Run Docker on Apple Silicon Without Docker Desktop
 
-Use Lima plus the Docker CLI on Apple Silicon when you want container practice without Docker Desktop. The guest is a real Linux VM (`dockerd` → `containerd` → `runc`), which is closer to how servers run containers than Desktop’s app wrapper.
+Use [Docker Lab](https://nasraldin.github.io/docker-lab/) (Lima + rootless Docker + `ducker`) on Apple Silicon when you want container practice without Docker Desktop. The guest is a real Linux VM (`dockerd` → `containerd` → `runc`), which is closer to how servers run containers than Desktop’s app wrapper.
 
 This Mac is **arm64** with **36 GB RAM** — size the Lima profile for that, not generic “64 GB” guides. Kubernetes stays on the X1 Pro; Lima is for images, Compose, and runtime exploration only.
 
 ## What this page covers
 
-- Lima + Docker CLI stack on macOS
+- Docker Lab stack on macOS (Lima + rootless Engine)
 - Homebrew paths, Compose plugin, and Desktop migration
-- Recommended Lima profile and socket wiring
+- Recommended profile for a 36 GB Mac
 - Limits: what belongs on Mac vs Proxmox
 
 ## Stack
@@ -20,12 +20,32 @@ macOS (zsh, Homebrew)
   │
   └── Lima (vmType: vz)
         │
-        Debian 12 arm64
+        Debian 13 arm64 (rootless Engine)
         │
         dockerd → containerd → runc
 ```
 
 **Kubernetes stays on the X1 Pro** — not on Lima.
+
+---
+
+## Install (Docker Lab)
+
+Clone the lab if you have not already:
+
+```bash
+cd ~/homelab
+./clone-labs.sh          # or: git clone …/docker-lab.git ~/homelab/docker-lab
+cd ~/homelab/docker-lab
+./ducker cli-install
+ducker profile homelab-36gb
+ducker install
+ducker verify
+```
+
+The `homelab-36gb` profile matches a **36 GB Mac**: 6 CPUs, 12 GiB RAM, 150 GiB disk — enough for Compose and builds while leaving headroom for macOS and your IDE.
+
+Full install options and troubleshooting: [Docker Lab installation](https://nasraldin.github.io/docker-lab/installation/).
 
 ---
 
@@ -47,7 +67,7 @@ Homebrew installs the plugin at:
 /opt/homebrew/lib/docker/cli-plugins
 ```
 
-Merge into `~/.docker/config.json` (keep your existing keys):
+`ducker install` merges this into `~/.docker/config.json`. If you set up manually, keep your existing keys:
 
 ```json
 {
@@ -68,55 +88,48 @@ docker compose version
 You currently have `credsStore: desktop` and `currentContext: desktop-linux` in `~/.docker/config.json`.
 
 1. Quit Docker Desktop (menu bar → Quit).
-2. Remove or comment out `"credsStore": "desktop"` and `"currentContext": "desktop-linux"` after Lima works.
-3. Point CLI at Lima socket (below).
+2. Run `ducker install` (or remove Desktop keys after Lima works).
+3. Point CLI at the Lima socket (below).
 
-Optional: `brew uninstall --cask docker` once Lima is validated.
+Optional: `brew uninstall --cask docker` once Docker Lab is validated.
 
 ---
 
-## Recommended Lima profile
+## Sizing (36 GB Mac)
 
-Copy the template from this repo:
-
-```bash
-mkdir -p ~/.lima
-cp ~/homelab/lima/docker-prod.yaml ~/.lima/docker-prod.yaml
-limactl start docker-prod --tty=false
-```
-
-### Sizing (36 GB Mac)
-
-| Resource | Value           | Why                                        |
+| Resource | `homelab-36gb`  | Why                                        |
 | -------- | --------------- | ------------------------------------------ |
 | `cpus`   | 6               | Leave cores for macOS + IDE                |
 | `memory` | 12GiB           | ~24 GB left for macOS (not 24GiB for Lima) |
 | `disk`   | 150GiB          | Images, layers, build cache                |
 | `vmType` | `vz`            | Apple Virtualization Framework — fastest   |
-| OS       | Debian 12 arm64 | Matches future Proxmox k8s nodes           |
+| OS       | Debian 13 arm64 | Matches Docker Lab + future Proxmox nodes  |
 
-Edit `~/.lima/docker-prod.yaml` if you need more RAM for heavy Compose stacks (max **16GiB** on 36 GB host).
+Need more RAM for heavy Compose stacks? Try `ducker profile balanced` (16 GiB) — stay at or below **16GiB** on a 36 GB host.
+
+Change profile **before** first install, or recreate after:
+
+```bash
+ducker profile homelab-36gb
+ducker vm-uninstall && ducker install
+```
 
 ---
 
 ## Connect Docker CLI
 
-After `limactl start docker-prod`:
+After `ducker install`, the managed snippet in `~/.zshrc` sets:
 
 ```bash
-export DOCKER_HOST=unix://${HOME}/.lima/docker-prod/sock/docker.sock
-docker version   # must show Server, not "Cannot connect"
-```
-
-Add to `~/.zshrc`:
-
-```bash
-export DOCKER_HOST=unix://${HOME}/.lima/docker-prod/sock/docker.sock
+export DOCKER_HOST=unix://${HOME}/.lima/docker/sock/docker.sock
 export DOCKER_BUILDKIT=1
 ```
 
+Verify:
+
 ```bash
 source ~/.zshrc
+docker version   # must show Server, not "Cannot connect"
 docker run --rm hello-world
 ```
 
@@ -124,27 +137,16 @@ docker run --rm hello-world
 
 ## Performance practices
 
-### Inside Lima (`limactl shell docker-prod`)
+### Guest daemon config (rootless)
 
-`/etc/docker/daemon.json`:
-
-```json
-{
-  "storage-driver": "overlay2",
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "10m",
-    "max-file": "3"
-  },
-  "features": {
-    "buildkit": true
-  }
-}
-```
+Docker Lab uses **rootless** Engine. Config lives at `~/.config/docker/daemon.json` inside the guest — not `/etc/docker/daemon.json`. Edit `~/homelab/docker-lab/config/daemon.json` on the host, then:
 
 ```bash
-sudo systemctl restart docker
+ducker daemon
+ducker verify
 ```
+
+See [Docker Lab — daemon config](https://nasraldin.github.io/docker-lab/docker-daemon/).
 
 ### BuildKit / buildx
 
@@ -166,9 +168,9 @@ volumes:
 ### Learn internals (do not skip)
 
 ```bash
-limactl shell docker-prod
+ducker shell
 ps aux | grep -E 'dockerd|containerd'
-ls /var/lib/docker
+ls ~/.local/share/docker
 containerd --version
 runc --version
 ```
@@ -200,15 +202,15 @@ Skip `lima-additional-guestagents` unless you run x86_64 guests.
 
 ## Next steps
 
-1. Fix `~/.docker/config.json` (compose plugin path)
-2. `limactl start docker-prod`
-3. Set `DOCKER_HOST` in `~/.zshrc`
-4. `docker run hello-world` + explore with `limactl shell`
-5. On X1 Pro: [kubeadm architecture](../kubeadm-architecture.md) Stage A
+1. `ducker profile homelab-36gb && ducker install`
+2. Confirm `docker run hello-world`
+3. Explore with `ducker shell`
+4. On X1 Pro: [kubeadm architecture](../kubeadm-architecture.md) Stage A
 
 ---
 
 ## Related
 
 - [kubeadm architecture](../kubeadm-architecture.md)
-- [Lima template](../../../lima/docker-prod.yaml)
+- [Docker Lab](https://nasraldin.github.io/docker-lab/) — canonical Lima template (`lima-docker.yaml`), profiles, and `ducker` CLI
+- [Docker Lab — installation](https://nasraldin.github.io/docker-lab/installation/)

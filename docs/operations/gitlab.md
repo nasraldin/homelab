@@ -159,11 +159,11 @@ ansible-playbook playbooks/gitlab.yml -e @secrets.yml
 
 Full write-ups live in [lab-refresh-issues.md](lab-refresh-issues.md):
 
-| ID      | Symptom                                                     | Tracker                                                                              |
-| ------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| REF-014 | `gitlab-ce` half-configured / LE ACME / “public attributes” | [REF-014 details](lab-refresh-issues.md#ref-014-gitlab-omnibus-lets-encrypt-half-configured) |
-| REF-015 | `vault-seal` → Enable file audit device (`no_log`)          | [REF-015 details](lab-refresh-issues.md#ref-015-vault-file-audit-pipefail-sigpipe) |
-| REF-016 | Runner register fails; public HTTPS 530                     | [REF-016 details](lab-refresh-issues.md#ref-016-gitlab-runner-register-via-public-url-530) |
+| ID      | Symptom                                                     | Tracker                                                                                         |
+| ------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| REF-014 | `gitlab-ce` half-configured / LE ACME / “public attributes” | [REF-014 details](lab-refresh-issues.md#ref-014-gitlab-omnibus-lets-encrypt-half-configured)    |
+| REF-015 | `vault-seal` → Enable file audit device (`no_log`)          | [REF-015 details](lab-refresh-issues.md#ref-015-vault-file-audit-pipefail-sigpipe)              |
+| REF-016 | Runner register fails; public HTTPS 530                     | [REF-016 details](lab-refresh-issues.md#ref-016-gitlab-runner-register-via-public-url-530)      |
 | REF-018 | LAN GitLab 200, public `gitlab.nasraldin.com` 530           | [REF-018 details](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild) |
 
 Quick triage: if LAN `:80` works and public does not → Tunnel ([REF-018](lab-refresh-issues.md#ref-018-gitlab-public-url-cloudflare-530-after-rebuild)), not Omnibus.

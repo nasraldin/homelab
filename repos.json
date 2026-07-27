@@ -8,5 +8,9 @@
   "camunda-lab": "nasraldin/camunda-lab",
   "homebrew/homebrew-tools": "nasraldin/homebrew-tools",
   "k8s-lab": "nasraldin/k8s-lab",
-  "homelab-gitops": "nasraldin/homelab-gitops"
+  "homelab-gitops": "nasraldin/homelab-gitops",
+  "lab-home-k8s": "nasraldin/lab-home-k8s",
+  "lab-home-gitops": "nasraldin/lab-home-gitops",
+  "pipeline-templates": "nasraldin/pipeline-templates",
+  "dev-homelab": "nasraldin/dev-homelab"
 }

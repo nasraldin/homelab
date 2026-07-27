@@ -55,7 +55,7 @@ API keys.
 - **Edge** — Cloudflare Tunnel (+ Access where needed); Proxmox is never exposed on WAN `:8006`
 - **OpsHub** — sibling [opshub](https://github.com/nasraldin/opshub) start page / consoles (clone as `opshub/`)
 - **Cluster (planned)** — kubeadm, then Argo CD, Harbor, and in-cluster observability
-- **Public Mac tools** — [Docker Lab](https://nasraldin.github.io/docker-lab/) and [Camunda Lab](https://nasraldin.github.io/camunda-lab/)
+- **Public Mac tools** — [Docker Lab](https://nasraldin.github.io/docker-lab/), [Camunda Lab](https://nasraldin.github.io/camunda-lab/), and [Dev Homelab](https://nasraldin.github.io/dev-homelab/) (separate physical machine)
 
 ## Useful runbooks
 

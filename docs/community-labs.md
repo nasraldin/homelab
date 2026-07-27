@@ -11,16 +11,19 @@ If you are wiring the Mac as a control plane, skim
 ./clone-labs.sh
 ```
 
+That pulls every entry in [`repos.json`](https://github.com/nasraldin/homelab/blob/main/repos.json), including **`lab-home-k8s`**, **`lab-home-gitops`**, and **`dev-homelab`** (each is its own git repo; directories are gitignored inside the homelab hub).
+
 ## What this page covers
 
-- Links to Docker Lab and Camunda Lab docs
-- How to clone sibling repos
+- Links to Docker Lab, Camunda Lab, and Dev Homelab docs
+- How to clone sibling repos (including `lab-home-*` automation repos)
 - What stays private vs what is public
 
 | Lab                                                     | Docs             | What it’s for                                 |
 | ------------------------------------------------------- | ---------------- | --------------------------------------------- |
 | [Docker Lab](https://nasraldin.github.io/docker-lab/)   | Standalone Pages | Real Linux Docker on Apple Silicon (`ducker`) |
 | [Camunda Lab](https://nasraldin.github.io/camunda-lab/) | Standalone Pages | Local Camunda 8 on Docker                     |
+| [Dev Homelab](https://nasraldin.github.io/dev-homelab/) | Standalone Pages | Daily-use K8s on dedicated Proxmox hardware   |
 
 ::: tip Private implementation repos
 Day-1 automation (Proxmox bootstrap, Terraform, Ansible, Cloudflare Tunnel)

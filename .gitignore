@@ -11,6 +11,10 @@ homebrew/
 terraform-lab/
 k8s-lab/
 homelab-gitops/
+lab-home-k8s/
+lab-home-gitops/
+dev-homelab/
+pipeline-templates/
 
 # Local installers / large blobs (never commit)
 homelab-binaries/
