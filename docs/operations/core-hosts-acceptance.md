@@ -1,5 +1,9 @@
 # Acceptance checklist — core container hosts redesign
 
+> **terraform-lab** prove-out (2026-07-26). For **lab-home-k8s**, use
+> `lab-home-k8s/docs/runbook/e2e-reset-checklist.md` and
+> [lab-home-inventory.md](lab-home-inventory.md).
+
 After **factory-reset `pve01` + full lab refresh**, verify before flipping status ✅
 in [current-state.md](../current-state.md).
 

@@ -171,10 +171,11 @@ RabbitMQ. Vault is earlier foundation work with its own design.
 
 ## Chapter 9 — AI and developer platform (Phase 10–11) ⏳
 
-Ollama, Open WebUI, GitLab Runners in k8s, SonarQube, optional ELK if learning
-Elasticsearch.
+Ollama on **`llm-01`**, LibreChat / LiteLLM / n8n / OpenClaw in k8s **`ai-tools`**,
+GitLab Runner in **`gitops`**, Sonar interim in **`apps`**.
 
-→ [architecture/service-placement.md](architecture/service-placement.md)
+→ [architecture/service-placement.md](architecture/service-placement.md) ·
+[operations/lab-home-inventory.md](operations/lab-home-inventory.md)
 
 ---
 

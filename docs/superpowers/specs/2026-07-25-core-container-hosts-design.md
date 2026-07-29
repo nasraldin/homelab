@@ -1,8 +1,13 @@
 # Design: Core container hosts + central DB + Sonar + Elastic + monitoring
 
 **Date:** 2026-07-25  
-**Status:** Accepted — implement in terraform-lab / ansible-lab / cloudflare-tunnel / docs  
+**Status:** Accepted — **terraform-lab / ansible-lab** inventory  
 **Scope:** Day-one Layer-1 rebuild (full wipe OK)
+
+> **Not** the live Dev Homelab guest map. `pve01` runs **`lab-home-k8s`** —
+> [lab-home-inventory.md](../../operations/lab-home-inventory.md) and
+> [lab-restructure-2026-07-30.md](../../operations/lab-restructure-2026-07-30.md).
+> Keep this design for the alternate multi-VM practice layout.
 
 ## Goals
 
@@ -51,13 +56,16 @@ Source of truth: `terraform-lab/terraform.tfvars`.
 
 ```text
 database-01:  /opt/postgres  /opt/redis  /opt/mariadb
-docker-01:    /opt/npm  /opt/infisical  /opt/keycloak  /opt/it-tools  /opt/mailpit
+docker-01:    /opt/it-tools  /opt/mailpit  (+ NPM in this design)
 monitoring-01:/opt/monitoring
 sonarqube-01: /opt/sonarqube
 elastic-01:   /opt/elastic
 podman-01:    /opt/caddy
 dockhand:     Dockhand install
 ```
+
+> lab-home-k8s places NPM/AIStor/mail/Dockhand on **docker-01** and DNS/Infisical
+> on dedicated LXCs — not the `infra-01:` mega-host line that older drafts showed.
 
 ## Public hostnames
 

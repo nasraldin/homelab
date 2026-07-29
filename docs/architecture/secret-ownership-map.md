@@ -10,8 +10,9 @@ Concrete mapping of **secret types in this homelab** to:
 | **Offline**        | Password manager / printed / split custody — not in Vault UI as day-to-day login material, and never in Infisical. |
 | **Derived**        | Not stored long-term; minted at use (leases, JWT, runner mint).                                                    |
 
-This is a **decision guide**, not a deploy plan. Layer-1 today is **Vault only**;
-Infisical stays skipped until an app-env workload needs it.
+This is a **decision guide**, not a deploy plan. Layer-1 crypto stays **Vault**
+where deployed; **Infisical** on **`infisical-01`** (`.25`) owns app env secrets
+for lab-home-k8s ([infisical.md](../operations/infisical.md)).
 Product comparison: [vault-vs-infisical.md](vault-vs-infisical.md).
 Operate Vault: [vault.md](../operations/vault.md).
 

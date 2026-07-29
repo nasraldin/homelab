@@ -1,4 +1,12 @@
-# Lab refresh runbook (factory-reset → Terraform → Ansible)
+# Lab refresh runbook (terraform-lab / ansible-lab)
+
+> **Inventory:** This wipe→rebuild path targets the **terraform-lab** multi-VM
+> layout ([guest-vmid-map.md](guest-vmid-map.md)). The live **Dev Homelab** on
+> `pve01` is **`lab-home-k8s`** — use
+> [lab-home-inventory.md](lab-home-inventory.md),
+> [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md), and
+> `lab-home-k8s/docs/runbook/e2e-reset-checklist.md` instead.
+ (factory-reset → Terraform → Ansible)
 
 Single checklist for a **full lab rebuild** on an existing Proxmox node (`pve01`)
 after the **core container hosts** redesign (VMIDs **110–123** + CT **200**).
@@ -131,7 +139,7 @@ Passwords live in `~/homelab/ansible-lab/secrets.yml` (gitignored) unless noted.
 | **GitLab registry**     | `https://gregistry.nasraldin.com` | GitLab user                 | Same GitLab account / deploy token                 | [ ]  |
 | **PgAdmin**             | `http://192.168.68.21:5433`       | `vault_pgadmin_email`       | `vault_pgadmin_password`                           | [ ]  |
 | **phpMyAdmin**          | `http://192.168.68.21:3366`       | `root`                      | `vault_mariadb_root_password`                      | [ ]  |
-| **NPM admin**           | `http://192.168.68.22:81`         | `vault_npm_admin_*`         | Auto Initial User Creation (empty volume only)     | [ ]  |
+| **Proxy Manager admin** | `http://proxy.lab:81`             | `vault_proxy_admin_*`       | Auto Initial User Creation (empty volume only)     | [ ]  |
 | **Infisical**           | `http://192.168.68.22:8090`       | _first signup_              | Stack keys ≠ UI login; create admin in browser     | [ ]  |
 | **Keycloak**            | `http://192.168.68.22:8080`       | `vault_keycloak_admin_user` | `vault_keycloak_admin_password`                    | [ ]  |
 | **it-tools**            | via NPM / LAN port per host_vars  | —                           | Smoke-load UI                                      | [ ]  |

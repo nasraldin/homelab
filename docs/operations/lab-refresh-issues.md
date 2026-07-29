@@ -1,5 +1,9 @@
 # Lab refresh issues tracker (2026-07)
 
+> Mostly **terraform-lab / ansible-lab** refresh symptoms. Dev Homelab bring-up
+> issues: `lab-home-k8s/docs/runbook/bring-up-issues-2026-07.md`. Restructure:
+> [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md).
+
 Symptom → cause → fix log from the **full factory-reset + Terraform + Ansible**
 rebuild. Use with the checklist in [lab-refresh-runbook.md](lab-refresh-runbook.md).
 Install-time Proxmox issues stay in [installation/issues-tracker.md](../installation/issues-tracker.md).
@@ -447,18 +451,18 @@ MariaDB / Redis pulls can take many minutes on first run and look “stuck” on
 | **Status**     | resolved                                                                                                                                                                                                                              |
 | **When**       | First `ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml` on `docker-01`                                                                                                                                                    |
 | **Symptom**    | Handler `Restart Infisical stack` fails: `Bind for 0.0.0.0:80 failed: port is already allocated`                                                                                                                                      |
-| **Root cause** | Playbook installs **NPM first** (`roles/npm`), which publishes **`:80` / `:443` / `:81`**. Infisical defaults used `infisical_http_port: 80` and `SITE_URL=http://192.168.68.22`, so Compose tried to map `80:8080` on the same host. |
+| **Root cause** | Playbook installs **Proxy Manager** first (`roles/proxy`, formerly `roles/npm`), which publishes **`:80` / `:443` / `:81`**. Infisical defaults used `infisical_http_port: 80` and `SITE_URL=http://192.168.68.22`, so Compose tried to map `80:8080` on the same host. |
 | **Debug**      | See [Debug: Infisical port conflict](#debug-infisical-port-conflict) below                                                                                                                                                            |
 | **Fix**        | `roles/infisical/defaults/main.yml`: host port **`8090`**, `infisical_site_url` includes `:8090`. Removed obsolete Compose `version:` key. Docs updated (`infisical.md`, runbooks).                                                   |
 | **Prevention** | On `docker-01`, only NPM binds `:80`/`:443`. App stacks use dedicated LAN ports (Keycloak `8080`, Infisical `8090`, …) and optionally NPM Proxy Host later.                                                                           |
-| **Verify**     | `curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.22:8090/api/status` → `200`; `docker ps` shows `npm` on 80/443 and `infisical-backend` on 8090                                                                          |
+| **Verify**     | `curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.21:8090/api/status` → `200`; `docker ps` shows `proxy` on 80/443 and `infisical-backend` on 8090                                                                          |
 
 ### Debug: Infisical port conflict
 
 ```bash
 # On docker-01 (.22)
 sudo ss -lntp | grep -E ':80|:8090|:8080'
-sudo docker ps --format 'table {{.Names}}\t{{.Ports}}' | grep -E 'npm|infisical|PORTS'
+sudo docker ps --format 'table {{.Names}}\t{{.Ports}}' | grep -E 'proxy|infisical|PORTS'
 
 # Expect NPM on 80/443/81; Infisical must NOT claim 80
 sudo grep -n 'ports\|8090\|80:' /opt/infisical/docker-compose.yml

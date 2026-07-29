@@ -16,8 +16,8 @@ pilot was proven then archived (2026-07-23) to keep this stage simple.
 
 - Flat LAN `192.168.68.0/22`, bridge `vmbr0`, gateway `192.168.68.1`
 - TP-Link remains the edge router and DHCP gateway
-- `pve01` remains `192.168.68.13`; AdGuard remains `192.168.68.10`;
-  Technitium remains `192.168.68.11`
+- `pve01` remains `192.168.68.13`; AdGuard on **`adguard-01`** `.10`;
+  Technitium on **`dns-01`** `.11` (lab-home-k8s; older docs may say `technitium-01`)
 - Remote Proxmox UI and `infra01` SSH: Cloudflare Tunnel + Access (no WAN ports)
 - Mac admin path: Wi-Fi on the live LAN (no Ethernet requirement)
 

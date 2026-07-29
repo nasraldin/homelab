@@ -33,25 +33,27 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **Terraform**                             | Mac + Git                               | 1        | Not a server — IaC in repos                                                                                                                                              |
 | **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`)           | 2        | Source of truth; **not** inside k8s                                                                                                                                      |
 | **GitLab Runner**                         | 🖥 **VM** (`runner-01` fleeting manager) | 2        | docker-autoscaler + fleeting; no fat runner-02                                                                                                                           |
-| **Vault**                                 | 🖥 **VM** (`vault-01` + `vault-seal`)    | ✅ core  | Infra/crypto secrets + Transit auto-unseal — LAN `:8200`; [vault.md](../operations/vault.md)                                                                             |
-| **Infisical**                             | 🖥 Compose on **`docker-01`**            | ⏳       | App env-secrets; DB via PgCat on database-01; [infisical.md](../operations/infisical.md)                                                                                 |
-| **PostgreSQL (lab central)**              | 🖥 **`database-01`** + PgCat             | ⏳ core  | Shared relational DB for Keycloak/Infisical/Sonar; [database-01.md](../operations/database-01.md)                                                                        |
-| **Keycloak**                              | 🖥 Compose on **`docker-01`**            | ⏳ core  | [keycloak.md](../operations/keycloak.md)                                                                                                                                 |
-| **SonarQube**                             | 🖥 **`sonarqube-01`**                    | ⏳ core  | Dedicated VM; JDBC → PgCat; Tunnel `sonar.nasraldin.com`                                                                                                                 |
-| **Elasticsearch / Kibana**                | 🖥 **`elastic-01`**                      | ⏳ core  | Option A: Loki remains primary logs; [elastic.md](../operations/elastic.md)                                                                                              |
-| **Prometheus / Grafana / Loki**           | 🖥 **`monitoring-01`**                   | ⏳ core  | Day-one fleet telemetry; k8s monitoring still later phase                                                                                                                |
-| **NPM / it-tools / mailpit**              | 🖥 **`docker-01`**                       | ⏳ core  | [docker-hosts.md](../operations/docker-hosts.md)                                                                                                                         |
-| **Dockhand**                              | 🖥 LXC **200**                           | ⏳ core  | `docker.nasraldin.com` + Access                                                                                                                                          |
-| **AIStor Free**                           | 🖥 **VM** (`aistor-01`)                  | ✅ core  | Shared S3 — GitLab + runner cache + Vault snapshots; [object-storage.md](../operations/object-storage.md)                                                                |
+| **Vault**                                 | 🖥 **VM** (`vault-01` + `vault-seal`) _or_ deferred in lab-home-k8s | ✅/⏳ | Infra/crypto — [vault.md](../operations/vault.md). lab-home-k8s may use Infisical + bootstrap secrets first |
+| **Infisical**                             | 📦 **LXC** `infisical-01` (`.25`)            | ✅ live   | App env-secrets + local Postgres/Redis; [infisical.md](../operations/infisical.md) · [lab-restructure](../operations/lab-restructure-2026-07-30.md) |
+| **AdGuard / Technitium**                  | 📦 **LXC** `adguard-01` / `dns-01` (`.10`/`.11`) | ✅ live | Dedicated 512M/10G CTs — not on infra-01 |
+| **PostgreSQL (lab central)**              | 🖥 **`database-01`** + PgCat _or_ CNPG in k8s | ⏳ | terraform-lab: shared PG; lab-home-k8s: CNPG in `database` NS + Infisical-local PG |
+| **Keycloak**                              | ☸ interim `apps` / later **`docker-01`**   | ⏳ core  | [keycloak.md](../operations/keycloak.md)                                                                                                                                 |
+| **SonarQube**                             | ☸ interim `apps` / later dedicated VM      | ⏳ core  | [sonarqube.md](../operations/sonarqube.md)                                                                                                                               |
+| **Elasticsearch / Kibana**                | 🖥 **`elastic-01`** (terraform-lab)        | ⏳       | Option A: Loki primary; [elastic.md](../operations/elastic.md)                                                                                                           |
+| **Prometheus / Grafana / Loki**           | ☸ `observability` (lab-home-k8s)           | ✅/⏳    | Also terraform-lab `monitoring-01` for fleet hosts                                                                                                                       |
+| **NPM / Stalwart / it-tools / mailpit**   | 🖥 **`docker-01`** (`.21`)                 | ✅ live   | [docker-hosts.md](../operations/docker-hosts.md) · [stalwart.md](../operations/stalwart.md)                                                                              |
+| **Dockhand / Portainer**                  | 🖥 **`docker-01`**                         | ✅ live   | CTs 118/119 destroyed; [dockhand.md](../operations/dockhand.md)                                                                                                           |
+| **AIStor Free**                           | 🖥 **`docker-01`** (lab-home-k8s)          | ✅ live   | S3 `:9000`/`:9001` on docker-01; terraform-lab still uses `aistor-01` — [object-storage.md](../operations/object-storage.md)                                           |
+| **infra-01**                              | 📦 Jumpbox LXC 124 (`.14`)                 | ✅ live  | SSH/operator only — no DNS/NPM/Infisical/AIStor                                                                                                                          |
 | **MinIO in-cluster**                      | ☸ optional later                        | 8+       | Only if a second S3 domain is needed; do not replace AIStor for GitLab                                                                                                   |
 | **ExternalDNS**                           | ☸ k8s                                   | 9        | When AdGuard API stable                                                                                                                                                  |
 | **Kyverno**                               | ☸ k8s                                   | 9        | Policy                                                                                                                                                                   |
 | **Velero**                                | ☸ k8s                                   | 9        | K8s backup → MinIO                                                                                                                                                       |
 | **Falco**                                 | ☸ k8s                                   | 9        | Runtime security                                                                                                                                                         |
 | **Wazuh**                                 | 🖥 VM                                    | 11+      | SIEM — not in k8s                                                                                                                                                        |
-| **Ollama**                                | 🖥 **GPU VM** (dev-homelab: `ai-01`)     | 10       | Radeon 890M VFIO; UIs via **LiteLLM** — [dev-homelab ai-stack](https://nasraldin.github.io/dev-homelab/architecture/ai-stack) · [gpu-passthrough.md](gpu-passthrough.md) |
+| **Ollama**                                | 📦 **LXC** `llm-01` (`.26`)              | 10       | **Live** host `amdgpu` + `/dev/dri`/`kfd`; UIs via **LiteLLM** — [ollama-llm-01.md](../operations/ollama-llm-01.md) · standby VM `ai-01` (do not delete) |
 | **LiteLLM**                               | ☸ k8s                                   | 10       | OpenAI gateway → Ollama only                                                                                                                                             |
-| **Open WebUI** / LibreChat / AnythingLLM  | ☸ k8s                                   | 10       | Through LiteLLM — not Ollama direct                                                                                                                                      |
+| **LibreChat** / OpenClaw  | ☸ k8s                                   | 10       | Through LiteLLM — not Ollama direct                                                                                                                                      |
 | **n8n**                                   | ☸ k8s                                   | 10       | **Workflow only** — LLM via LiteLLM OpenAI creds; [itsm-and-automation.md](../platform/itsm-and-automation.md)                                                           |
 | **Zammad**                                | ☸ k8s                                   | 10+      | Customer tickets when building SaaS                                                                                                                                      |
 | **GLPI / iTop**                           | 🖥 VM or lab                             | optional | Internal ITIL / ServiceNow-style practice                                                                                                                                |
@@ -88,15 +90,14 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | GitLab in Docker on utility VM  | OK for learning — more moving parts                     |
 | GitLab inside Kubernetes        | ❌ **Avoid** — if k8s dies, you lose Git + Argo source  |
 
-**Sizing:** 6 vCPU, **16 GB RAM**, 120 GB disk on `data01` (`gitlab-01`, VMID 116,
-`192.168.68.14`). Public URL: `https://gitlab.nasraldin.com` (Tunnel, no Access).
+**lab-home-k8s:** `gitlab-01` VMID **111** at **`192.168.68.15`**. Public URL:
+`https://gitlab.nasraldin.com` (Tunnel, no Access). Object store → AIStor on
+**`docker-01`** (`.21:9000`). App env-secrets → **`infisical-01`** (`.25`).
+In-cluster runner → namespace **`gitops`** — [gitlab-runner-k8s.md](../operations/gitlab-runner-k8s.md).
 
-**Runners:** `runner-01` (VMID 117, `.15`) is the **fleeting manager only** (light
-Docker executor until autoscaler API is wired). No static fat `runner-02`.
-Object store + cache on `aistor-01` (VMID 115). Secrets on `vault-01` (VMID 113);
-Transit seal helper `vault-seal` (VMID 114). App env-secrets: **Infisical on
-`docker-01`** (VMID 119, `.22`) with Postgres via PgCat on `database-01` (VMID 118).
-Full map: [guest-vmid-map.md](../operations/guest-vmid-map.md) ·
+**terraform-lab** (alternate inventory): see [guest-vmid-map.md](../operations/guest-vmid-map.md).
+
+Full Dev Homelab map: [lab-home-inventory.md](../operations/lab-home-inventory.md) ·
 [secret-ownership-map.md](secret-ownership-map.md).
 
 **Companion on GitLab VM:** none — keep Omnibus alone. Not Portainer, not Mealie.
@@ -152,6 +153,29 @@ Details: [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md).
 | kubeadm + Cilium           | Second distro (k3s/Talos)  |
 | Longhorn + Argo CD         | Ceph                       |
 | Harbor, Keycloak, Postgres | Elasticsearch (after Loki) |
+
+---
+
+## Kubernetes namespaces (in-cluster)
+
+Workloads managed by `lab-home-gitops` use a **few purpose-grouped namespaces**
+(not one NS per app). Source of truth:
+[`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md).
+
+| Namespace       | Examples                                              |
+| --------------- | ----------------------------------------------------- |
+| `ai-tools`      | n8n, LibreChat, LiteLLM, OpenClaw                     |
+| `observability` | Prometheus, Grafana, Loki, Tempo, OTel                |
+| `database`      | CNPG Postgres + Redis/RabbitMQ/MariaDB operators      |
+| `artifacts`     | Harbor, Verdaccio                                     |
+| `storage`       | Longhorn                                              |
+| `security`      | cert-manager, Kyverno, ESO, Infisical operator        |
+| `gitops`        | GitLab Runner (k8s), KEDA                             |
+| `apps`          | Keycloak/Sonar (interim until Docker/VM) + future apps|
+| `argocd`        | Argo CD control plane (kept; not renamed to `gitops`) |
+
+System NS (`kube-system`, CNI, etc.) are untouched. PVC moves require recreate
+or explicit volume migration — lab default is recreate on cutover.
 
 ---
 

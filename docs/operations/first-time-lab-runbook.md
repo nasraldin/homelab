@@ -1,5 +1,10 @@
 # First-time lab runbook (fresh Proxmox → day-one core hosts)
 
+> **Inventory:** Steps below follow the **terraform-lab** multi-VM design.
+> For the live **Dev Homelab** (`lab-home-k8s`), use
+> [lab-home-inventory.md](lab-home-inventory.md) and
+> `lab-home-k8s/docs/runbook/e2e-reset-checklist.md`.
+
 Use this after a **new Proxmox VE install on `pve01`** (empty guests, clean
 `rpool`). It covers host bootstrap → Terraform → Ansible → Tunnel.
 

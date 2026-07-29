@@ -1,49 +1,49 @@
-# Prep AMD GPU Passthrough for AI VMs (IOMMU)
+# Prep AMD GPU for AI (IOMMU + LXC path)
 
-Host prep so the **Radeon 890M** iGPU on `pve01` can eventually be passed into AI
-VMs (Ollama, ROCm guests, etc.). Two stages:
+Host prep for the **Radeon 890M** iGPU on `pve01`. **Current Dev Homelab path**
+is privileged LXC **`llm-01`** with host `amdgpu` + device passthrough — not VFIO
+into a VM. See [ollama-llm-01.md](../operations/ollama-llm-01.md).
 
-1. **Host** — BIOS + `iommu=pt` (done via `proxmox-bootstrap` `check_iommu`)
-2. **Per VM** — VFIO + `hostpci` only when that guest needs the GPU
+| Path | When |
+| ---- | ---- |
+| **LXC + host `amdgpu`** (preferred) | Daily Ollama on `llm-01` — host keeps `/dev/dri` + `/dev/kfd` |
+| **VFIO → VM** (standby / rollback) | `ai-01` only — host **loses** `amdgpu` while guest owns GPU |
 
 **Owner (host):** [`proxmox-bootstrap`](https://github.com/nasraldin/proxmox-bootstrap)
-(`check_iommu`).  
-**Owner (guest attach):** [`lab-home-k8s`](https://github.com/nasraldin/lab-home-k8s)
-(dev-homelab `ai-01`) or [`terraform-lab`](https://github.com/nasraldin/terraform-lab)
-for practice-lab experiments. Prefer Terraform `hostpci` + hardware mappings —
-not a random host script.  
+(`check_iommu`, `iommu=pt`).  
+**Owner (llm-01):** [`lab-home-k8s`](https://github.com/nasraldin/lab-home-k8s)
+Terraform `device_passthrough` + `scripts/host-igpu-for-lxc.sh`.  
 **Official reference:** [Proxmox PCI(e) Passthrough](<https://pve.proxmox.com/wiki/PCI(e)_Passthrough>).
-
-**Dev-homelab (daily machine):** full AI path — [ai-stack](https://nasraldin.github.io/dev-homelab/architecture/ai-stack) ·
-[gpu-passthrough](https://nasraldin.github.io/dev-homelab/architecture/gpu-passthrough)
-(`ai-01` uses **2 MiB hugepages** + NUMA; ballooning off).
 
 ## What this page covers
 
-- What is correct on **AMD** vs common blog mistakes
-- BIOS + kernel cmdline (`iommu=pt`) and how to verify after reboot
-- **How to enable GPU passthrough on any VM when you need it**
-- What stays out of scope until first AI VM
+- AMD vs blog mistakes (`iommu=pt`, no `amd_iommu=on`)
+- BIOS + kernel cmdline verify
+- LXC device path vs VFIO VM path
+- What stays out of scope for Ceph/etc.
 
 ---
 
 ## Hardware (this lab)
 
-| Piece | Detail                                                                              |
-| ----- | ----------------------------------------------------------------------------------- |
-| CPU   | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi)                                              |
-| GPU   | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]`                                   |
-| Use   | **AI VM** `ai-01` (dev-homelab) with VFIO; host loses `amdgpu` while guest owns GPU |
+| Piece | Detail |
+| ----- | ------ |
+| CPU | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi) |
+| GPU | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]` |
+| Primary use | **`llm-01` LXC** — host `amdgpu`, devices `/dev/dri/renderD128`, `/dev/dri/card1`, `/dev/kfd` |
+| Standby | **`ai-01` VM** — VFIO rollback only; keep disk (llm-01 GPU already verified; decommission after several stable days) |
 
-### Hugepages on AI VMs
+### LXC path (do this)
 
-For large-model guests, enable Proxmox **2 MiB hugepages** (`hugepages = "2"`),
-**NUMA**, and **disable ballooning**. Prefer 2 MiB over 1 GiB pages unless you
-reserve 1 GiB hugepages on the host. See
-[dev-homelab ai-stack](https://nasraldin.github.io/dev-homelab/architecture/ai-stack).
+1. Disable VFIO bind for the iGPU (`scripts/host-igpu-for-lxc.sh`) then **reboot** — never live-rebind after VFIO (can hang `pve01`).
+2. Confirm `Kernel driver in use: amdgpu` and DRI/KFD nodes exist.
+3. Terraform CT 125 with `device_passthrough`; Ansible `playbooks/ollama.yml`.
 
-Passing the iGPU to a VM means the **host loses that GPU** while the guest owns
-it. Keep SSH to `pve01` working (no reliance on local GUI).
+### VFIO VM path (rollback only)
+
+Passing the iGPU to `ai-01` means the **host loses that GPU**. Re-enable VFIO
+conf, reboot, reattach `hostpci` / mapping `ai-igpu`, point LiteLLM at `.24`.
+Hugepages (`hugepages = "2"`), NUMA, ballooning off apply to that VM path.
 
 ---
 

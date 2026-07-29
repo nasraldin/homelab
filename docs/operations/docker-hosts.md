@@ -1,42 +1,37 @@
 # docker-01 — app Compose host
 
-LAN: `192.168.68.22` · VMID **119**
+LAN: `192.168.68.21` · VMID **117**
 
-Primary edge proxy: **Nginx Proxy Manager** (`/opt/npm`). Relational DBs live on
-[database-01](database-01.md) — not embedded here.
-
-Admin UI: `http://192.168.68.22:81` — credentials from `vault_npm_admin_email` /
-`vault_npm_admin_password` in `secrets.yml` via
-[Auto Initial User Creation](https://nginxproxymanager.com/advanced-config/#auto-initial-user-creation)
-(`INITIAL_ADMIN_EMAIL` / `INITIAL_ADMIN_PASSWORD`). Those env vars only create the
-user on an **empty** `npm_data` volume; changing them later does not rotate an
-existing admin.
+After [lab-restructure-2026-07-30](lab-restructure-2026-07-30.md): lab-wide HTTP
+edge (NPM), mail, AIStor, Dockhand, and Portainer live here with it-tools /
+mailpit. DNS and Infisical are dedicated LXCs (`.10` / `.11` / `.25`).
 
 ## Stacks
 
-| Path             | App                                                    |
-| ---------------- | ------------------------------------------------------ |
-| `/opt/npm`       | Nginx Proxy Manager (**owns host `:80`/`:443`/`:81`**) |
-| `/opt/infisical` | Infisical on **`:8090`** (Postgres → PgCat)            |
-| `/opt/keycloak`  | Keycloak on **`:8080`** (Postgres → PgCat)             |
-| `/opt/it-tools`  | it-tools                                               |
-| `/opt/mailpit`   | Mailpit (SMTP 1025, UI 8025)                           |
+| Path | App |
+| ---- | --- |
+| `/opt/proxy` | Nginx Proxy Manager (`:80/:443/:81`) + OpenClaw `/__oc_boot` |
+| `/opt/stalwart` | Stalwart + Bulwark (webmail CSP rewrite via NPM) |
+| `/opt/it-tools` | it-tools (`:1000`) |
+| `/opt/mailpit` | Mailpit (SMTP 1025, UI 8025) |
+| `/opt/dockhand` | Dockhand UI (`:3000`) |
+| `/opt/portainer` | Portainer CE (`:9443`) |
+| AIStor systemd | MinIO AIStor Free (`:9000/:9001`) |
 
-## Expose recipe
-
-1. App on Docker network / published port
-2. NPM Proxy Host → container or LAN IP
-3. Cloudflare Tunnel ingress to NPM `:80` (or catalogued hostname)
-4. Access policy when required
-
-Dockhand manages the engine: [dockhand.md](dockhand.md).
+OpenClaw **gateway pods** run in k8s (`ai-tools`); NPM on this host only does the
+plug-and-play `#token=` bootstrap — [openclaw.md](openclaw.md).
 
 ## Playbook
 
 ```bash
+cd ~/homelab/lab-home-k8s/ansible
 ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml --limit docker-01
+# NPM routes / OpenClaw boot only:
+ansible-playbook playbooks/proxy-routes.yml -e @secrets.yml
 ```
 
 ## Related
 
-- [infisical.md](infisical.md) · [keycloak.md](keycloak.md) · [podman](docker-hosts.md#podman-01)
+- Proxy Manager: `http://proxy.lab:81`
+- [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md) · [lab-home-inventory.md](lab-home-inventory.md)
+- [infisical.md](infisical.md) · [stalwart.md](stalwart.md) · [dockhand.md](dockhand.md)

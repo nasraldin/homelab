@@ -165,7 +165,7 @@ Transit, Raft-style thinking), **not** the same class as Infisical.
 | --------- | ----------------------------------- | ---------------------------------------------------------------------------------- |
 | Vault OSS | Secrets plane + Transit seal helper | **Keep**                                                                           |
 | OpenBao   | Vault-compatible FOSS alternative   | **Not switching now** — revisit only for a pure-open mandate                       |
-| Infisical | App/env secrets UX                  | **On `docker-01`** (PgCat) — apply via `docker-hosts.yml`; not a Vault replacement |
+| Infisical | App/env secrets UX                  | **On `infisical-01` LXC** (`.25`) — local Compose PG/Redis; not a Vault replacement |
 
 Using OpenBao **only** as seal while Vault holds secrets is API-possible but
 teaches a mixed stack. Prefer one family for seal + primary. Detail:

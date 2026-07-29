@@ -1,5 +1,10 @@
 # Core guest inventory (VMID, IP, boot order)
 
+> **Inventory split:** Live **Dev Homelab** guests are in
+> [lab-home-inventory.md](lab-home-inventory.md) (`lab-home-k8s`). The table
+> below is the **terraform-lab / ansible-lab** multi-VM redesign (may not match
+> `pve01` after the lab-home-k8s factory reset).
+
 Proxmox VMIDs follow Layer-1 foundation order. **LAN IPs keep historical last
 octets** where possible (VMID ≠ IP by design). Hardware defaults:
 [vm-best-practices.md](../architecture/vm-best-practices.md).
@@ -10,7 +15,7 @@ Canonical design:
 Live right-size (2026-07-26):
 [capacity-rightsizing-2026-07-26.md](capacity-rightsizing-2026-07-26.md).
 
-Source of truth: `terraform-lab/terraform.tfvars` (`vms` / `containers` maps).
+Source of truth (this layout): `terraform-lab/terraform.tfvars` (`vms` / `containers` maps).
 
 ## Inventory
 
@@ -32,7 +37,9 @@ Source of truth: `terraform-lab/terraform.tfvars` (`vms` / `containers` maps).
 | 123  | `elastic-01`    | `.27` | 14            | Elasticsearch + Kibana; `kibana.nasraldin.com`               |
 | 200  | `dockhand`      | `.24` | —             | Dockhand LXC; `docker.nasraldin.com` + Access                |
 
-**Removed from inventory:** `infisical-01` (Infisical lives on `docker-01`), `runner-02` (replaced by fleeting workers).
+**Removed from inventory (this terraform-lab layout):** dedicated `infisical-01`
+VM (Infisical was colocated on `docker-01` here); `runner-02`.  
+**lab-home-k8s** instead uses Infisical LXC `.25` — [lab-home-inventory.md](lab-home-inventory.md).
 
 Startup order is independent of VMID (`vault-seal` boots **before** `vault-01`).
 All managed VMs use `on_boot = true`. DNS guests start first so the LAN has a
@@ -59,7 +66,7 @@ Homelab **oversubscription** on single-node `pve01` remains intentional — gues
 | DNS restore     | `playbooks/dns.yml` + [lan-dns-resilience.md](lan-dns-resilience.md) |
 | Central DB      | `playbooks/database.yml` · [database-01.md](database-01.md)          |
 | Docker apps     | `playbooks/docker-hosts.yml` · [docker-hosts.md](docker-hosts.md)    |
-| Infisical       | on `docker-01` · [infisical.md](infisical.md)                        |
+| Infisical       | terraform-lab: on `docker-01`; lab-home-k8s: [infisical.md](infisical.md) |
 | Sonar / Elastic | [sonarqube.md](sonarqube.md) · [elastic.md](elastic.md)              |
 | Monitoring      | `playbooks/monitoring.yml` · [monitoring.md](monitoring.md)          |
 | Runner fleeting | [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)         |

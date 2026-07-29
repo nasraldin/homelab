@@ -126,11 +126,18 @@ Prometheus, Grafana, Loki, Alertmanager — deploy via Argo CD (⏳).
 
 Argo CD bootstrap, app-of-apps, no permanent manual `kubectl` (⏳).
 
+In-cluster apps use a **few purpose-grouped namespaces** (`ai-tools`,
+`observability`, `database`, `artifacts`, `storage`, `security`, `gitops`,
+`apps`; Argo control plane stays in `argocd`). See
+`lab-home-gitops/docs/namespace-taxonomy.md`.
+
 ---
 
 ## Phase 8 — Core platform services
 
-Harbor, Keycloak, MinIO, PostgreSQL, Redis, RabbitMQ — in k8s via Argo CD (⏳).
+Harbor + Verdaccio → `artifacts`; CNPG/operators → `database`; Keycloak/Sonar
+interim → `apps` (Docker/VM preferred long-term). MinIO stays AIStor on Docker
+unless a second S3 domain is needed.
 
 ---
 
@@ -145,7 +152,8 @@ Longhorn in Phase 6b.
 
 ## Phase 10 — AI platform
 
-Ollama, Open WebUI, LiteLLM, Qdrant (⏳).
+Ollama (LXC/`llm-01`), LibreChat / LiteLLM / n8n / OpenClaw in k8s namespace
+`ai-tools` via LiteLLM gateway (⏳).
 
 ---
 

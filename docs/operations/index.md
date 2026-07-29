@@ -19,9 +19,11 @@ single “homelab agent” is still future work.
 | ------------------------------------ | ------------------------------------------------- |
 | Rebuild or deploy in the right order | [deploy-and-rebuild](deploy-and-rebuild.md)       |
 | Wipe guests and bring them back      | [lab-refresh-runbook](lab-refresh-runbook.md)     |
+| Restructure DNS / docker drain (2026-07-30) | [lab-restructure-2026-07-30](lab-restructure-2026-07-30.md) |
 | Debug a refresh failure              | [lab-refresh-issues](lab-refresh-issues.md)       |
 | Admin the lab from outside the LAN   | [infra01-remote-access](infra01-remote-access.md) |
-| See every guest VMID                 | [guest-vmid-map](guest-vmid-map.md)               |
+| See every guest VMID (lab-home-k8s)  | [lab-home-inventory](lab-home-inventory.md)       |
+| See terraform-lab guest VMIDs        | [guest-vmid-map](guest-vmid-map.md)               |
 
 ## Full index
 
@@ -29,6 +31,7 @@ single “homelab agent” is still future work.
 | ------------------------------------------------------------------------ | ------------------------------------------------------- |
 | [deploy-and-rebuild.md](deploy-and-rebuild.md)                           | Canonical repo order, commands, acceptance              |
 | [lab-refresh-runbook.md](lab-refresh-runbook.md)                         | Full wipe → adopt → Terraform → SSH keys → Ansible      |
+| [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md)           | DNS LXCs, docker-01 drain, Infisical CT, jumpbox        |
 | [lab-refresh-issues.md](lab-refresh-issues.md)                           | Refresh failures: symptom → cause → fix (REF-\*)        |
 | [first-time-lab-runbook.md](first-time-lab-runbook.md)                   | Fresh Proxmox install → bootstrap → Terraform → Ansible |
 | [infra01-remote-access.md](infra01-remote-access.md)                     | Off-LAN jump box, Access SSH, Proxmox admin             |
@@ -43,21 +46,27 @@ single “homelab agent” is still future work.
 | [gitlab-infra-pipeline.md](gitlab-infra-pipeline.md)                     | Terraform / Ansible CI variables                        |
 | [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)             | Fleeting / autoscaler notes                             |
 | [repo-audit-checklist.md](repo-audit-checklist.md)                       | Secrets hygiene, CI coverage, ownership                 |
-| [object-storage.md](object-storage.md)                                   | AIStor Free shared S3 (`aistor-01`)                     |
+| [object-storage.md](object-storage.md)                                   | AIStor Free shared S3                                       |
 | [vault.md](vault.md)                                                     | HashiCorp Vault OSS Raft                                |
-| [infisical.md](infisical.md)                                             | App env-secrets on `docker-01`                          |
+| [infisical.md](infisical.md)                                             | App env-secrets on `infisical-01` LXC                   |
 | [Vault vs Infisical](../architecture/vault-vs-infisical.md)              | When to use which secrets tool                          |
 | [Secret ownership map](../architecture/secret-ownership-map.md)          | Which secret goes where                                 |
-| [guest-vmid-map.md](guest-vmid-map.md)                                   | Core VMID 110–123 + CT 200                              |
-| [capacity-rightsizing-2026-07-26.md](capacity-rightsizing-2026-07-26.md) | Live CPU/RAM right-size (old → new)                     |
-| [database-01.md](database-01.md)                                         | Central Postgres / PgCat / Redis / MariaDB              |
-| [docker-hosts.md](docker-hosts.md)                                       | docker-01 / NPM / apps                                  |
-| [keycloak.md](keycloak.md)                                               | IdP on docker-01                                        |
-| [sonarqube.md](sonarqube.md)                                             | Dedicated Sonar + Tunnel                                |
-| [elastic.md](elastic.md)                                                 | Elastic + Kibana                                        |
-| [monitoring.md](monitoring.md)                                           | Prometheus / Grafana dashboards + exporters             |
-| [dockhand.md](dockhand.md)                                               | Dockhand CT + Access                                    |
-| [core-hosts-acceptance.md](core-hosts-acceptance.md)                     | Factory-reset prove-out checklist                       |
+| [guest-vmid-map.md](guest-vmid-map.md)                                   | terraform-lab inventory (alternate)                 |
+| [lab-home-inventory.md](lab-home-inventory.md)                           | **lab-home-k8s** guest map + cutover status         |
+| [capacity-rightsizing-2026-07-26.md](capacity-rightsizing-2026-07-26.md) | Live CPU/RAM right-size (old → new)                 |
+| [database-01.md](database-01.md)                                         | Central Postgres / PgCat (terraform-lab)            |
+| [docker-hosts.md](docker-hosts.md)                                       | docker-01 — NPM / mail / S3 / Dockhand / Portainer  |
+| [keycloak.md](keycloak.md)                                               | IdP (interim k8s `apps` or docker-01)               |
+| [sonarqube.md](sonarqube.md)                                             | Sonar (interim k8s / dedicated VM)                  |
+| [elastic.md](elastic.md)                                                 | Elastic + Kibana                                    |
+| [monitoring.md](monitoring.md)                                           | Prometheus / Grafana dashboards + exporters         |
+| [dockhand.md](dockhand.md)                                               | Dockhand on docker-01                               |
+| [ollama-llm-01.md](ollama-llm-01.md)                                     | Ollama LXC (GPU device passthrough)                 |
+| [ollama-ai-01.md](ollama-ai-01.md)                                       | Legacy ai-01 standby notes                          |
+| [openclaw.md](openclaw.md)                                               | OpenClaw gateway (via LiteLLM)                      |
+| [stalwart.md](stalwart.md)                                               | Lab mail + Bulwark CSP/JMAP                         |
+| [gitlab-runner-k8s.md](gitlab-runner-k8s.md)                             | In-cluster runner (`gitops` NS)                     |
+| [core-hosts-acceptance.md](core-hosts-acceptance.md)                     | Factory-reset prove-out checklist                   |
 
 Architecture tip: [VM best practices](../architecture/vm-best-practices.md).
 

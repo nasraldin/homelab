@@ -18,8 +18,10 @@ router admin console.
 
 ## Preconditions
 
-1. Guests up and configured: `adguard-01` (`192.168.68.10`), `technitium-01`
-   (`192.168.68.11`) — after Terraform, run `ansible-playbook playbooks/dns.yml`.
+1. Guests up and configured: `adguard-01` (`192.168.68.10`), `dns-01`
+   (`192.168.68.11`, Technitium) — after Terraform, run
+   `ansible-playbook playbooks/dns.yml` (lab-home-k8s) or ansible-lab equivalent.
+   Older docs may say `technitium-01`; same IP `.11`.
 2. Proofs from any LAN host:
 
 ```bash

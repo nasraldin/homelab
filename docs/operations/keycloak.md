@@ -1,21 +1,19 @@
-# Keycloak (`docker-01`)
+# Keycloak
 
-Runs as Compose on **docker-01** (`192.168.68.22`) under `/opt/keycloak/`.
+**lab-home-k8s (current):** interim in-cluster under namespace **`apps`** (GitOps).
+Long-term preference: Compose on **docker-01** (`.21`) once drained from k8s.
 
-## Database
+**terraform-lab (alternate):** Compose on docker-01 historically at `.22` with
+JDBC → PgCat on `database-01` — [database-01.md](database-01.md).
 
-Central Postgres via PgCat:
+## Runtime notes
 
-- Host `192.168.68.21:6432`
-- Database / user `keycloak`
-- See [database-01.md](database-01.md)
-
-## Runtime
-
-- HTTP + `KC_PROXY_HEADERS=xforwarded` behind NPM / Cloudflare TLS
-- Bootstrap admin from `secrets.yml`
-- Metrics enabled for Prometheus scrape
+- Behind NPM / Cloudflare: `KC_PROXY_HEADERS=xforwarded` (or equivalent)
+- Do not embed Postgres on the Keycloak host when a shared DB exists
+- Secrets via InfisicalSecret / bootstrap secrets in `security` / day-0 script
 
 ## Related
 
-- [docker-hosts.md](docker-hosts.md) · [database-01.md](database-01.md)
+- [lab-home-inventory.md](lab-home-inventory.md)
+- [`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md)
+- [service-placement.md](../architecture/service-placement.md)

@@ -1,28 +1,28 @@
 # GitLab Omnibus Operations
 
-Day-2 notes for `gitlab-01` / runners after Terraform + Ansible. Design:
-[2026-07-23-gitlab-omnibus-design.md](../superpowers/specs/2026-07-23-gitlab-omnibus-design.md).
+Day-2 notes for `gitlab-01` / runners after Terraform + Ansible.
+
+**lab-home-k8s (live Dev Homelab):** `gitlab-01` = VMID **111**, LAN
+**`192.168.68.15`**, object store → AIStor on **docker-01** `.21:9000`.
+In-cluster runner: [gitlab-runner-k8s.md](gitlab-runner-k8s.md).
+
+**terraform-lab** design (alternate IPs/VMIDs):
+[2026-07-23-gitlab-omnibus-design.md](../superpowers/specs/2026-07-23-gitlab-omnibus-design.md)
+· [guest-vmid-map.md](guest-vmid-map.md).
 
 **Rule:** day-2 GitLab behaviour that must survive destroy/reapply belongs in
-`ansible-lab` (`gitlab_omnibus` / `gitlab_runner`), not one-off `gitlab-rails`
-or UI clicks.
+Ansible (`lab-home-k8s` or `ansible-lab`), not one-off `gitlab-rails` or UI clicks.
 
-## Addresses
+## Addresses (lab-home-k8s)
 
-| Guest              | VMID      | LAN             | Public                            |
-| ------------------ | --------- | --------------- | --------------------------------- |
-| `gitlab-01`        | 116       | `192.168.68.14` | `https://gitlab.nasraldin.com`    |
-| Container Registry | (same VM) | `:5050`         | `https://gregistry.nasraldin.com` |
-| `runner-01`        | 117       | `192.168.68.15` | Fleeting **manager** (2c/4G)      |
+| Guest | VMID | LAN | Public |
+| ----- | ---- | --- | ------ |
+| `gitlab-01` | 111 | `192.168.68.15` | `https://gitlab.nasraldin.com` |
+| Container Registry | (same) | `:5050` | `https://gregistry.nasraldin.com` |
+| `runner-01` (host) | 112 | `192.168.68.16` | Static Docker executor |
+| Runner (k8s) | — | `gitops` NS | [gitlab-runner-k8s.md](gitlab-runner-k8s.md) |
 
-VMID map: [guest-vmid-map.md](guest-vmid-map.md). Autoscaling:
-[gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md) (no `runner-02`).
-
-`registry.nasraldin.com` is reserved for a later registry (e.g. Harbor). Package
-Registry lives under the main GitLab URL (no separate hostname).
-
-No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a
-Personal Access Token.
+No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a PAT.
 
 ## What Ansible enforces (DB / runners)
 
@@ -37,7 +37,7 @@ order cannot leave wrong tags:
 | Auto DevOps                    | **off**                             | ApplicationSettings                     |
 | Web IDE extension host         | `cdn.web-ide.gitlab-static.net`     | `gitlab_web_ide_extension_host_domain`  |
 | Web IDE single-origin fallback | **off**                             | `gitlab_web_ide_single_origin_fallback` |
-| Object store / registry S3     | AIStor `192.168.68.17:9000`         | `gitlab.rb.j2` object_store             |
+| Object store / registry S3     | AIStor on **docker-01** `.21:9000` (lab-home-k8s) | Omnibus `object_store` |
 | Runner mint (`glrt-…`)         | `CreateRunnerService` → token files | `mint_runners.rb.j2` (no Admin UI)      |
 | Runner tags / untagged         | from `host_vars` (`runner-01`)      | `reconcile_runners.rb.j2`               |
 | Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache` | `config.toml` on each runner            |

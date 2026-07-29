@@ -1,4 +1,11 @@
-# SonarQube (`sonarqube-01`)
+# SonarQube
+
+> **IP collision note:** In **terraform-lab**, `sonarqube-01` is `.26`. In
+> **lab-home-k8s**, `.26` is **`llm-01`** (Ollama) and Sonar is interim in k8s
+> namespace **`apps`** (LB `.112`). Use [lab-home-inventory.md](lab-home-inventory.md)
+> for the live home map.
+
+## terraform-lab guest (`sonarqube-01`)
 
 LAN: `192.168.68.26` · VMID **122** · **2c / 8G / 80G** (right-sized 2026-07-26)
 

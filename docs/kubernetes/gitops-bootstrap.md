@@ -68,7 +68,7 @@ Host Git on **GitLab VM** — not inside the cluster.
 
 ```bash
 kubectl create namespace cilium-system --dry-run=client -o yaml | kubectl apply -f -
-kubectl create namespace longhorn-system --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace storage --dry-run=client -o yaml | kubectl apply -f -
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 ```
 
@@ -93,11 +93,11 @@ Verify: `kubectl get pods -n kube-system -l k8s-app=cilium`
 
 ```bash
 helm repo add longhorn https://charts.longhorn.io
-helm install longhorn longhorn/longhorn -n longhorn-system \
+helm install longhorn longhorn/longhorn -n storage \
   --set defaultSettings.defaultReplicaCount=2
 ```
 
-UI (temporary): `kubectl port-forward -n longhorn-system svc/longhorn-frontend 8080:80`
+UI (temporary): `kubectl port-forward -n storage svc/longhorn-frontend 8080:80`
 
 Set **default StorageClass**:
 
@@ -188,7 +188,7 @@ spec:
           value: 'true'
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    namespace: security
   syncPolicy:
     automated:
       prune: true
@@ -197,22 +197,31 @@ spec:
 
 **You stop running `helm install`** after bootstrap. Edit `values.yaml` in Git → commit → Argo syncs.
 
+> Note: older examples used `namespace: cert-manager`. Lab destinations follow
+> [`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md)
+> (`cert-manager` → `security`).
+
 ---
 
 ## Install order via Argo CD (after bootstrap)
 
-| Order | Component        | Namespace        |
-| ----- | ---------------- | ---------------- |
-| 1     | cert-manager     | cert-manager     |
-| 2     | ingress-nginx    | ingress-nginx    |
-| 3     | metrics-server   | kube-system      |
-| 4     | KEDA             | keda             |
-| 5     | external-secrets | external-secrets |
-| 6     | prometheus-stack | monitoring       |
-| 7     | loki             | monitoring       |
-| 8     | harbor           | harbor           |
-| 9     | keycloak         | keycloak         |
-| 10    | apps             | per-app          |
+Canonical namespaces: see `lab-home-gitops/docs/namespace-taxonomy.md`.
+
+| Order | Component        | Namespace       |
+| ----- | ---------------- | --------------- |
+| 0     | namespaces        | (cluster-wide)  |
+| 1     | cert-manager     | security        |
+| 2     | metrics-server   | kube-system     |
+| 3     | KEDA             | gitops          |
+| 4     | external-secrets | security        |
+| 5     | Kyverno / Infisical op | security  |
+| 6     | Longhorn         | storage         |
+| 7     | CNPG + DB ops    | database        |
+| 8     | prometheus-stack / Loki / Tempo | observability |
+| 9     | Harbor / Verdaccio | artifacts     |
+| 10    | Keycloak / Sonar (interim) | apps  |
+| 11    | GitLab Runner    | gitops          |
+| 12    | AI tools         | ai-tools        |
 
 Longhorn can stay manual-managed until comfortable, then **adopt** via Argo with matching values.
 
