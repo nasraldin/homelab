@@ -34,7 +34,7 @@ Add a row when you make a new architectural choice — don’t rewrite history.
 | 2026-07 | Fedora CoreOS for OpenShift-style learning                     | Separate from Debian general VMs                                                                               |
 | 2026-07-30 | lab-home-k8s: DNS LXCs + Infisical CT + docker-01 drain | Supersedes “Infisical on docker-01 / fat infra-01” for Dev Homelab — [lab-restructure-2026-07-30.md](../operations/lab-restructure-2026-07-30.md) |
 | 2026-07-30 | Ollama primary = `llm-01` LXC (host amdgpu) | **Live** CT 125 `.26` with ROCm/GPU; VFIO `ai-01` standby (do not delete) — [ollama-llm-01.md](../operations/ollama-llm-01.md) |
-| 2026-07-30 | K8s purpose namespaces (+ keep `argocd`) | Not one NS per app — [namespace-taxonomy.md](../../lab-home-gitops/docs/namespace-taxonomy.md) |
+| 2026-07-30 | K8s purpose namespaces (+ keep `argocd`) | Not one NS per app — [namespace-taxonomy.md](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md) |
 | 2026-07 | Talos for immutable k8s (later)                                | Not day-one; after kubeadm + Argo CD                                                                           |
 | 2026-07 | Mac as control plane                                           | `infra-01` optional later                                                                                      |
 | 2026-07 | Kyverno over Gatekeeper for k8s admission                      | Kubernetes-native; built-in Cosign verify; Rego optional later                                                 |

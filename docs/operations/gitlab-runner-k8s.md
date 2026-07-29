@@ -48,6 +48,6 @@ kubectl -n gitops get pods -l app=gitlab-runner
 
 ## Related
 
-- Taxonomy: [`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md)
+- Taxonomy: [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md)
 - Host fleeting notes: [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)
 - Omnibus ops: [gitlab.md](gitlab.md)

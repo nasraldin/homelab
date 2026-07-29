@@ -198,7 +198,7 @@ spec:
 **You stop running `helm install`** after bootstrap. Edit `values.yaml` in Git → commit → Argo syncs.
 
 > Note: older examples used `namespace: cert-manager`. Lab destinations follow
-> [`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md)
+> [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md)
 > (`cert-manager` → `security`).
 
 ---

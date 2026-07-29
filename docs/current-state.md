@@ -10,7 +10,7 @@ not the older terraform-lab multi-VM map. **2026-07-30 cutover is live**: DNS
 LXCs `.10`/`.11`, Infisical `.25`, jumpbox `.14`, docker-01 apps, **Ollama on
 `llm-01`** (CT 125 `.26`, ROCm/GPU verified); **`ai-01`** stays stopped as
 standby. Purpose namespaces are live in-cluster — see
-[`lab-home-gitops/docs/namespace-taxonomy.md`](../lab-home-gitops/docs/namespace-taxonomy.md).
+[`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
 
 | | |
 | --- | --- |
@@ -95,4 +95,4 @@ Alternate **terraform-lab** inventory remains documented under
 ## Related
 
 - [service-placement.md](architecture/service-placement.md)
-- [lab-home-k8s/README.md](../lab-home-k8s/README.md)
+- [lab-home-k8s/README.md](https://github.com/nasraldin/lab-home-k8s/blob/main/README.md)

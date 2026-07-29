@@ -15,5 +15,5 @@ JDBC → PgCat on `database-01` — [database-01.md](database-01.md).
 ## Related
 
 - [lab-home-inventory.md](lab-home-inventory.md)
-- [`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md)
+- [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md)
 - [service-placement.md](../architecture/service-placement.md)

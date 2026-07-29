@@ -160,7 +160,7 @@ Details: [gitops-bootstrap.md](../kubernetes/gitops-bootstrap.md).
 
 Workloads managed by `lab-home-gitops` use a **few purpose-grouped namespaces**
 (not one NS per app). Source of truth:
-[`lab-home-gitops/docs/namespace-taxonomy.md`](../../lab-home-gitops/docs/namespace-taxonomy.md).
+[`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
 
 | Namespace       | Examples                                              |
 | --------------- | ----------------------------------------------------- |
