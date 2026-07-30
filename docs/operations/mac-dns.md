@@ -1,6 +1,6 @@
 # Mac DNS quick reference (control plane)
 
-How to see **why** the Mac uses `192.168.68.10`, how to fail over to public DNS
+How to see **why** the Mac uses `192.168.68.14`, how to fail over to public DNS
 when AdGuard Home is down, and how to return to lab DNS. This is the admin
 Mac path — not phone/TV DHCP (those follow the router).
 
@@ -9,8 +9,9 @@ Mac path — not phone/TV DHCP (those follow the router).
 | Address               | What it is in _this_ lab                                |
 | --------------------- | ------------------------------------------------------- |
 | `192.168.68.1`        | TP-Link gateway / DHCP                                  |
-| `192.168.68.10`       | **AdGuard Home** (`adguard-01`) — not the router        |
+| `192.168.68.14`       | **AdGuard Home** (`adguard-01`) — DHCP Primary          |
 | `192.168.68.11`       | Technitium (authoritative only — do not set as Mac DNS) |
+| `192.168.68.12`       | Jumpbox `ssh-01` (not DNS)                              |
 | `1.1.1.1` / `1.0.0.1` | Cloudflare public resolvers (failover)                  |
 
 Scripts (same actions): `ansible-lab/scripts/dns-failover-public.sh` ·
@@ -21,7 +22,7 @@ Scripts (same actions): `ansible-lab/scripts/dns-failover-public.sh` ·
 Example:
 
 ```text
-nameserver[0] : 192.168.68.10
+nameserver[0] : 192.168.68.14
 ```
 
 (macOS may list the same server more than once across resolvers.) The Mac is
@@ -37,7 +38,7 @@ networksetup -getdnsservers "Wi-Fi"
 
 | Output                                       | Meaning                                            |
 | -------------------------------------------- | -------------------------------------------------- |
-| `192.168.68.10` (or a list of IPs)           | **Manual** override on that interface              |
+| `192.168.68.14` (or a list of IPs)           | **Manual** override on that interface              |
 | `There aren't any DNS Servers set on Wi-Fi.` | DNS comes from **DHCP** (router Primary/Secondary) |
 
 Also useful:
@@ -45,7 +46,7 @@ Also useful:
 ```bash
 networksetup -getinfo "Wi-Fi"
 ipconfig getpacket en0 | grep domain_name_server
-# DHCP often advertises 192.168.68.10 (and ideally 1.1.1.1 as secondary)
+# DHCP often advertises 192.168.68.14 (and ideally 1.1.1.1 as secondary)
 ```
 
 Hardware / which interface is live:
@@ -73,7 +74,7 @@ sudo networksetup -setdnsservers "Wi-Fi" 8.8.8.8 8.8.4.4
 **Back to AdGuard Home (pinned):**
 
 ```bash
-sudo networksetup -setdnsservers "Wi-Fi" 192.168.68.10
+sudo networksetup -setdnsservers "Wi-Fi" 192.168.68.14
 # or: ~/homelab/ansible-lab/scripts/dns-restore-adguard.sh
 ```
 
@@ -110,7 +111,7 @@ re-check `scutil --dns`. Do not confuse the Mac app with the `adguard-01` VM.
 ## 5. Decision tree
 
 ```text
-scutil shows 192.168.68.10
+scutil shows 192.168.68.14
         │
         ├─ getdnsservers lists .10     → manual pin (failover script undoes it)
         ├─ getdnsservers = Empty       → DHCP from TP-Link (Primary AdGuard)
@@ -135,7 +136,7 @@ is installed.
 
 macOS can keep a **scoped** resolver for domain `lab` in `/etc/resolver/lab`.
 After the 2026-07-30 restructure that file must point at AdGuard (`.10`), not the
-old infra DNS (`.14`). If it still says `.14`, `dig @192.168.68.10 chat.lab`
+old infra DNS (`.14`). If it still says `.14`, `dig @192.168.68.14 chat.lab`
 works but `curl http://chat.lab` hangs on “Resolving timed out”.
 
 ```bash
@@ -144,10 +145,10 @@ works but `curl http://chat.lab` hangs on “Resolving timed out”.
 
 # Or manually:
 sudo tee /etc/resolver/lab >/dev/null <<'EOF'
-nameserver 192.168.68.10
+nameserver 192.168.68.14
 EOF
 sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder
 ```
 
-Verify: `scutil --dns` shows `domain : lab` → `192.168.68.10`, then
+Verify: `scutil --dns` shows `domain : lab` → `192.168.68.14`, then
 `curl -sS -o /dev/null -w '%{http_code}\n' http://chat.lab` → `200`.

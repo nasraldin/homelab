@@ -156,3 +156,26 @@ records pointing at cluster LBs / docker-01 as listed in `group_vars/all.yml`.
 `ai-tools` / `observability` / `database` / `artifacts` / `storage` / `security` /
 `gitops` / `apps` — see `lab-home-gitops/docs/namespace-taxonomy.md`. Only touch
 k8s consumer refs here; leave Docker Infisical/host moves to the infra agents.
+
+## ID↔IP alignment (2026-07-30 evening)
+
+Live guests renumbered so **CT/VM ID matches last octet in the 1xx range**.
+Jumpbox renamed **`infra-01` → `ssh-01`**. AdGuard moved from `.10` → **`.14`**
+(PVE stays `.13`).
+
+| ID | Name | IP |
+| -- | ---- | -- |
+| 111 | dns-01 | `.11` |
+| 112 | ssh-01 | `.12` |
+| — | pve01 | `.13` |
+| 114 | adguard-01 | `.14` |
+| 115 | gitlab-01 | `.15` |
+| 116 | runner-01 | `.16` |
+| 117 | k8s-cp-01 | `.17` |
+| 118–120 | k8s-w-01..03 | `.18–.20` |
+| 121 | docker-01 | `.21` |
+| 125 | infisical-01 | `.25` |
+| 126 | llm-01 | `.26` |
+
+Mac Wi-Fi + `/etc/resolver/lab` → `.14`. Update TP-Link DHCP Primary DNS to
+`.14` if still pointing at `.10`.

@@ -9,44 +9,43 @@ Canonical guest map for **`lab-home-k8s`** on `pve01`. Source of truth:
 
 Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md).
 
-## Status (2026-07-30)
+## Status (2026-07-30 evening — ID↔IP alignment)
 
 | Area | State |
 | ---- | ----- |
-| DNS / Infisical / docker-01 / jumpbox | **Live** — CT 121–124; VM 110 + LXC 118/119 destroyed |
-| Ollama primary | **Live** on **`llm-01`** `.26` (GPU/ROCm verified); **`ai-01` destroyed** |
-| Mac `*.lab` | **Fixed** — `/etc/resolver/lab` → `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
-| K8s namespaces | Purpose NS live; old NS pruned — `lab-home-gitops/docs/namespace-taxonomy.md` |
-| Still TBD | TP-Link DHCP Primary → `.10`; Cloudflare tunnel re-apply if origins drift; prune empty legacy k8s NS; AIStor restore from vzdump if needed |
+| Jumpbox | **`ssh-01`** CT **112** @ **`.12`** (renamed from `infra-01`) |
+| AdGuard | CT **114** @ **`.14`** (was `.10` / CT 121) — DHCP/Mac Primary |
+| DNS / Infisical / docker / k8s / gitlab | **Live** — VMIDs 115–121; CTs 111/112/114/125/126 |
+| Ollama primary | **Live** on **`llm-01`** CT **126** `.26` |
+| Mac `*.lab` | `/etc/resolver/lab` → **`.14`** |
+| Still TBD | TP-Link DHCP Primary → `.14` if still on `.10` |
 
 ## Guests
 
 | VMID/CTID | Name | IP | Specs | Role |
 | --------- | ---- | -- | ----- | ---- |
+| **111** | `dns-01` | `.11` | 1c / 512M / 10G | Technitium authoritative (`lab` / `dev.test`) |
+| **112** | `ssh-01` | `.12` | 2c / 2G / 20G | Jumpbox (SSH / operator tools only) |
 | — | `pve01` | `.13` | host | Proxmox |
-| **121** | `adguard-01` | `.10` | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary target) |
-| **122** | `dns-01` | `.11` | 1c / 512M / 10G | Technitium authoritative (`lab` / `dev.test`) |
-| **124** | `infra-01` | `.14` | 2c / 2G / 20G | Jumpbox (SSH / operator tools only) |
-| **111** | `gitlab-01` | `.15` | 4c / 12G | GitLab CE Omnibus |
-| **112** | `runner-01` | `.16` | 2c / 4G | Static GitLab Runner (host) |
-| **113** | `k8s-cp-01` | `.17` | 2c / 6G | kubeadm control plane |
-| **114–116** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers |
-| **117** | `docker-01` | `.21` | 2c / 8G / 120G | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
-| **123** | `infisical-01` | `.25` | 2c / 4G / 40G | Infisical + Postgres 16 + Redis |
-| **125** | `llm-01` | `.26` | 8c / 24G / 100G | Ollama + ROCm (`/dev/dri` + `/dev/kfd`) |
-
-Destroyed 2026-07-30: VM **110** (fat infra), LXC **118** (Dockhand), LXC **119** (Portainer), VM **120** (`ai-01` standby).
+| **114** | `adguard-01` | `.14` | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary) |
+| **115** | `gitlab-01` | `.15` | 4c / 12G | GitLab CE Omnibus |
+| **116** | `runner-01` | `.16` | 2c / 4G | Static GitLab Runner (host) |
+| **117** | `k8s-cp-01` | `.17` | 2c / 6G | kubeadm control plane |
+| **118–120** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers |
+| **121** | `docker-01` | `.21` | 2c / 8G / 120G | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
+| **125** | `infisical-01` | `.25` | 2c / 4G / 40G | Infisical + Postgres 16 + Redis |
+| **126** | `llm-01` | `.26` | 8c / 24G / 100G | Ollama + ROCm (`/dev/dri` + `/dev/kfd`) |
 
 Cilium LB pool: `192.168.68.100–119` (Argo `.100`, LiteLLM `.108`, OpenClaw `.113`, …).
 
 ## Where things run
 
 ```text
-adguard-01 / dns-01     DNS only
+dns-01 / adguard-01     DNS only
 infisical-01            App secrets (Compose)
 docker-01               NPM + mail + S3 + Dockhand + Portainer + utility Compose
 llm-01                  Ollama (LiteLLM → .26:11434)
-infra-01 (jumpbox)      SSH / operator tools only — no app ports
+ssh-01 (jumpbox)        SSH / operator tools only — no app ports
 k8s                     Platform + AI UIs (namespaces: see taxonomy)
 ```
 
