@@ -110,6 +110,7 @@ git clone http://gitlab.lab/homelab/<project>.git
 ```bash
 git config --global credential.helper osxkeychain   # macOS
 ```
+
 ## Create a runner authentication token
 
 Preferred: re-run `playbooks/gitlab.yml` — mint + register is automated for

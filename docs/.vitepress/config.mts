@@ -1,7 +1,59 @@
 import { defineConfig } from 'vitepress'
+import type MarkdownIt from 'markdown-it'
 
 const websiteIcon = {
   svg: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Website</title><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>',
+}
+
+/**
+ * Ops docs often paste Infisical/Ansible/Go templates (`{{ .KEY.Value }}`).
+ * VitePress compiles Markdown as Vue SFCs, so bare `{{` in prose or inline
+ * code is parsed as interpolation and fails the build. Fenced blocks are
+ * already wrapped with v-pre; inline code and text are not.
+ *
+ * @see https://github.com/vuejs/vitepress/discussions/3724
+ */
+function escapeVueMustacheInMarkdown(md: MarkdownIt) {
+  const defaultCodeInline = md.renderer.rules.code_inline!
+  md.renderer.rules.code_inline = (tokens, idx, options, env, self) => {
+    tokens[idx].attrSet('v-pre', '')
+    return defaultCodeInline(tokens, idx, options, env, self)
+  }
+
+  md.core.ruler.after('inline', 'escape-vue-mustache-text', (state) => {
+    for (const blockToken of state.tokens) {
+      if (blockToken.type !== 'inline' || !blockToken.children) continue
+
+      const next = []
+      for (const child of blockToken.children) {
+        if (child.type !== 'text' || !child.content.includes('{{')) {
+          next.push(child)
+          continue
+        }
+
+        const re = /\{\{[\s\S]*?\}\}/g
+        let last = 0
+        let match: RegExpExecArray | null
+        while ((match = re.exec(child.content)) !== null) {
+          if (match.index > last) {
+            const text = new state.Token('text', '', 0)
+            text.content = child.content.slice(last, match.index)
+            next.push(text)
+          }
+          const html = new state.Token('html_inline', '', 0)
+          html.content = `<span v-pre>${md.utils.escapeHtml(match[0])}</span>`
+          next.push(html)
+          last = match.index + match[0].length
+        }
+        if (last < child.content.length) {
+          const text = new state.Token('text', '', 0)
+          text.content = child.content.slice(last)
+          next.push(text)
+        }
+      }
+      blockToken.children = next
+    }
+  })
 }
 
 export default defineConfig({
@@ -14,6 +66,12 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   srcExclude: ['labs/**'],
+
+  markdown: {
+    config(md) {
+      escapeVueMustacheInMarkdown(md)
+    },
+  },
 
   head: [
     ['meta', { name: 'author', content: 'Nasr Aldin' }],

@@ -58,8 +58,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: markdownlint
-        run: |
-          pnpm dlx markdownlint-cli2 "docs/**/*.md" "!docs/.vitepress/**"
+        run: pnpm docs:lint
 
       - name: Build site
         run: pnpm run docs:build

@@ -25,7 +25,7 @@ Lab wiring:
 4. Sync hook Job `librechat-seed-admin` runs `create-user` (idempotent if the
    user already exists). First registered/created user is **ADMIN**.
 
-InfisicalSecret remaps must use <code v-pre>{{ .KEY.Value }}</code>. Bare <code v-pre>{{ .KEY }}</code> stringifies
+InfisicalSecret remaps must use `{{ .KEY.Value }}`. Bare `{{ .KEY }}` stringifies
 as `{value /path}` (e.g. `LITELLM_API_KEY={sk-… /librechat}`), which LiteLLM
 rejects with `MODEL_AUTHENTICATION` / “Virtual Key expected… start with 'sk-'”.
 `LIBRECHAT_ADMIN_*` come from `includeAllSecrets` (no remap) for the same reason.
