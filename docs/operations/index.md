@@ -64,6 +64,7 @@ single “homelab agent” is still future work.
 | [ollama-llm-01.md](ollama-llm-01.md)                                     | Ollama LXC (GPU device passthrough)                 |
 | [ollama-ai-01.md](ollama-ai-01.md)                                       | Legacy ai-01 standby notes                          |
 | [openclaw.md](openclaw.md)                                               | OpenClaw gateway (via LiteLLM)                      |
+| [librechat.md](librechat.md)                                             | LibreChat admin seed + registration disabled        |
 | [stalwart.md](stalwart.md)                                               | Lab mail + Bulwark CSP/JMAP                         |
 | [gitlab-runner-k8s.md](gitlab-runner-k8s.md)                             | In-cluster runner (`gitops` NS)                     |
 | [core-hosts-acceptance.md](core-hosts-acceptance.md)                     | Factory-reset prove-out checklist                   |
