@@ -29,7 +29,7 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | **124** | `infra-01` | `.14` | 2c / 2G / 20G | Jumpbox (SSH / operator tools only) |
 | **111** | `gitlab-01` | `.15` | 4c / 12G | GitLab CE Omnibus |
 | **112** | `runner-01` | `.16` | 2c / 4G | Static GitLab Runner (host) |
-| **113** | `k8s-cp-01` | `.17` | 2c / 4G | kubeadm control plane |
+| **113** | `k8s-cp-01` | `.17` | 2c / 6G | kubeadm control plane |
 | **114–116** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers |
 | **117** | `docker-01` | `.21` | 2c / 8G / 120G | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
 | **123** | `infisical-01` | `.25` | 2c / 4G / 40G | Infisical + Postgres 16 + Redis |
