@@ -128,7 +128,9 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 - [ ] `http://proxy.lab:81` (NPM on docker-01)
 - [ ] `http://infisical.lab` or `:8090` on `.25` + universal-auth seed
 - [ ] `http://webmail.lab` / `mail.lab`
-- [ ] `http://dockhand.lab` / Portainer `:9443` on `.21`
+- [x] `http://dockhand.lab` / `http://docker.lab` → Dockhand on `.21`
+- [x] `http://portainer.lab` → Portainer UI on `.21:9443` via NPM (`https` + `proxy_ssl_verify off`); admin via `vault_portainer_admin_password`
+- [x] Cloudflare tunnel origins: `docker` / `portainer` / `minio` / `proxy` → `.21` (re-applied 2026-07-30)
 - [ ] GitLab object store healthy (AIStor `:9000` on docker-01)
 - [ ] `ssh nasr@192.168.68.14` jumpbox only (no Docker app ports)
 
@@ -142,7 +144,8 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 | Stalwart/Bulwark same-origin JMAP | **Live** on docker-01 (CSP-safe JMAP via NPM sub_filter) |
 | K8s NS taxonomy | **Live** — purpose NS only; old NS pruned |
 | GitLab runner / KEDA / Kyverno / MariaDB CRDs / LibreChat Recreate | In GitOps tree |
-| **Still TBD after cutover** | TP-Link DHCP → `.10`; Cloudflare tunnel re-apply if needed; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
+| **Still TBD after cutover** | TP-Link DHCP → `.10`; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
+| Cloudflare tunnel / Portainer init | **Live** — origins → `.21`; Portainer admin baked (`--admin-password`); NPM SSL verify off |
 | Mac `/etc/resolver/lab` | **Done** — points at AdGuard `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
 
 Do not fight OpenClaw / Ollama→`llm-01` / gitlab-runner work unless relocating
