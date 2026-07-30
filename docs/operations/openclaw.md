@@ -21,11 +21,11 @@ Open **http://openclaw.lab** — no Control UI prompts for WebSocket URL, Gatewa
 
 How it works ([dashboard auth](https://docs.openclaw.ai/web/dashboard)):
 
-1. NPM on **docker-01** (`192.168.68.21`) redirects bare `/` → `/__oc_boot`.
-2. Boot page sends the browser to `/#token=<vault_openclaw_gateway_token>` (official URL-fragment bootstrap; fragment is never sent to the gateway).
+1. NPM on **docker-01** (`192.168.68.21`) redirects bare `/` → `/__oc_boot` **once** (skipped for `Upgrade: websocket` and when the `oc_boot` cookie is set — an unconditional `/`→boot 302 loops forever and breaks WS).
+2. Boot page sets `oc_boot=1` and sends the browser to `/#token=<vault_openclaw_gateway_token>` (official URL-fragment bootstrap; fragment is never sent to the gateway).
 3. Control UI stores the token for the tab/gateway, strips the hash, and connects to same-origin `ws://openclaw.lab`.
 
-Password is unused (token auth only). After first load in a tab, sessionStorage keeps the token until the tab is closed.
+Password is unused (token auth only). After first load in a tab, sessionStorage keeps the token until the tab is closed. The `oc_boot` cookie is a session cookie so a new browser session re-runs the bootstrap.
 
 **One-liner reopen** (same as `openclaw dashboard` fragment pattern):
 
@@ -64,11 +64,17 @@ Browser: open http://openclaw.lab → Control UI connects without settings promp
 
 ## Apply status (2026-07-30)
 
-**Live** on docker-01 NPM + k8s `ai-tools`. `/__oc_boot` verified after cutover.
+**Live** on docker-01 NPM + k8s `ai-tools`. Boot redirect is cookie/WS-aware (fixes infinite `/`↔`/__oc_boot` loop).
 
 ```bash
-curl -sSI http://openclaw.lab/ | head -5          # expect 302 Location: /__oc_boot
-curl -sS http://openclaw.lab/__oc_boot | head -1
+curl -sSI http://openclaw.lab/ | head -5          # expect 302 Location: /__oc_boot (no oc_boot cookie)
+curl -sS -D- -o /dev/null http://openclaw.lab/__oc_boot | grep -i set-cookie  # oc_boot=1
+# After cookie: / must be 200 Control UI (not another 302), and WS must upgrade:
+curl -sSI -b oc_boot=1 http://openclaw.lab/ | head -5   # expect 200
+curl -sS -o /dev/null -w '%{http_code}\n' -b oc_boot=1 \
+  -H 'Connection: Upgrade' -H 'Upgrade: websocket' \
+  -H 'Sec-WebSocket-Version: 13' -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' \
+  http://openclaw.lab/   # expect 101
 curl -sS http://192.168.68.113:18789/healthz       # expect {"ok":true,...}
 # Re-apply routes if needed:
 cd ~/homelab/lab-home-k8s/ansible
