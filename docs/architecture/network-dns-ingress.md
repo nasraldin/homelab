@@ -42,7 +42,7 @@ practice (typically with Kubernetes).
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
-**Topology:** Clients → AdGuard (`192.168.68.10`) → forward `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`. DHCP Secondary `1.1.1.1` keeps the LAN online when AdGuard is unreachable.
+**Topology:** Clients → AdGuard (`192.168.68.14`) → forward `lab` / `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`. DHCP Secondary `1.1.1.1` keeps the LAN online when AdGuard is unreachable. Jumpbox is **ssh-01** `.12` (not infra-01).
 
 | Host           | IP / VMID       | Notes                                                    |
 | -------------- | --------------- | -------------------------------------------------------- |

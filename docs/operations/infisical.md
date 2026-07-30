@@ -1,6 +1,6 @@
 # Infisical (application env-secrets)
 
-Application secrets plane on **`infisical-01`** LXC (`192.168.68.25`, **CTID 123**).
+Application secrets plane on **`infisical-01`** LXC (`192.168.68.25`, **CTID 125**).
 **Vault** remains Layer-1 for infra/crypto/seal. Infisical owns
 **project → environment → secret** for monorepo and app deploys.
 
@@ -12,7 +12,7 @@ PgCat is **not** used here (single Infisical consumer; official compose is direc
 
 | Item      | Value                                                              |
 | --------- | ------------------------------------------------------------------ |
-| Guest     | `infisical-01` (CTID 123)                                          |
+| Guest     | `infisical-01` (CTID 125)                                          |
 | UI / API  | `http://192.168.68.25:8090` · `http://infisical.lab` via NPM       |
 | Stack     | Compose under `/opt/infisical`                                     |
 | DB/Redis  | Local compose services (`db`, `redis`)                             |

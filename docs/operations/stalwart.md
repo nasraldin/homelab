@@ -21,7 +21,7 @@ public domains. `.lab` is rejected. Addresses are therefore `*@dev.test`.
 | Zone | `dev.test` (Technitium on `dns-01`) → AdGuard upstream to `.11` |
 | Apex A / MX | docker-01 / `mail.dev.test` |
 
-Use AdGuard (`192.168.68.10`) as LAN DNS so `dev.test` and `*.lab` resolve.
+Use AdGuard (`192.168.68.14`) as LAN DNS so `dev.test` and `*.lab` resolve.
 
 ## Credentials (from `secrets.yml`)
 
