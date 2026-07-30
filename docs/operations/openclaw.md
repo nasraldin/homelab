@@ -12,8 +12,27 @@ Official install path: [Kubernetes (Kustomize)](https://docs.openclaw.ai/install
 | Namespace | `ai-tools` |
 | Token | `lab-home-k8s/ansible/secrets.yml` → `vault_openclaw_gateway_token` / Secret `openclaw-secrets` |
 | Models | `litellm/gemma4:12b`, `litellm/gemma4:12b-think`, `litellm/qwen3.5:9b` |
-| Image | `ghcr.io/openclaw/openclaw:2026.7.1-slim` |
+| Image | `ghcr.io/openclaw/openclaw:2026.7.1-2-slim` (lab overlay; see below) |
 | Deploy | GitOps Kustomize `workloads/ai/openclaw/` ← Argo `apps-openclaw` |
+| Parallel compose | docker-01 `/opt/openclaw` via Ansible role `openclaw` |
+
+## Version pinning (why not always `:latest`)
+
+Lab apps use **explicit tags** in Ansible defaults and GitOps Helm/`Deployment` pins. There is **no Renovate / Watchtower** today — bumps are manual. Kyverno also rejects `*:latest` in-cluster.
+
+OpenClaw specifically:
+
+- Control UI checks **npm** `latest` (`2026.7.1-2` as of 2026-07-30).
+- Upstream GHCR published `2026.7.1` / `2026.7.1-slim` but **not** `2026.7.1-2*`. Floating `:latest` / `:slim` currently track `2026.6.34` (a downgrade vs 2026.7.1).
+- Lab builds a **slim overlay** (`ansible/roles/openclaw`) from `2026.7.1-slim` + `npm pack openclaw@2026.7.1-2`, tags it `ghcr.io/openclaw/openclaw:2026.7.1-2-slim`, imports it onto k8s nodes (`playbooks/openclaw.yml`), and pins that tag with `imagePullPolicy: IfNotPresent`.
+
+```bash
+cd lab-home-k8s/ansible
+ansible-playbook playbooks/openclaw.yml -e @secrets.yml
+# then bump workloads/ai/openclaw image in lab-home-gitops if the tag changed
+```
+
+Prefer scheduled Renovate PRs (or quarterly playbook bumps) over Watchtower auto-recreate for stateful apps (Stalwart, Infisical, Postgres).
 
 ## Connect (plug-and-play)
 
@@ -55,16 +74,17 @@ For production/remote access, prefer HTTPS (NPM TLS / Tailscale Serve) and turn 
 
 ```bash
 kubectl get deploy,svc -n ai-tools -l app=openclaw
+kubectl -n ai-tools exec deploy/openclaw -c gateway -- node -e "console.log(require('/app/package.json').version)"  # 2026.7.1-2
 curl -sS http://192.168.68.113:18789/healthz   # {"ok":true,...}
 curl -sSI http://openclaw.lab/ | head -5       # 302 → /__oc_boot
 curl -sS http://openclaw.lab/__oc_boot | head -1  # boot HTML with location.replace(#token=…)
 ```
 
-Browser: open http://openclaw.lab → Control UI connects without settings prompts.
+Browser: open http://openclaw.lab → Control UI connects without settings prompts (no “Update available” for 2026.7.1-2).
 
 ## Apply status (2026-07-30)
 
-**Live** on docker-01 NPM + k8s `ai-tools`. Boot redirect is cookie/WS-aware (fixes infinite `/`↔`/__oc_boot` loop).
+**Live** on docker-01 NPM + k8s `ai-tools`. Boot redirect is cookie/WS-aware (fixes infinite `/`↔`/__oc_boot` loop). Gateway bumped to **2026.7.1-2** via lab overlay (npm correction release; upstream GHCR tag absent).
 
 ```bash
 curl -sSI http://openclaw.lab/ | head -5          # expect 302 Location: /__oc_boot (no oc_boot cookie)
@@ -76,8 +96,9 @@ curl -sS -o /dev/null -w '%{http_code}\n' -b oc_boot=1 \
   -H 'Sec-WebSocket-Version: 13' -H 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==' \
   http://openclaw.lab/   # expect 101
 curl -sS http://192.168.68.113:18789/healthz       # expect {"ok":true,...}
-# Re-apply routes if needed:
+# Rebuild/redistribute overlay + routes if needed:
 cd ~/homelab/lab-home-k8s/ansible
+ansible-playbook playbooks/openclaw.yml -e @secrets.yml
 ansible-playbook playbooks/proxy-routes.yml -e @secrets.yml
 ```
 
@@ -86,3 +107,4 @@ ansible-playbook playbooks/proxy-routes.yml -e @secrets.yml
 - App: `apps/openclaw/apps.yaml`
 - Manifests: `workloads/ai/openclaw/` (official layout: Deployment + Service + PVC + ConfigMap + Secret)
 - NPM route + `#token=` bootstrap: `lab-home-k8s/ansible/roles/proxy` (`vault_openclaw_gateway_token`)
+- Overlay image build + docker-01 compose + k8s node import: `lab-home-k8s/ansible/roles/openclaw` / `playbooks/openclaw.yml`
