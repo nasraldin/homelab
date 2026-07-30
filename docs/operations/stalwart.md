@@ -59,8 +59,8 @@ curl -sS http://webmail.lab/api/config | jq .jmapServerUrl
 # expect "http://webmail.lab" (or inbox.lab when hit that host) — not a container name
 ```
 
-Live apply is **pending** if docker-01 was unreachable; Ansible role
-`stalwart` + `proxy` already encode the rewrite.
+Live apply is **done** on docker-01 (CSP-safe JMAP via NPM `sub_filter`).
+Re-run `proxy-routes` / `docker-hosts` if `jmapServerUrl` regresses.
 
 ## Related
 

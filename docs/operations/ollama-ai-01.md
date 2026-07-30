@@ -1,20 +1,21 @@
-# Ollama on ai-01 (legacy / standby)
+# Ollama on ai-01 (legacy — destroyed)
 
 **Superseded by [ollama-llm-01.md](ollama-llm-01.md)** (privileged LXC `llm-01` at
 `192.168.68.26` with host `amdgpu` device passthrough).
 
-`ai-01` (VM 120, `.24`) is kept **stopped** as rollback. llm-01 GPU/ROCm is
-already verified (`ollama ps` showed 100% GPU); keep ai-01 for several stable
-days before decommissioning. **Do not delete** yet.
+`ai-01` (VM **120**, `.24`) was the old VFIO path. It was **destroyed 2026-07-30**
+after `llm-01` GPU/ROCm verification (`ollama ps` 100% GPU). Do not recreate
+unless deliberately rolling back to VFIO (see [gpu-passthrough.md](../architecture/gpu-passthrough.md)).
 
 ## Historical notes (VFIO VM path)
 
 ### RAM vs GPU
 
-The **16 GiB system RAM is used** — with `gemma4:12b` loaded you typically see
-~10 GiB used on `ai-01` (model weights + KV cache). That is normal.
+The **16 GiB system RAM** held model weights + KV on the VM. `ollama ps`
+`CPU%/GPU%` is **compute split**, not “RAM unused”.
 
-`ollama ps` showing `17%/83% CPU/GPU` means **compute split**, not “RAM unused”.
+On `llm-01`, Proxmox CT memory % is **guest cgroup only** — use `ollama ps` +
+GTT (`mem_info_gtt_used`) for model residency ([ollama-llm-01.md](ollama-llm-01.md)).
 
 ### GPU enable (still true on llm-01)
 

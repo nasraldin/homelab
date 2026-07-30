@@ -7,7 +7,7 @@ into a VM. See [ollama-llm-01.md](../operations/ollama-llm-01.md).
 | Path | When |
 | ---- | ---- |
 | **LXC + host `amdgpu`** (preferred) | Daily Ollama on `llm-01` — host keeps `/dev/dri` + `/dev/kfd` |
-| **VFIO → VM** (standby / rollback) | `ai-01` only — host **loses** `amdgpu` while guest owns GPU |
+| **VFIO → VM** (historical) | Was `ai-01` — **destroyed 2026-07-30**; host loses `amdgpu` while guest owns GPU |
 
 **Owner (host):** [`proxmox-bootstrap`](https://github.com/nasraldin/proxmox-bootstrap)
 (`check_iommu`, `iommu=pt`).  
@@ -31,7 +31,7 @@ Terraform `device_passthrough` + `scripts/host-igpu-for-lxc.sh`.
 | CPU | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi) |
 | GPU | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]` |
 | Primary use | **`llm-01` LXC** — host `amdgpu`, devices `/dev/dri/renderD128`, `/dev/dri/card1`, `/dev/kfd` |
-| Standby | **`ai-01` VM** — VFIO rollback only; keep disk (llm-01 GPU already verified; decommission after several stable days) |
+| Legacy VFIO | **`ai-01` destroyed** — recreate only for deliberate VFIO rollback |
 
 ### LXC path (do this)
 
@@ -39,11 +39,12 @@ Terraform `device_passthrough` + `scripts/host-igpu-for-lxc.sh`.
 2. Confirm `Kernel driver in use: amdgpu` and DRI/KFD nodes exist.
 3. Terraform CT 125 with `device_passthrough`; Ansible `playbooks/ollama.yml`.
 
-### VFIO VM path (rollback only)
+### VFIO VM path (emergency recreate only)
 
-Passing the iGPU to `ai-01` means the **host loses that GPU**. Re-enable VFIO
-conf, reboot, reattach `hostpci` / mapping `ai-igpu`, point LiteLLM at `.24`.
+Passing the iGPU to a VM means the **host loses that GPU**. Re-enable VFIO
+conf, reboot, attach `hostpci` / mapping `ai-igpu`, point LiteLLM at that guest.
 Hugepages (`hugepages = "2"`), NUMA, ballooning off apply to that VM path.
+Prefer fixing `llm-01` instead.
 
 ---
 

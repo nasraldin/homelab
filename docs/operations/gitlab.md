@@ -84,28 +84,32 @@ Ephemeral workers (~2c/4G) provide concurrency. See
 ## First login
 
 1. Open `https://gitlab.nasraldin.com` (expect GitLab sign-in, not Access OTP).
-2. Sign in as `root` with the password from `ansible-lab/secrets.yml`
+2. Sign in as `root` with the password from `lab-home-k8s/ansible/secrets.yml`
    (`vault_gitlab_root_password`). Ansible keeps root’s password matched to that
    secret on every apply.
 
-## HTTPS git (like gitlab.com)
+## HTTPS / LAN git
 
 1. GitLab → Preferences → Access Tokens → create a PAT with `read_repository`
    and `write_repository` (and `api` if needed).
-2. Clone:
+2. Prefer a **personal or group** token for LAN pushes to `lab-home-k8s` /
+   `lab-home-gitops`. **Project-bot** tokens often cannot pull
+   [`pipeline-templates`](https://github.com/nasraldin/pipeline-templates)
+   included by `.gitlab-ci.yml`, so CI fails on those remotes.
+3. Clone:
 
 ```bash
-git clone https://gitlab.nasraldin.com/<group>/<project>.git
+git clone http://gitlab.lab/homelab/<project>.git
+# or: https://gitlab.nasraldin.com/<group>/<project>.git
 # Username: your GitLab username (or root)
 # Password: the PAT (not your account password)
 ```
 
-3. Optional credential helper:
+4. Optional credential helper:
 
 ```bash
 git config --global credential.helper osxkeychain   # macOS
 ```
-
 ## Create a runner authentication token
 
 Preferred: re-run `playbooks/gitlab.yml` — mint + register is automated for
@@ -187,14 +191,17 @@ UFW allows those ports from `lab_cidr`. Dashboards: Grafana → **GitLab** folde
 ## Health checks
 
 ```bash
-ssh nasr@192.168.68.14 'sudo gitlab-ctl status'
-ssh nasr@192.168.68.15 'sudo gitlab-runner status; docker info >/dev/null && echo docker-ok'
+ssh nasr@192.168.68.15 'sudo gitlab-ctl status'
+ssh nasr@192.168.68.16 'sudo gitlab-runner status; docker info >/dev/null && echo docker-ok'
 # Prefer LAN until Tunnel is re-applied after a rebuild
-curl -fsS -o /dev/null -w 'lan:%{http_code}\n' http://192.168.68.14/users/sign_in
+curl -fsS -o /dev/null -w 'lan:%{http_code}\n' http://192.168.68.15/users/sign_in
 curl -fsS -o /dev/null -w 'public:%{http_code}\n' https://gitlab.nasraldin.com/users/sign_in
 # Metrics (from monitoring CIDR / localhost)
-curl -fsS -o /dev/null -w 'gitlab-exporter:%{http_code}\n' http://192.168.68.14:9168/metrics
-curl -fsS -o /dev/null -w 'runner:%{http_code}\n' http://192.168.68.15:9252/metrics
+curl -fsS -o /dev/null -w 'gitlab-exporter:%{http_code}\n' http://192.168.68.15:9168/metrics
+curl -fsS -o /dev/null -w 'runner:%{http_code}\n' http://192.168.68.16:9252/metrics
 ```
 
 Expect LAN `200`. Public `200`/`302` only after Cloudflare Tunnel bootstrap (not Access).
+
+Root password: `vault_gitlab_root_password` in `lab-home-k8s/ansible/secrets.yml`
+(not `ansible-lab` for this inventory).

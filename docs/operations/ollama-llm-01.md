@@ -69,13 +69,47 @@ in Ansible defaults once `rocminfo` reports a supported gfx without override.
 ROCm userspace inside the CT: `amdgpu-install --usecase=rocm --no-dkms`
 (host owns the kernel module).
 
+## Reading memory (why Proxmox shows ~4%)
+
+Proxmox CT **Memory** (e.g. **4.15% · 1020 MiB of 24 GiB**) is **guest
+cgroup / system RAM only** — the same order of magnitude as `free -h` /
+`/sys/fs/cgroup/memory.current` inside the CT. It does **not** include AMD
+APU **GTT / VRAM** where Ollama keeps weights when `PROCESSOR` is GPU.
+
+Verified live (models loaded, chat path working):
+
+| What you look at | What it means |
+| --- | --- |
+| Proxmox CT memory % | Guest RSS / cgroup (often ~1–3 GiB with runners up) |
+| `free -h` inside CT | Same guest RAM picture |
+| `ollama ps` **SIZE** + **PROCESSOR** | Working set Ollama reports; expect **100% GPU** |
+| `/sys/class/drm/card1/device/mem_info_gtt_used` | Real weight residency on APU GTT (multi‑GiB) |
+| `rocm-smi --showmeminfo vram` | Small carve-out VRAM; large models mostly use **GTT** |
+
+Example while `gemma4:12b` + `qwen3.5:9b` were loaded: Proxmox/cgroup ~**2.4 GiB
+(~10%)**, but GTT ~**14 GiB** and `ollama ps` ~**8.1 GB + 5.6 GB**, both
+**100% GPU**. Idle unload (default keep-alive **~5 min**) drops GTT and
+guest RSS further — the graph going low after a pause is expected, not a
+failed load.
+
+**Do not** try to make the Proxmox RAM graph “look busy”; that would only
+happen with CPU-heavy / non-GPU residency (worse). For “is the model
+loaded?”, use `ollama ps` + GTT, not the CT memory panel.
+
+Optional warmer residency between chats (does not change how Proxmox
+graphs RAM):
+
+```ini
+Environment="OLLAMA_KEEP_ALIVE=30m"
+```
+
 ## Status (2026-07-30)
 
 **Live.** CT **125** at `192.168.68.26` with host `amdgpu`/ROCm; `ollama ps`
 showed **100% GPU**. LiteLLM points at `http://192.168.68.26:11434/v1`.
-**`ai-01` remains stopped** (standby) — do not delete yet.
+**`ai-01` (VM 120) destroyed** after GPU verification — no standby guest.
 
-## Re-verify GPU (before decommissioning ai-01)
+## Re-verify GPU
 
 ```bash
 ssh root@192.168.68.26
@@ -94,16 +128,8 @@ curl -s http://192.168.68.26:11434/api/tags | jq .
 | LibreChat / OpenClaw / n8n | unchanged (via LiteLLM) |
 | LAN DNS `ollama.lab` / `ai.lab` | → `.26` (`ansible` `guest_ips.llm-01`) |
 
-## ai-01 standby (do not delete yet)
-
-VM **120** stays on disk, **`onboot=0`**, **no `hostpci`**. GPU gate on llm-01
-already passed; keep ai-01 for several stable days, then decommission.
-
-Rollback (emergency only): re-enable VFIO conf, reboot, reattach `hostpci` /
-mapping `ai-igpu`, start ai-01, point LiteLLM back to `.24`.
-
 ## Related
 
-- Previous notes: [ollama-ai-01.md](ollama-ai-01.md)
+- Legacy VFIO notes: [ollama-ai-01.md](ollama-ai-01.md)
 - Placement: [service-placement.md](../architecture/service-placement.md)
 - Host VFIO history: [gpu-passthrough.md](../architecture/gpu-passthrough.md)

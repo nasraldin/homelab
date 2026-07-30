@@ -17,7 +17,7 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | Ollama primary | **Live** on **`llm-01`** `.26` (GPU/ROCm verified); **`ai-01` destroyed** |
 | Mac `*.lab` | **Fixed** — `/etc/resolver/lab` → `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
 | K8s namespaces | Purpose NS live; old NS pruned — `lab-home-gitops/docs/namespace-taxonomy.md` |
-| Still TBD | TP-Link DHCP Primary → `.10`; Cloudflare tunnel re-apply if origins drift; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
+| Still TBD | TP-Link DHCP Primary → `.10`; Cloudflare tunnel re-apply if origins drift; prune empty legacy k8s NS; AIStor restore from vzdump if needed |
 
 ## Guests
 

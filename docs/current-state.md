@@ -8,8 +8,8 @@ Work order: [foundation sequence](roadmap/foundation-sequence.md).
 **Dev Homelab** on `pve01` is the **`lab-home-k8s`** topology (kubeadm + GitOps),
 not the older terraform-lab multi-VM map. **2026-07-30 cutover is live**: DNS
 LXCs `.10`/`.11`, Infisical `.25`, jumpbox `.14`, docker-01 apps, **Ollama on
-`llm-01`** (CT 125 `.26`, ROCm/GPU verified); **`ai-01`** stays stopped as
-standby. Purpose namespaces are live in-cluster — see
+`llm-01`** (CT 125 `.26`, ROCm/GPU verified); **`ai-01` (VM 120) destroyed**.
+Purpose namespaces are live in-cluster — see
 [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
 
 | | |
@@ -50,10 +50,10 @@ Details: [hardware and storage](architecture/hardware-and-storage.md).
 | DNS LXCs `.10`/`.11` | **Live** (AdGuard + Technitium); TP-Link DHCP → `.10` still TBD |
 | Infisical `.25` | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.25:8090`; UA seed still TBD |
 | docker-01 as app host | **Live** — NPM, Stalwart, AIStor, Dockhand, Portainer |
-| Ollama on `llm-01` | **Live** (CT 125 `.26`, ROCm/`ollama ps` GPU); `ai-01` standby |
-| GitOps namespaces | **Live** purpose NS; old NS pruned |
-| Platform fixes | MariaDB CRDs, LibreChat Recreate, Kyverno cleanup image, runner hostAliases/KEDA — in GitOps |
-| Infisical universal-auth seed | **Still TBD** for full InfisicalSecret sync |
+| Ollama on `llm-01` | **Live** (CT 125 `.26`, ROCm/`ollama ps` GPU); **ai-01 destroyed** |
+| GitOps namespaces | **Live** purpose NS (`ai-tools`, …, `argocd`); empty legacy NS may linger |
+| Platform fixes | LibreChat/Infisical `.Value`, OpenClaw boot+overlay, runner hostAliases/KEDA — in GitOps |
+| Infisical universal-auth | Secret in `security`; finish seed if InfisicalSecret sync still flaky |
 
 Alternate **terraform-lab** inventory remains documented under
 [guest-vmid-map.md](operations/guest-vmid-map.md) but is **not** the live home map.
@@ -65,17 +65,16 @@ Alternate **terraform-lab** inventory remains documented under
 | Task | Why |
 | ---- | --- |
 | Storage `aux01` | OEM NVMe not in chassis |
-| Live restructure cutover | Waiting on `pve01` / LAN reachability |
 | OPNsense / VLANs | Flat LAN for now (`archive/opnsense-vlan-pilot`) |
 
 ---
 
 ## What comes next
 
-1. Recover `pve01` → execute [lab-restructure-2026-07-30](operations/lab-restructure-2026-07-30.md) checklist
-2. Verify `llm-01` GPU → retire `ai-01` when stable
-3. Finish Infisical universal-auth + seed
-4. Confirm Argo apps Healthy in taxonomy namespaces; delete empty old NS
+1. TP-Link DHCP Primary → AdGuard `.10` (if still TBD)
+2. Prune empty legacy k8s namespaces; confirm Argo apps Healthy
+3. Cloudflare tunnel re-apply if public origins drift
+4. Optional: Renovate for pinned image bumps (none today)
 
 ---
 

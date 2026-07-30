@@ -14,7 +14,8 @@ GitLab object store working.
 | **124**   | `infra-01`     | `192.168.68.14`  | 2c / 2G / 20G   | Jumpbox LXC (SSH + operator pkgs) — **after** VM 110 gone |
 | **117**   | `docker-01`    | `192.168.68.21`  | existing VM     | All Docker apps + NPM + Stalwart + AIStor + Dockhand + Portainer |
 
-**Removed after cutover:** VM **110** (fat infra-01), LXC **118** (Dockhand), LXC **119** (Portainer).
+**Removed after cutover:** VM **110** (fat infra-01), LXC **118** (Dockhand),
+LXC **119** (Portainer), VM **120** (`ai-01`).
 
 ### IP / DHCP notes
 

@@ -62,7 +62,7 @@ single “homelab agent” is still future work.
 | [monitoring.md](monitoring.md)                                           | Prometheus / Grafana dashboards + exporters         |
 | [dockhand.md](dockhand.md)                                               | Dockhand on docker-01                               |
 | [ollama-llm-01.md](ollama-llm-01.md)                                     | Ollama LXC (GPU device passthrough)                 |
-| [ollama-ai-01.md](ollama-ai-01.md)                                       | Legacy ai-01 standby notes                          |
+| [ollama-ai-01.md](ollama-ai-01.md)                                       | Legacy ai-01 VFIO notes (guest destroyed)           |
 | [openclaw.md](openclaw.md)                                               | OpenClaw gateway (via LiteLLM)                      |
 | [librechat.md](librechat.md)                                             | LibreChat admin seed + registration disabled        |
 | [stalwart.md](stalwart.md)                                               | Lab mail + Bulwark CSP/JMAP                         |
