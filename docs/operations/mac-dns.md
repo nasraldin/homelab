@@ -130,3 +130,24 @@ ipconfig getpacket en0 | grep domain_name_server
 
 Confirm: AdGuard Home VM at `.10` (not the router), and whether AdGuard for Mac
 is installed.
+
+## 6. `/etc/resolver/lab` (critical for `*.lab`)
+
+macOS can keep a **scoped** resolver for domain `lab` in `/etc/resolver/lab`.
+After the 2026-07-30 restructure that file must point at AdGuard (`.10`), not the
+old infra DNS (`.14`). If it still says `.14`, `dig @192.168.68.10 chat.lab`
+works but `curl http://chat.lab` hangs on “Resolving timed out”.
+
+```bash
+# Fix + flush (asks for sudo):
+~/homelab/ansible-lab/scripts/mac-resolver-lab.sh
+
+# Or manually:
+sudo tee /etc/resolver/lab >/dev/null <<'EOF'
+nameserver 192.168.68.10
+EOF
+sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder
+```
+
+Verify: `scutil --dns` shows `domain : lab` → `192.168.68.10`, then
+`curl -sS -o /dev/null -w '%{http_code}\n' http://chat.lab` → `200`.

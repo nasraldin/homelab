@@ -136,12 +136,13 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 | Track | Outcome |
 | ----- | ------- |
 | DNS + Infisical + docker drain | **Live** — CT 121–124; VM 110 + LXC 118/119 destroyed; stacks on docker-01 / Infisical CT |
-| Ollama → `llm-01` | **Live** — CT 125 `.26`, amdgpu/ROCm, `ollama ps` GPU; LiteLLM → `.26:11434`; **ai-01** standby |
+| Ollama → `llm-01` | **Live** — CT 125 `.26`, amdgpu/ROCm, `ollama ps` GPU; LiteLLM → `.26:11434`; **ai-01** (VM 120) destroyed |
 | OpenClaw NPM `#token=` boot | **Live** on docker-01 — `/__oc_boot` OK |
 | Stalwart/Bulwark same-origin JMAP | **Live** on docker-01 (CSP-safe JMAP via NPM sub_filter) |
 | K8s NS taxonomy | **Live** — purpose NS only; old NS pruned |
 | GitLab runner / KEDA / Kyverno / MariaDB CRDs / LibreChat Recreate | In GitOps tree |
-| **Still TBD after cutover** | TP-Link DHCP → `.10`; Cloudflare tunnel apply; Mac `/etc/resolver/lab`; Infisical UA seed; AIStor restore from vzdump if needed |
+| **Still TBD after cutover** | TP-Link DHCP → `.10`; Cloudflare tunnel re-apply if needed; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
+| Mac `/etc/resolver/lab` | **Done** — points at AdGuard `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
 
 Do not fight OpenClaw / Ollama→`llm-01` / gitlab-runner work unless relocating
 containers off infra-01. OpenClaw already on docker-01 is fine; keep NPM host

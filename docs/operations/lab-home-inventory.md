@@ -14,9 +14,10 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | Area | State |
 | ---- | ----- |
 | DNS / Infisical / docker-01 / jumpbox | **Live** — CT 121–124; VM 110 + LXC 118/119 destroyed |
-| Ollama primary | **Live** on **`llm-01`** `.26` (GPU/ROCm verified); **`ai-01`** standby (do not delete) |
+| Ollama primary | **Live** on **`llm-01`** `.26` (GPU/ROCm verified); **`ai-01` destroyed** |
+| Mac `*.lab` | **Fixed** — `/etc/resolver/lab` → `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
 | K8s namespaces | Purpose NS live; old NS pruned — `lab-home-gitops/docs/namespace-taxonomy.md` |
-| Still TBD | TP-Link DHCP → `.10`; Cloudflare tunnel apply (token); Mac `/etc/resolver/lab`; Infisical UA seed; AIStor restore from vzdump if needed |
+| Still TBD | TP-Link DHCP Primary → `.10`; Cloudflare tunnel re-apply if origins drift; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
 
 ## Guests
 
@@ -31,11 +32,10 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | **113** | `k8s-cp-01` | `.17` | 2c / 4G | kubeadm control plane |
 | **114–116** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers |
 | **117** | `docker-01` | `.21` | 2c / 8G / 120G | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
-| **120** | `ai-01` | `.24` | standby | Former Ollama VFIO VM — keep stopped for rollback |
 | **123** | `infisical-01` | `.25` | 2c / 4G / 40G | Infisical + Postgres 16 + Redis |
 | **125** | `llm-01` | `.26` | 8c / 24G / 100G | Ollama + ROCm (`/dev/dri` + `/dev/kfd`) |
 
-Destroyed 2026-07-30: VM **110** (fat infra), LXC **118** (Dockhand), LXC **119** (Portainer).
+Destroyed 2026-07-30: VM **110** (fat infra), LXC **118** (Dockhand), LXC **119** (Portainer), VM **120** (`ai-01` standby).
 
 Cilium LB pool: `192.168.68.100–119` (Argo `.100`, LiteLLM `.108`, OpenClaw `.113`, …).
 
