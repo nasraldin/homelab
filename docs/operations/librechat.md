@@ -25,8 +25,10 @@ Lab wiring:
 4. Sync hook Job `librechat-seed-admin` runs `create-user` (idempotent if the
    user already exists). First registered/created user is **ADMIN**.
 
-`LIBRECHAT_ADMIN_*` are synced via InfisicalSecret `includeAllSecrets` (not the
-`template.data` remaps — this operator’s `{{ .KEY }}` renders `{value /path}`).
+InfisicalSecret remaps must use `{{ .KEY.Value }}`. Bare `{{ .KEY }}` stringifies
+as `{value /path}` (e.g. `LITELLM_API_KEY={sk-… /librechat}`), which LiteLLM
+rejects with `MODEL_AUTHENTICATION` / “Virtual Key expected… start with 'sk-'”.
+`LIBRECHAT_ADMIN_*` come from `includeAllSecrets` (no remap) for the same reason.
 
 Do **not** commit plaintext passwords. Rotate via secrets.yml → Infisical seed →
 secret sync → re-run seed Job (or `kubectl create job --from=...` after wipe).
