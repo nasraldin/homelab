@@ -25,6 +25,9 @@ Lab wiring:
 4. Sync hook Job `librechat-seed-admin` runs `create-user` (idempotent if the
    user already exists). First registered/created user is **ADMIN**.
 
+`LIBRECHAT_ADMIN_*` are synced via InfisicalSecret `includeAllSecrets` (not the
+`template.data` remaps — this operator’s `{{ .KEY }}` renders `{value /path}`).
+
 Do **not** commit plaintext passwords. Rotate via secrets.yml → Infisical seed →
 secret sync → re-run seed Job (or `kubectl create job --from=...` after wipe).
 
