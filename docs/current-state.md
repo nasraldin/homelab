@@ -7,18 +7,18 @@ Work order: [foundation sequence](roadmap/foundation-sequence.md).
 
 **Dev Homelab** on `pve01` is the **`lab-home-k8s`** topology (kubeadm + GitOps),
 not the older terraform-lab multi-VM map. **2026-07-30 cutover is live**: DNS
-LXCs `.10`/`.11`, Infisical `.25`, jumpbox `.14`, docker-01 apps, **Ollama on
-`llm-01`** (CT 125 `.26`, ROCm/GPU verified); **`ai-01` (VM 120) destroyed**.
+LXCs `.11`/`.14`, Infisical `.25`, docker-01 apps. **`ssh-01`** (CT 112) and
+**`llm-01`** (CT 126) **removed 2026-09-12**; **`ai-01` (VM 120) destroyed**.
 Purpose namespaces are live in-cluster — see
 [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
 
-| | |
-| --- | --- |
-| **Node** | `pve01` · `192.168.68.13/22` · Proxmox VE |
-| **Inventory** | [lab-home-inventory.md](operations/lab-home-inventory.md) |
-| **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.15`) |
-| **DNS (target)** | DHCP Primary → AdGuard `.10`; Technitium on `dns-01` `.11` |
-| **Restructure** | [lab-restructure-2026-07-30.md](operations/lab-restructure-2026-07-30.md) |
+|                   |                                                                           |
+| ----------------- | ------------------------------------------------------------------------- |
+| **Node**          | `pve01` · `192.168.68.13/22` · Proxmox VE                                 |
+| **Inventory**     | [lab-home-inventory.md](operations/lab-home-inventory.md)                 |
+| **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.15`)                                |
+| **DNS (target)**  | DHCP Primary → AdGuard `.10`; Technitium on `dns-01` `.11`                |
+| **Restructure**   | [lab-restructure-2026-07-30.md](operations/lab-restructure-2026-07-30.md) |
 
 ## What this page covers
 
@@ -31,11 +31,11 @@ Purpose namespaces are live in-cluster — see
 
 ## Hardware (installed)
 
-| Slot | Disk | Role | Status |
-| ---- | ---- | ---- | ------ |
-| 1 | Samsung 990 PRO 2 TB | `rpool` — Proxmox OS | Done |
-| 2 | Kingston FURY Renegade 4 TB | `data01` — guest disks | Done |
-| 3 | OEM 2 TB | `aux01` — backups / ISO | On hold — not installed |
+| Slot | Disk                        | Role                    | Status                  |
+| ---- | --------------------------- | ----------------------- | ----------------------- |
+| 1    | Samsung 990 PRO 2 TB        | `rpool` — Proxmox OS    | Done                    |
+| 2    | Kingston FURY Renegade 4 TB | `data01` — guest disks  | Done                    |
+| 3    | OEM 2 TB                    | `aux01` — backups / ISO | On hold — not installed |
 
 Details: [hardware and storage](architecture/hardware-and-storage.md).
 
@@ -43,17 +43,17 @@ Details: [hardware and storage](architecture/hardware-and-storage.md).
 
 ## What is done / staged
 
-| Area | State |
-| ---- | ----- |
-| Proxmox foundation | Done (`rpool`, `data01`, bootstrap, Tunnel patterns) |
-| lab-home-k8s guests | **Restructure live** 2026-07-30 (DNS/Infisical/docker/jumpbox/llm-01) |
-| DNS LXCs `.10`/`.11` | **Live** (AdGuard + Technitium); TP-Link DHCP → `.10` still TBD |
-| Infisical `.25` | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.25:8090`; UA seed still TBD |
-| docker-01 as app host | **Live** — NPM, Stalwart, AIStor, Dockhand, Portainer |
-| Ollama on `llm-01` | **Live** (CT 125 `.26`, ROCm/`ollama ps` GPU); **ai-01 destroyed** |
-| GitOps namespaces | **Live** purpose NS (`ai-tools`, …, `argocd`); empty legacy NS may linger |
-| Platform fixes | LibreChat/Infisical `.Value`, OpenClaw boot+overlay, runner hostAliases/KEDA — in GitOps |
-| Infisical universal-auth | Secret in `security`; finish seed if InfisicalSecret sync still flaky |
+| Area                     | State                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| Proxmox foundation       | Done (`rpool`, `data01`, bootstrap, Tunnel patterns)                                     |
+| lab-home-k8s guests      | **Restructure live** 2026-07-30 (DNS/Infisical/docker); jumpbox + llm removed 2026-09-12 |
+| DNS LXCs `.11`/`.14`     | **Live** (Technitium + AdGuard); TP-Link DHCP → `.14` still TBD                          |
+| Infisical `.25`          | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.25:8090`; UA seed still TBD    |
+| docker-01 as app host    | **Live** — NPM, Stalwart, AIStor, Dockhand, Portainer                                    |
+| Ollama / jumpbox         | **Removed** — CT 126 `llm-01` and CT 112 `ssh-01` destroyed                              |
+| GitOps namespaces        | **Live** purpose NS (`ai-tools`, …, `argocd`); empty legacy NS may linger                |
+| Platform fixes           | LibreChat/Infisical `.Value`, OpenClaw boot+overlay, runner hostAliases/KEDA — in GitOps |
+| Infisical universal-auth | Secret in `security`; finish seed if InfisicalSecret sync still flaky                    |
 
 Alternate **terraform-lab** inventory remains documented under
 [guest-vmid-map.md](operations/guest-vmid-map.md) but is **not** the live home map.
@@ -62,9 +62,9 @@ Alternate **terraform-lab** inventory remains documented under
 
 ## On hold
 
-| Task | Why |
-| ---- | --- |
-| Storage `aux01` | OEM NVMe not in chassis |
+| Task             | Why                                              |
+| ---------------- | ------------------------------------------------ |
+| Storage `aux01`  | OEM NVMe not in chassis                          |
 | OPNsense / VLANs | Flat LAN for now (`archive/opnsense-vlan-pilot`) |
 
 ---
@@ -80,16 +80,16 @@ Alternate **terraform-lab** inventory remains documented under
 
 ## Locked decisions
 
-| Topic | Choice |
-| ----- | ------ |
-| Hypervisor | Proxmox VE 9.x on ZFS |
-| Guest disks | Only on `data01` |
-| Kubernetes | kubeadm on Debian VMs (`lab-home-k8s`) |
-| GitOps | Argo CD + `lab-home-gitops` |
-| GitLab | Dedicated VM — not in k8s |
-| Ollama | LXC `llm-01` + host `amdgpu` (not VFIO primary) |
+| Topic       | Choice                                                  |
+| ----------- | ------------------------------------------------------- |
+| Hypervisor  | Proxmox VE 9.x on ZFS                                   |
+| Guest disks | Only on `data01`                                        |
+| Kubernetes  | kubeadm on Debian VMs (`lab-home-k8s`)                  |
+| GitOps      | Argo CD + `lab-home-gitops`                             |
+| GitLab      | Dedicated VM — not in k8s                               |
+| Ollama      | **Removed** — no dedicated GPU/LLM guest                |
 | App secrets | Infisical LXC; Vault optional/parallel for infra crypto |
-| Namespaces | Purpose-grouped — not one NS per app |
+| Namespaces  | Purpose-grouped — not one NS per app                    |
 
 ## Related
 

@@ -1,30 +1,33 @@
 # Lab restructure 2026-07-30 — DNS LXCs, docker-01 drain, Infisical CT
 
+> **Later (2026-09-12):** CT **112** `ssh-01` and CT **126** `llm-01` were
+> destroyed. Live inventory: [lab-home-inventory.md](lab-home-inventory.md).
+
 End-state topology for **lab-home-k8s** (home Proxmox). Lab is disposable —
 prefer recreate over heroic recovery — but cutovers below keep LAN DNS and
 GitLab object store working.
 
 ## Target inventory
 
-| CTID/VMID | Name           | IP               | Specs           | Role                                      |
-| --------- | -------------- | ---------------- | --------------- | ----------------------------------------- |
-| **121**   | `adguard-01`   | `192.168.68.10`  | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary)  |
-| **122**   | `dns-01`       | `192.168.68.11`  | 1c / 512M / 10G | Technitium authoritative (`lab` / `dev.test`) |
-| **123**   | `infisical-01` | `192.168.68.25`  | 2c / 4G / 40G   | Infisical + Postgres 16 + Redis (nesting) |
-| **124**   | `infra-01`     | `192.168.68.14`  | 2c / 2G / 20G   | Jumpbox LXC (SSH + operator pkgs) — **after** VM 110 gone |
-| **117**   | `docker-01`    | `192.168.68.21`  | existing VM     | All Docker apps + NPM + Stalwart + AIStor + Dockhand + Portainer |
+| CTID/VMID | Name           | IP              | Specs           | Role                                                             |
+| --------- | -------------- | --------------- | --------------- | ---------------------------------------------------------------- |
+| **121**   | `adguard-01`   | `192.168.68.10` | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary)                         |
+| **122**   | `dns-01`       | `192.168.68.11` | 1c / 512M / 10G | Technitium authoritative (`lab` / `dev.test`)                    |
+| **123**   | `infisical-01` | `192.168.68.25` | 2c / 4G / 40G   | Infisical + Postgres 16 + Redis (nesting)                        |
+| **124**   | `infra-01`     | `192.168.68.14` | 2c / 2G / 20G   | Jumpbox LXC (SSH + operator pkgs) — **after** VM 110 gone        |
+| **117**   | `docker-01`    | `192.168.68.21` | existing VM     | All Docker apps + NPM + Stalwart + AIStor + Dockhand + Portainer |
 
 **Removed after cutover:** VM **110** (fat infra-01), LXC **118** (Dockhand),
 LXC **119** (Portainer), VM **120** (`ai-01`).
 
 ### IP / DHCP notes
 
-| Before                         | After                                      |
-| ------------------------------ | ------------------------------------------ |
-| LAN DNS Primary = `.14` (infra VM AdGuard) | Primary = **`.10`** (`adguard-01`) |
-| Secondary                      | still `1.1.1.1`                            |
-| Infisical                      | `.14:8090` → **`.25:8090`**                |
-| Proxy / mail / minio / dockhand / portainer | all → **`.21`**                  |
+| Before                                      | After                              |
+| ------------------------------------------- | ---------------------------------- |
+| LAN DNS Primary = `.14` (infra VM AdGuard)  | Primary = **`.10`** (`adguard-01`) |
+| Secondary                                   | still `1.1.1.1`                    |
+| Infisical                                   | `.14:8090` → **`.25:8090`**        |
+| Proxy / mail / minio / dockhand / portainer | all → **`.21`**                    |
 
 **Router:** TP-Link DHCP Primary DNS → `192.168.68.10` (Secondary `1.1.1.1`).  
 **Mac:** `networksetup -setdnsservers Wi-Fi 192.168.68.10 1.1.1.1`
@@ -136,17 +139,17 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 
 ## Parallel agents / session status (2026-07-30)
 
-| Track | Outcome |
-| ----- | ------- |
-| DNS + Infisical + docker drain | **Live** — CT 121–124; VM 110 + LXC 118/119 destroyed; stacks on docker-01 / Infisical CT |
-| Ollama → `llm-01` | **Live** — CT 125 `.26`, amdgpu/ROCm, `ollama ps` GPU; LiteLLM → `.26:11434`; **ai-01** (VM 120) destroyed |
-| OpenClaw NPM `#token=` boot | **Live** on docker-01 — cookie/WS-aware `/__oc_boot` (no `/`↔boot loop) |
-| Stalwart/Bulwark same-origin JMAP | **Live** on docker-01 (CSP-safe JMAP via NPM sub_filter) |
-| K8s NS taxonomy | **Live** — purpose NS only; old NS pruned |
-| GitLab runner / KEDA / Kyverno / MariaDB CRDs / LibreChat Recreate | In GitOps tree |
-| **Still TBD after cutover** | TP-Link DHCP → `.10`; Infisical UA seed (sibling); AIStor restore from vzdump if needed |
-| Cloudflare tunnel / Portainer init | **Live** — origins → `.21`; Portainer admin baked (`--admin-password`); NPM SSL verify off |
-| Mac `/etc/resolver/lab` | **Done** — points at AdGuard `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`) |
+| Track                                                              | Outcome                                                                                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| DNS + Infisical + docker drain                                     | **Live** — CT 121–124; VM 110 + LXC 118/119 destroyed; stacks on docker-01 / Infisical CT                  |
+| Ollama → `llm-01`                                                  | **Live** — CT 125 `.26`, amdgpu/ROCm, `ollama ps` GPU; LiteLLM → `.26:11434`; **ai-01** (VM 120) destroyed |
+| OpenClaw NPM `#token=` boot                                        | **Live** on docker-01 — cookie/WS-aware `/__oc_boot` (no `/`↔boot loop)                                    |
+| Stalwart/Bulwark same-origin JMAP                                  | **Live** on docker-01 (CSP-safe JMAP via NPM sub_filter)                                                   |
+| K8s NS taxonomy                                                    | **Live** — purpose NS only; old NS pruned                                                                  |
+| GitLab runner / KEDA / Kyverno / MariaDB CRDs / LibreChat Recreate | In GitOps tree                                                                                             |
+| **Still TBD after cutover**                                        | TP-Link DHCP → `.10`; Infisical UA seed (sibling); AIStor restore from vzdump if needed                    |
+| Cloudflare tunnel / Portainer init                                 | **Live** — origins → `.21`; Portainer admin baked (`--admin-password`); NPM SSL verify off                 |
+| Mac `/etc/resolver/lab`                                            | **Done** — points at AdGuard `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`)                             |
 
 Do not fight OpenClaw / Ollama→`llm-01` / gitlab-runner work unless relocating
 containers off infra-01. OpenClaw already on docker-01 is fine; keep NPM host
@@ -163,19 +166,19 @@ Live guests renumbered so **CT/VM ID matches last octet in the 1xx range**.
 Jumpbox renamed **`infra-01` → `ssh-01`**. AdGuard moved from `.10` → **`.14`**
 (PVE stays `.13`).
 
-| ID | Name | IP |
-| -- | ---- | -- |
-| 111 | dns-01 | `.11` |
-| 112 | ssh-01 | `.12` |
-| — | pve01 | `.13` |
-| 114 | adguard-01 | `.14` |
-| 115 | gitlab-01 | `.15` |
-| 116 | runner-01 | `.16` |
-| 117 | k8s-cp-01 | `.17` |
+| ID      | Name         | IP        |
+| ------- | ------------ | --------- |
+| 111     | dns-01       | `.11`     |
+| 112     | ssh-01       | `.12`     |
+| —       | pve01        | `.13`     |
+| 114     | adguard-01   | `.14`     |
+| 115     | gitlab-01    | `.15`     |
+| 116     | runner-01    | `.16`     |
+| 117     | k8s-cp-01    | `.17`     |
 | 118–120 | k8s-w-01..03 | `.18–.20` |
-| 121 | docker-01 | `.21` |
-| 125 | infisical-01 | `.25` |
-| 126 | llm-01 | `.26` |
+| 121     | docker-01    | `.21`     |
+| 125     | infisical-01 | `.25`     |
+| 126     | llm-01       | `.26`     |
 
 Mac Wi-Fi + `/etc/resolver/lab` → `.14`. Update TP-Link DHCP Primary DNS to
 `.14` if still pointing at `.10`.

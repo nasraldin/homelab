@@ -11,7 +11,7 @@ Mac path — not phone/TV DHCP (those follow the router).
 | `192.168.68.1`        | TP-Link gateway / DHCP                                  |
 | `192.168.68.14`       | **AdGuard Home** (`adguard-01`) — DHCP Primary          |
 | `192.168.68.11`       | Technitium (authoritative only — do not set as Mac DNS) |
-| `192.168.68.12`       | Jumpbox `ssh-01` (not DNS)                              |
+| `192.168.68.12`       | Unused (former jumpbox `ssh-01`, destroyed)             |
 | `1.1.1.1` / `1.0.0.1` | Cloudflare public resolvers (failover)                  |
 
 Scripts (same actions): `ansible-lab/scripts/dns-failover-public.sh` ·

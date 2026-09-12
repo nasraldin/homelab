@@ -1,18 +1,19 @@
 # Prep AMD GPU for AI (IOMMU + LXC path)
 
-Host prep for the **Radeon 890M** iGPU on `pve01`. **Current Dev Homelab path**
-is privileged LXC **`llm-01`** with host `amdgpu` + device passthrough — not VFIO
-into a VM. See [ollama-llm-01.md](../operations/ollama-llm-01.md).
+Host prep for the **Radeon 890M** iGPU on `pve01`. There is **no dedicated GPU
+guest** now (`llm-01` destroyed 2026-09-12, `ai-01` destroyed 2026-07-30).
+Notes below are historical. See [ollama-llm-01.md](../operations/ollama-llm-01.md).
 
-| Path | When |
-| ---- | ---- |
-| **LXC + host `amdgpu`** (preferred) | Daily Ollama on `llm-01` — host keeps `/dev/dri` + `/dev/kfd` |
-| **VFIO → VM** (historical) | Was `ai-01` — **destroyed 2026-07-30**; host loses `amdgpu` while guest owns GPU |
+| Path                              | When                                                                             |
+| --------------------------------- | -------------------------------------------------------------------------------- |
+| **LXC + host `amdgpu`** (retired) | Was `llm-01` — **destroyed 2026-09-12**                                          |
+| **VFIO → VM** (historical)        | Was `ai-01` — **destroyed 2026-07-30**; host loses `amdgpu` while guest owns GPU |
 
 **Owner (host):** [`proxmox-bootstrap`](https://github.com/nasraldin/proxmox-bootstrap)
 (`check_iommu`, `iommu=pt`).  
-**Owner (llm-01):** [`lab-home-k8s`](https://github.com/nasraldin/lab-home-k8s)
-Terraform `device_passthrough` + `scripts/host-igpu-for-lxc.sh`.  
+**Owner (retired guests):** [`lab-home-k8s`](https://github.com/nasraldin/lab-home-k8s)
+— `llm-01` / `ai-01` destroyed; no GPU CT/VM in inventory.
+
 **Official reference:** [Proxmox PCI(e) Passthrough](<https://pve.proxmox.com/wiki/PCI(e)_Passthrough>).
 
 ## What this page covers
@@ -26,11 +27,11 @@ Terraform `device_passthrough` + `scripts/host-igpu-for-lxc.sh`.
 
 ## Hardware (this lab)
 
-| Piece | Detail |
-| ----- | ------ |
-| CPU | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi) |
-| GPU | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]` |
-| Primary use | **`llm-01` LXC** — host `amdgpu`, devices `/dev/dri/renderD128`, `/dev/dri/card1`, `/dev/kfd` |
+| Piece       | Detail                                                             |
+| ----------- | ------------------------------------------------------------------ |
+| CPU         | AMD Ryzen AI 9 HX 470 (AMD-V / AMD-Vi)                             |
+| GPU         | Radeon 880M / 890M iGPU — `c6:00.0` `[1002:150e]`                  |
+| Primary use | **None** — `llm-01` destroyed; host may keep `amdgpu` unused       |
 | Legacy VFIO | **`ai-01` destroyed** — recreate only for deliberate VFIO rollback |
 
 ### LXC path (do this)

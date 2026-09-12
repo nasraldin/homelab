@@ -1,6 +1,9 @@
 # Ollama on llm-01 (LXC)
 
-Privileged Ubuntu 24.04 LXC **`llm-01`** · VMID **125** · LAN **`192.168.68.26`** · API `:11434`
+> **Destroyed 2026-09-12.** CT **126** `llm-01` is gone. Do not recreate.
+> This page is historical. LiteLLM / LibreChat have no local Ollama backend.
+
+Privileged Ubuntu 24.04 LXC **`llm-01`** · VMID **126** · LAN **`192.168.68.26`** · API `:11434`
 
 Inference path: **clients → LiteLLM (.108:4000) → Ollama on llm-01**.
 
@@ -8,12 +11,12 @@ LibreChat / OpenClaw / n8n stay unchanged except LiteLLM’s `api_base`.
 
 ## Why LXC (not VFIO VM)
 
-| | `ai-01` (old) | `llm-01` (current) |
-| --- | --- | --- |
-| Guest | QEMU VM + VFIO | Privileged LXC |
-| Host GPU | `vfio-pci` (host loses `amdgpu`) | **`amdgpu` on host** |
-| Devices | full PCI | `/dev/dri/renderD128`, `/dev/dri/card1`, `/dev/kfd` |
-| RAM | 16 GiB + hugepages | 24 GiB CT |
+|          | `ai-01` (old)                    | `llm-01` (current)                                  |
+| -------- | -------------------------------- | --------------------------------------------------- |
+| Guest    | QEMU VM + VFIO                   | Privileged LXC                                      |
+| Host GPU | `vfio-pci` (host loses `amdgpu`) | **`amdgpu` on host**                                |
+| Devices  | full PCI                         | `/dev/dri/renderD128`, `/dev/dri/card1`, `/dev/kfd` |
+| RAM      | 16 GiB + hugepages               | 24 GiB CT                                           |
 
 ## Host prep (required once)
 
@@ -78,13 +81,13 @@ APU **GTT / VRAM** where Ollama keeps weights when `PROCESSOR` is GPU.
 
 Verified live (models loaded, chat path working):
 
-| What you look at | What it means |
-| --- | --- |
-| Proxmox CT memory % | Guest RSS / cgroup (often ~1–3 GiB with runners up) |
-| `free -h` inside CT | Same guest RAM picture |
-| `ollama ps` **SIZE** + **PROCESSOR** | Working set Ollama reports; expect **100% GPU** |
-| `/sys/class/drm/card1/device/mem_info_gtt_used` | Real weight residency on APU GTT (multi‑GiB) |
-| `rocm-smi --showmeminfo vram` | Small carve-out VRAM; large models mostly use **GTT** |
+| What you look at                                | What it means                                         |
+| ----------------------------------------------- | ----------------------------------------------------- |
+| Proxmox CT memory %                             | Guest RSS / cgroup (often ~1–3 GiB with runners up)   |
+| `free -h` inside CT                             | Same guest RAM picture                                |
+| `ollama ps` **SIZE** + **PROCESSOR**            | Working set Ollama reports; expect **100% GPU**       |
+| `/sys/class/drm/card1/device/mem_info_gtt_used` | Real weight residency on APU GTT (multi‑GiB)          |
+| `rocm-smi --showmeminfo vram`                   | Small carve-out VRAM; large models mostly use **GTT** |
 
 Example while `gemma4:12b` + `qwen3.5:9b` were loaded: Proxmox/cgroup ~**2.4 GiB
 (~10%)**, but GTT ~**14 GiB** and `ollama ps` ~**8.1 GB + 5.6 GB**, both
@@ -122,11 +125,11 @@ curl -s http://192.168.68.26:11434/api/tags | jq .
 
 ## Consumers
 
-| App | Change |
-| --- | --- |
-| **LiteLLM** | `api_base: http://192.168.68.26:11434/v1` (`lab-home-gitops/apps/litellm/apps.yaml`) |
-| LibreChat / OpenClaw / n8n | unchanged (via LiteLLM) |
-| LAN DNS `ollama.lab` / `ai.lab` | → `.26` (`ansible` `guest_ips.llm-01`) |
+| App                             | Change                                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| **LiteLLM**                     | `api_base: http://192.168.68.26:11434/v1` (`lab-home-gitops/apps/litellm/apps.yaml`) |
+| LibreChat / OpenClaw / n8n      | unchanged (via LiteLLM)                                                              |
+| LAN DNS `ollama.lab` / `ai.lab` | → `.26` (`ansible` `guest_ips.llm-01`)                                               |
 
 ## Related
 
