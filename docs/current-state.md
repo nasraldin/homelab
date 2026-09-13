@@ -7,7 +7,7 @@ Work order: [foundation sequence](roadmap/foundation-sequence.md).
 
 **Dev Homelab** on `pve01` is the **`lab-home-k8s`** topology (kubeadm + GitOps),
 not the older terraform-lab multi-VM map. **2026-07-30 cutover is live**: DNS
-LXCs `.11`/`.14`, Infisical `.25`, docker-01 apps. **`ssh-01`** (CT 112) and
+LXCs `.11`/`.14`, Infisical `.15`, docker-01 apps. **`ssh-01`** (CT 112) and
 **`llm-01`** (CT 126) **removed 2026-09-12**; **`ai-01` (VM 120) destroyed**.
 Purpose namespaces are live in-cluster — see
 [`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
@@ -16,7 +16,7 @@ Purpose namespaces are live in-cluster — see
 | ----------------- | ------------------------------------------------------------------------- |
 | **Node**          | `pve01` · `192.168.68.13/22` · Proxmox VE                                 |
 | **Inventory**     | [lab-home-inventory.md](operations/lab-home-inventory.md)                 |
-| **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.15`)                                |
+| **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.25`)                                |
 | **DNS (target)**  | DHCP Primary → AdGuard `.10`; Technitium on `dns-01` `.11`                |
 | **Restructure**   | [lab-restructure-2026-07-30.md](operations/lab-restructure-2026-07-30.md) |
 
@@ -48,7 +48,7 @@ Details: [hardware and storage](architecture/hardware-and-storage.md).
 | Proxmox foundation       | Done (`rpool`, `data01`, bootstrap, Tunnel patterns)                                     |
 | lab-home-k8s guests      | **Restructure live** 2026-07-30 (DNS/Infisical/docker); jumpbox + llm removed 2026-09-12 |
 | DNS LXCs `.11`/`.14`     | **Live** (Technitium + AdGuard); TP-Link DHCP → `.14` still TBD                          |
-| Infisical `.25`          | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.25:8090`; UA seed still TBD    |
+| Infisical `.15`          | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.15:8090`; UA seed still TBD    |
 | docker-01 as app host    | **Live** — NPM, Stalwart, AIStor, Dockhand, Portainer                                    |
 | Ollama / jumpbox         | **Removed** — CT 126 `llm-01` and CT 112 `ssh-01` destroyed                              |
 | GitOps namespaces        | **Live** purpose NS (`ai-tools`, …, `argocd`); empty legacy NS may linger                |

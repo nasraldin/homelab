@@ -14,7 +14,7 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | Area                                    | State                                                 |
 | --------------------------------------- | ----------------------------------------------------- |
 | Jumpbox / Ollama                        | **Removed** — old CT 112 `ssh-01` and CT 126 `llm-01` |
-| VMIDs                                   | **Packed 111–120** (IPs unchanged; PVE stays `.13`)   |
+| VMIDs                                   | **Packed 111–120** (Infisical `.15`, GitLab `.25`)    |
 | AdGuard                                 | CT **112** @ **`.14`** — DHCP/Mac Primary             |
 | DNS / Infisical / docker / k8s / gitlab | IDs 111–120                                           |
 | Mac `*.lab`                             | `/etc/resolver/lab` → **`.14`**                       |
@@ -26,13 +26,13 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | ----------- | -------------- | --------- | ------------------------ | --------------------------------------------------------- |
 | **111**     | `dns-01`       | `.11`     | 1c / 512M / 10G          | Technitium authoritative (`lab` / `dev.test`)             |
 | **112**     | `adguard-01`   | `.14`     | 1c / 512M / 10G          | Recursive DNS + filtering (DHCP Primary)                  |
+| **113**     | `infisical-01` | `.15`     | 2c / 4G / 40G            | Infisical + Postgres 16 + Redis                           |
 | —           | `pve01`        | `.13`     | host                     | Proxmox                                                   |
-| **113**     | `gitlab-01`    | `.15`     | 4c / 12G                 | GitLab CE Omnibus                                         |
-| **114**     | `runner-01`    | `.16`     | 2c / 4G                  | Static GitLab Runner (host)                               |
-| **115**     | `k8s-cp-01`    | `.17`     | 2c / 6G                  | kubeadm control plane                                     |
-| **116–118** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers                                                   |
-| **119**     | `docker-01`    | `.21`     | 2c / 8G / 120G           | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
-| **120**     | `infisical-01` | `.25`     | 2c / 4G / 40G            | Infisical + Postgres 16 + Redis                           |
+| **114**     | `gitlab-01`    | `.25`     | 4c / 12G                 | GitLab CE Omnibus                                         |
+| **115**     | `runner-01`    | `.16`     | 2c / 4G                  | Static GitLab Runner (host)                               |
+| **116**     | `k8s-cp-01`    | `.17`     | 2c / 6G                  | kubeadm control plane                                     |
+| **117–119** | `k8s-w-01..03` | `.18–.20` | 4c / 12G + Longhorn disk | Workers                                                   |
+| **120**     | `docker-01`    | `.21`     | 2c / 8G / 120G           | NPM, Stalwart, AIStor, Dockhand, Portainer, OpenClaw edge |
 
 Destroyed (do not recreate): `ssh-01`, `llm-01`, VM **110** fat infra, old
 Dockhand/Portainer LXCs, VM **`ai-01`**.

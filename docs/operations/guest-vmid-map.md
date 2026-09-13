@@ -39,7 +39,7 @@ Source of truth (this layout): `terraform-lab/terraform.tfvars` (`vms` / `contai
 
 **Removed from inventory (this terraform-lab layout):** dedicated `infisical-01`
 VM (Infisical was colocated on `docker-01` here); `runner-02`.  
-**lab-home-k8s** instead uses Infisical LXC `.25` — [lab-home-inventory.md](lab-home-inventory.md).
+**lab-home-k8s** instead uses Infisical LXC `.15` — [lab-home-inventory.md](lab-home-inventory.md).
 
 Startup order is independent of VMID (`vault-seal` boots **before** `vault-01`).
 All managed VMs use `on_boot = true`. DNS guests start first so the LAN has a
@@ -61,17 +61,17 @@ Homelab **oversubscription** on single-node `pve01` remains intentional — gues
 
 ## Recreate-safe Ansible (after disk wipe)
 
-| Concern         | Where                                                                |
-| --------------- | -------------------------------------------------------------------- |
-| DNS restore     | `playbooks/dns.yml` + [lan-dns-resilience.md](lan-dns-resilience.md) |
-| Central DB      | `playbooks/database.yml` · [database-01.md](database-01.md)          |
-| Docker apps     | `playbooks/docker-hosts.yml` · [docker-hosts.md](docker-hosts.md)    |
+| Concern         | Where                                                                     |
+| --------------- | ------------------------------------------------------------------------- |
+| DNS restore     | `playbooks/dns.yml` + [lan-dns-resilience.md](lan-dns-resilience.md)      |
+| Central DB      | `playbooks/database.yml` · [database-01.md](database-01.md)               |
+| Docker apps     | `playbooks/docker-hosts.yml` · [docker-hosts.md](docker-hosts.md)         |
 | Infisical       | terraform-lab: on `docker-01`; lab-home-k8s: [infisical.md](infisical.md) |
-| Sonar / Elastic | [sonarqube.md](sonarqube.md) · [elastic.md](elastic.md)              |
-| Monitoring      | `playbooks/monitoring.yml` · [monitoring.md](monitoring.md)          |
-| Runner fleeting | [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)         |
-| Vault unseal    | [vault.md](vault.md)                                                 |
-| AIStor / GitLab | [object-storage.md](object-storage.md) · [gitlab.md](gitlab.md)      |
+| Sonar / Elastic | [sonarqube.md](sonarqube.md) · [elastic.md](elastic.md)                   |
+| Monitoring      | `playbooks/monitoring.yml` · [monitoring.md](monitoring.md)               |
+| Runner fleeting | [gitlab-runner-autoscaling.md](gitlab-runner-autoscaling.md)              |
+| Vault unseal    | [vault.md](vault.md)                                                      |
+| AIStor / GitLab | [object-storage.md](object-storage.md) · [gitlab.md](gitlab.md)           |
 
 ## Related
 

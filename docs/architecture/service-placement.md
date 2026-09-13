@@ -34,7 +34,7 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | **GitLab CE**                             | 🖥 **Dedicated VM** (`data01`)                                      | 2        | Source of truth; **not** inside k8s                                                                                                                 |
 | **GitLab Runner**                         | 🖥 **VM** (`runner-01` fleeting manager)                            | 2        | docker-autoscaler + fleeting; no fat runner-02                                                                                                      |
 | **Vault**                                 | 🖥 **VM** (`vault-01` + `vault-seal`) _or_ deferred in lab-home-k8s | ✅/⏳    | Infra/crypto — [vault.md](../operations/vault.md). lab-home-k8s may use Infisical + bootstrap secrets first                                         |
-| **Infisical**                             | 📦 **LXC** `infisical-01` (`.25`)                                  | ✅ live  | App env-secrets + local Postgres/Redis; [infisical.md](../operations/infisical.md) · [lab-restructure](../operations/lab-restructure-2026-07-30.md) |
+| **Infisical**                             | 📦 **LXC** `infisical-01` (`.15`)                                  | ✅ live  | App env-secrets + local Postgres/Redis; [infisical.md](../operations/infisical.md) · [lab-restructure](../operations/lab-restructure-2026-07-30.md) |
 | **AdGuard / Technitium**                  | 📦 **LXC** `adguard-01` / `dns-01` (`.14`/`.11`)                   | ✅ live  | Dedicated 512M/10G CTs — AdGuard at `.14` (PVE `.13`)                                                                                               |
 | **PostgreSQL (lab central)**              | 🖥 **`database-01`** + PgCat _or_ CNPG in k8s                       | ⏳       | terraform-lab: shared PG; lab-home-k8s: CNPG in `database` NS + Infisical-local PG                                                                  |
 | **Keycloak**                              | ☸ interim `apps` / later **`docker-01`**                           | ⏳ core  | [keycloak.md](../operations/keycloak.md)                                                                                                            |
@@ -90,9 +90,9 @@ Layer 3  GitOps           Argo CD → Helm charts from Git
 | GitLab in Docker on utility VM  | OK for learning — more moving parts                     |
 | GitLab inside Kubernetes        | ❌ **Avoid** — if k8s dies, you lose Git + Argo source  |
 
-**lab-home-k8s:** `gitlab-01` VMID **113** at **`192.168.68.15`**. Public URL:
+**lab-home-k8s:** `gitlab-01` VMID **114** at **`192.168.68.25`**. Public URL:
 `https://gitlab.nasraldin.com` (Tunnel, no Access). Object store → AIStor on
-**`docker-01`** (`.21:9000`). App env-secrets → **`infisical-01`** (`.25`).
+**`docker-01`** (`.21:9000`). App env-secrets → **`infisical-01`** (`.15`).
 In-cluster runner → namespace **`gitops`** — [gitlab-runner-k8s.md](../operations/gitlab-runner-k8s.md).
 
 **terraform-lab** (alternate inventory): see [guest-vmid-map.md](../operations/guest-vmid-map.md).

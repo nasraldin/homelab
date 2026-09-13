@@ -161,11 +161,11 @@ In this homelab: **Vault** for infra/crypto (live); **Infisical** for app envs
 story after HashiCorp’s BSL change). Same _class_ of tool as Vault (engines,
 Transit, Raft-style thinking), **not** the same class as Infisical.
 
-| Option    | Role in this lab                    | Decision                                                                           |
-| --------- | ----------------------------------- | ---------------------------------------------------------------------------------- |
-| Vault OSS | Secrets plane + Transit seal helper | **Keep**                                                                           |
-| OpenBao   | Vault-compatible FOSS alternative   | **Not switching now** — revisit only for a pure-open mandate                       |
-| Infisical | App/env secrets UX                  | **On `infisical-01` LXC** (`.25`) — local Compose PG/Redis; not a Vault replacement |
+| Option    | Role in this lab                    | Decision                                                                            |
+| --------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| Vault OSS | Secrets plane + Transit seal helper | **Keep**                                                                            |
+| OpenBao   | Vault-compatible FOSS alternative   | **Not switching now** — revisit only for a pure-open mandate                        |
+| Infisical | App/env secrets UX                  | **On `infisical-01` LXC** (`.15`) — local Compose PG/Redis; not a Vault replacement |
 
 Using OpenBao **only** as seal while Vault holds secrets is API-possible but
 teaches a mixed stack. Prefer one family for seal + primary. Detail:
