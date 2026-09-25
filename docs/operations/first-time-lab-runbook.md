@@ -67,8 +67,8 @@ Optional: same on Kingston if you want a clean `data01` later.
 | ashift / compression | `12` / `lz4` (defaults)                                                            |
 | Swap                 | ~8 GB                                                                              |
 | Hostname / FQDN      | `pve01` / `pve01.lab.nasraldin.com`                                                |
-| IP                   | `192.168.68.13/22`, gateway `192.168.68.1`                                         |
-| DNS (bootstrap)      | `1.1.1.1` (AdGuard `.10` comes later)                                              |
+| IP                   | `192.168.68.10/22`, gateway `192.168.68.1`                                         |
+| DNS (bootstrap)      | `1.1.1.1` (AdGuard `.13` comes later)                                              |
 | Timezone             | `Asia/Dubai`                                                                       |
 | Root password        | Long random → password manager                                                     |
 
@@ -77,13 +77,13 @@ On the console after first boot:
 ```bash
 pveversion                 # pve-manager/9.2.x (or current 9.x)
 hostname -f                # pve01.lab.nasraldin.com
-ip -4 addr show vmbr0      # 192.168.68.13/22
+ip -4 addr show vmbr0      # 192.168.68.10/22
 zpool status               # rpool ONLINE — **one** Samsung member
 zpool list                 # rpool ~1.8–2T — if ~4T or two disks → **reinstall** before anything else
 ```
 
 - [ ] Single-disk `rpool` verified
-- [ ] Web UI: `https://192.168.68.13:8006` (accept self-signed cert)
+- [ ] Web UI: `https://192.168.68.10:8006` (accept self-signed cert)
 
 **Do not create VMs in the UI.** Terraform owns guests.
 
@@ -160,7 +160,7 @@ ssh pve01 'pvesm status; test -d /var/lib/vz/snippets && echo snippets_ok'
 
 | VMID | Name          | IP  |
 | ---- | ------------- | --- |
-| 110  | adguard-01    | .10 |
+| 110  | adguard-01    | .13 |
 | 111  | technitium-01 | .11 |
 | 112  | infra01       | .12 |
 | 113  | vault-01      | .18 |
@@ -212,7 +212,7 @@ cd ~/homelab/ansible-lab
 
 # 1) DNS spine
 ansible-playbook playbooks/dns.yml -e @secrets.yml
-./scripts/dns-restore-adguard.sh   # Mac DNS → AdGuard .10
+./scripts/dns-restore-adguard.sh   # Mac DNS → AdGuard .13
 
 # 2) Operator jump
 ansible-playbook playbooks/infra.yml
@@ -240,7 +240,7 @@ ansible-playbook playbooks/dockhand.yml
 
 | Tick | Check                                                                 |
 | ---- | --------------------------------------------------------------------- |
-| [ ]  | `dig @192.168.68.11 pve01.lab.nasraldin.com +short` → `192.168.68.13` |
+| [ ]  | `dig @192.168.68.11 pve01.lab.nasraldin.com +short` → `192.168.68.10` |
 | [ ]  | `ssh nasr@192.168.68.18 'sudo vault status'` → Sealed `false`         |
 | [ ]  | `curl -fsS http://192.168.68.17:9000/minio/health/live` → 200         |
 | [ ]  | `nc -vz 192.168.68.21 6432` → PgCat up                                |

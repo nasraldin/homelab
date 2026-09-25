@@ -207,21 +207,21 @@ spec:
 
 Canonical namespaces: see `lab-home-gitops/docs/namespace-taxonomy.md`.
 
-| Order | Component        | Namespace       |
-| ----- | ---------------- | --------------- |
-| 0     | namespaces        | (cluster-wide)  |
-| 1     | cert-manager     | security        |
-| 2     | metrics-server   | kube-system     |
-| 3     | KEDA             | gitops          |
-| 4     | external-secrets | security        |
-| 5     | Kyverno / Infisical op | security  |
-| 6     | Longhorn         | storage         |
-| 7     | CNPG + DB ops    | database        |
-| 8     | prometheus-stack / Loki / Tempo | observability |
-| 9     | Harbor / Verdaccio | artifacts     |
-| 10    | Keycloak / Sonar (interim) | apps  |
-| 11    | GitLab Runner    | gitops          |
-| 12    | AI tools         | ai-tools        |
+| Order | Component                       | Namespace      |
+| ----- | ------------------------------- | -------------- |
+| 0     | namespaces                      | (cluster-wide) |
+| 1     | cert-manager                    | security       |
+| 2     | metrics-server                  | kube-system    |
+| 3     | KEDA                            | gitops         |
+| 4     | external-secrets                | security       |
+| 5     | Kyverno / Infisical op          | security       |
+| 6     | Longhorn                        | storage        |
+| 7     | CNPG + DB ops                   | database       |
+| 8     | prometheus-stack / Loki / Tempo | observability  |
+| 9     | Harbor / Verdaccio              | artifacts      |
+| 10    | Keycloak / Sonar (interim)      | apps           |
+| 11    | GitLab Runner                   | gitops         |
+| 12    | AI tools                        | ai-tools       |
 
 Longhorn can stay manual-managed until comfortable, then **adopt** via Argo with matching values.
 

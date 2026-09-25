@@ -14,7 +14,7 @@ and when AdGuard is briefly unavailable. Misunderstanding this looks like
 
 | Component                    | Address                        | Role                                                 |
 | ---------------------------- | ------------------------------ | ---------------------------------------------------- |
-| AdGuard Home (`adguard-01`)  | `192.168.68.10` · VMID **110** | **Recursive** resolver for the LAN (ads, forwarding) |
+| AdGuard Home (`adguard-01`)  | `192.168.68.13` · VMID **110** | **Recursive** resolver for the LAN (ads, forwarding) |
 | Technitium (`technitium-01`) | `192.168.68.11` · VMID **111** | **Authoritative** for `lab.nasraldin.com` only       |
 | Cloudflare                   | `1.1.1.1`                      | Public recursive fallback (router Secondary DNS)     |
 | TP-Link DHCP                 | Gateway `.1`                   | Hands clients Primary + Secondary DNS                |
@@ -72,7 +72,7 @@ Encoded in `terraform-lab` (`modules/vm` + `terraform.tfvars`). Verify on the
 node:
 
 ```bash
-ssh root@192.168.68.13 'grep -E "onboot|startup" /etc/pve/qemu-server/110.conf /etc/pve/qemu-server/111.conf'
+ssh root@192.168.68.10 'grep -E "onboot|startup" /etc/pve/qemu-server/110.conf /etc/pve/qemu-server/111.conf'
 # expect: onboot: 1 and startup: order=1,up=15 (AdGuard); order=2 for Technitium
 ```
 
@@ -83,7 +83,7 @@ Autostart does **not** install AdGuard. After a **disk wipe** (Terraform
 
 | Layer          | Policy                                                                                                 |
 | -------------- | ------------------------------------------------------------------------------------------------------ |
-| Router DHCP    | **Primary** = `192.168.68.10`, **Secondary** = `1.1.1.1`                                               |
+| Router DHCP    | **Primary** = `192.168.68.13`, **Secondary** = `1.1.1.1`                                               |
 | Mac (operator) | Prefer DHCP DNS (inherits Primary+Secondary). Before DNS VM replace, run failover script to public DNS |
 | Proxmox        | `on_boot` + startup order (above)                                                                      |
 | Ansible        | `playbooks/dns.yml` is the only supported way to restore AdGuard/Technitium config                     |
@@ -100,8 +100,8 @@ No special DNS steps if AdGuard disk is intact. VMs start in order; wait ~1–2
 minutes, then:
 
 ```bash
-dig @192.168.68.10 example.com +short
-dig @192.168.68.10 pve01.lab.nasraldin.com +short   # → 192.168.68.13
+dig @192.168.68.13 example.com +short
+dig @192.168.68.13 pve01.lab.nasraldin.com +short   # → 192.168.68.10
 ```
 
 ### Terraform replace / destroy of DNS guests
@@ -117,7 +117,7 @@ cd ~/homelab/terraform-lab
 terraform apply -replace='module.vm["adguard-01"].proxmox_virtual_environment_vm.this'
 
 # 4) Clear stale SSH host keys
-ssh-keygen -R 192.168.68.10
+ssh-keygen -R 192.168.68.13
 ssh-keygen -R 192.168.68.11
 
 # 5) Wait for cloud-init SSH, then restore services
@@ -136,7 +136,7 @@ steps 1–2 first.
 | Script                           | Purpose                               |
 | -------------------------------- | ------------------------------------- |
 | `scripts/dns-failover-public.sh` | Mac Wi‑Fi → `1.1.1.1` / `1.0.0.1`     |
-| `scripts/dns-restore-adguard.sh` | Prove AdGuard, then Mac Wi‑Fi → `.10` |
+| `scripts/dns-restore-adguard.sh` | Prove AdGuard, then Mac Wi‑Fi → `.13` |
 
 Manual equivalents and how to read `scutil` / `networksetup`:
 [mac-dns.md](mac-dns.md).
@@ -145,14 +145,14 @@ Manual equivalents and how to read `scutil` / `networksetup`:
 
 ```bash
 # Service path
-dig @192.168.68.10 example.com +short
+dig @192.168.68.13 example.com +short
 dig @192.168.68.11 pve01.lab.nasraldin.com +short
 
 # Client path (uses system resolvers — should prefer AdGuard when healthy)
 dig pve01.lab.nasraldin.com +short
 
 # Proxmox policy
-ssh root@192.168.68.13 'qm config 110 | egrep "onboot|startup"'
+ssh root@192.168.68.10 'qm config 110 | egrep "onboot|startup"'
 ```
 
 ## Decision record

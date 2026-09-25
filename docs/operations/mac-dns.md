@@ -94,7 +94,7 @@ Pin to `.10` only when you need to ignore ISP IPv6 resolvers (Deco limitation)
 sudo dscacheutil -flushcache
 sudo killall -HUP mDNSResponder
 scutil --dns | grep nameserver
-dig pve01.lab.nasraldin.com +short    # → 192.168.68.13 when lab DNS works
+dig pve01.lab.nasraldin.com +short    # → 192.168.68.10 when lab DNS works
 dig example.com +short                # public name
 ```
 

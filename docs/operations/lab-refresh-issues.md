@@ -212,7 +212,7 @@ terraform apply
 | **Root cause** | AdGuard is DHCP **Primary** DNS; blank/missing VM until `dns.yml` finishes                                    |
 | **Fix**        | Router Secondary `1.1.1.1`; Mac `dns-failover-public.sh` before wipe; `dns.yml` then `dns-restore-adguard.sh` |
 | **Prevention** | Runbook steps **A** + **E**; see [lan-dns-resilience.md](lan-dns-resilience.md)                               |
-| **Verify**     | `dig @192.168.68.10 …` works; Mac DNS shows `.10` after restore                                               |
+| **Verify**     | `dig @192.168.68.13 …` works; Mac DNS shows `.13` after restore                                               |
 
 ---
 
@@ -345,7 +345,7 @@ Temporary Ansible visibility (do not leave in role): drop `no_log: true` on that
 | **Symptom**    | Register fails with `no_log` censor; public `https://gitlab.nasraldin.com` returns **530**; LAN `http://192.168.68.14` returns **200**                                                                                                             |
 | **Root cause** | Default `gitlab_runner_url` pointed at the **public** Tunnel hostname. After rebuild, Tunnel ingress/connector often is not ready (or origin not published yet), so runner registration against HTTPS fails even though GitLab is fine on the LAN. |
 | **Debug**      | See [Debug: Runner register](#debug-runner-register) below                                                                                                                                                                                         |
-| **Fix**        | Point `gitlab_runner_url` at the LAN IP of `gitlab-01` (not the public Tunnel hostname). Minted `glrt-…` tokens on `gitlab-01` under `/etc/gitlab/ansible-runner-tokens/` remain the auth source. |
+| **Fix**        | Point `gitlab_runner_url` at the LAN IP of `gitlab-01` (not the public Tunnel hostname). Minted `glrt-…` tokens on `gitlab-01` under `/etc/gitlab/ansible-runner-tokens/` remain the auth source.                                                  |
 | **Prevention** | Lab runners always register to LAN origin. Public URL is for humans / git over Tunnel once [REF-018](#ref-018-gitlab-public-url-cloudflare-530-after-rebuild) is green.                                                                            |
 | **Verify**     | `sudo gitlab-runner list` on `.15`; on GitLab: runner `runner-01-docker` status **online**; `config.toml` `url = "http://192.168.68.14"`                                                                                                           |
 
@@ -446,16 +446,16 @@ MariaDB / Redis pulls can take many minutes on first run and look “stuck” on
 
 ## REF-020: Infisical bind `:80` conflicts with NPM
 
-| Field          | Detail                                                                                                                                                                                                                                |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Status**     | resolved                                                                                                                                                                                                                              |
-| **When**       | First `ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml` on `docker-01`                                                                                                                                                    |
-| **Symptom**    | Handler `Restart Infisical stack` fails: `Bind for 0.0.0.0:80 failed: port is already allocated`                                                                                                                                      |
+| Field          | Detail                                                                                                                                                                                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**     | resolved                                                                                                                                                                                                                                                                |
+| **When**       | First `ansible-playbook playbooks/docker-hosts.yml -e @secrets.yml` on `docker-01`                                                                                                                                                                                      |
+| **Symptom**    | Handler `Restart Infisical stack` fails: `Bind for 0.0.0.0:80 failed: port is already allocated`                                                                                                                                                                        |
 | **Root cause** | Playbook installs **Proxy Manager** first (`roles/proxy`, formerly `roles/npm`), which publishes **`:80` / `:443` / `:81`**. Infisical defaults used `infisical_http_port: 80` and `SITE_URL=http://192.168.68.22`, so Compose tried to map `80:8080` on the same host. |
-| **Debug**      | See [Debug: Infisical port conflict](#debug-infisical-port-conflict) below                                                                                                                                                            |
-| **Fix**        | `roles/infisical/defaults/main.yml`: host port **`8090`**, `infisical_site_url` includes `:8090`. Removed obsolete Compose `version:` key. Docs updated (`infisical.md`, runbooks).                                                   |
-| **Prevention** | On `docker-01`, only NPM binds `:80`/`:443`. App stacks use dedicated LAN ports (Keycloak `8080`, Infisical `8090`, …) and optionally NPM Proxy Host later.                                                                           |
-| **Verify**     | `curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.21:8090/api/status` → `200`; `docker ps` shows `proxy` on 80/443 and `infisical-backend` on 8090                                                                          |
+| **Debug**      | See [Debug: Infisical port conflict](#debug-infisical-port-conflict) below                                                                                                                                                                                              |
+| **Fix**        | `roles/infisical/defaults/main.yml`: host port **`8090`**, `infisical_site_url` includes `:8090`. Removed obsolete Compose `version:` key. Docs updated (`infisical.md`, runbooks).                                                                                     |
+| **Prevention** | On `docker-01`, only NPM binds `:80`/`:443`. App stacks use dedicated LAN ports (Keycloak `8080`, Infisical `8090`, …) and optionally NPM Proxy Host later.                                                                                                             |
+| **Verify**     | `curl -fsS -o /dev/null -w '%{http_code}\n' http://192.168.68.21:8090/api/status` → `200`; `docker ps` shows `proxy` on 80/443 and `infisical-backend` on 8090                                                                                                          |
 
 ### Debug: Infisical port conflict
 

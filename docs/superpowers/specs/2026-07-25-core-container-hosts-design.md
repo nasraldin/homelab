@@ -34,7 +34,7 @@ Source of truth: `terraform-lab/terraform.tfvars`.
 
 | VMID | Guest           | LAN   | Size (current) | Role                                        |
 | ---- | --------------- | ----- | -------------- | ------------------------------------------- |
-| 110  | `adguard-01`    | `.10` | 1c@0.5/1G/20G  | DNS filter                                  |
+| 110  | `adguard-01`    | `.13` | 1c@0.5/1G/20G  | DNS filter                                  |
 | 111  | `technitium-01` | `.11` | 1c@0.5/1G/20G  | Authoritative DNS                           |
 | 112  | `infra01`       | `.12` | 2c/4G/80G      | Ops                                         |
 | 113  | `vault-01`      | `.18` | 1c@0.5/1G/50G  | Vault Raft                                  |

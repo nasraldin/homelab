@@ -31,7 +31,7 @@ or `https://homelab.nasraldin.com` (Proxmox UI).
 
 | Your situation                        | Prefer                                                                                                   | Why                                                |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| Mac on home LAN                       | Local `terraform` / `ansible` / `ssh` to guests and `root@192.168.68.13`                                 | Lowest friction; no Access OTP                     |
+| Mac on home LAN                       | Local `terraform` / `ansible` / `ssh` to guests and `root@192.168.68.10`                                 | Lowest friction; no Access OTP                     |
 | Away from home, phone hotspot, travel | `ssh infra01` then work from the VM                                                                      | Outbound-only Tunnel; no WAN `:22`                 |
 | Need Proxmox CLI off-LAN              | `ssh infra01-admin` + `ssh pve01 …`                                                                      | Agent-forward `~/.ssh/pve01` only for that session |
 | Need private Git clone on the VM      | `ssh infra01-admin` with GitHub key in agent                                                             | No durable deploy key on disk                      |
@@ -273,7 +273,7 @@ process on the VM can request signatures from the forwarded agent.
 Hypervisor upgrades: follow [proxmox-updates.md](proxmox-updates.md). Do not
 blindly `apt full-upgrade` on `pve01`.
 
-Ansible pins `pve01.lab.nasraldin.com` → `192.168.68.13` in `/etc/hosts` on
+Ansible pins `pve01.lab.nasraldin.com` → `192.168.68.10` in `/etc/hosts` on
 `infra01` so a DNS outage does not block emergency PVE SSH.
 
 ### C. Clone private GitHub repos onto infra01
@@ -371,7 +371,7 @@ ansible-playbook playbooks/infra.yml   # expect changed=0
 ## For agents (and remote operators)
 
 1. **Assume off-LAN unless the user says they are on the home LAN.** Do not
-   prescribe raw `ssh root@192.168.68.13` or guest IPs as the only path.
+   prescribe raw `ssh root@192.168.68.10` or guest IPs as the only path.
 2. **Remote control plane = `infra01`.** Point the operator at this doc;
    commands should use `ssh infra01` / `ssh infra01-admin` patterns above.
    On a **new machine**, follow

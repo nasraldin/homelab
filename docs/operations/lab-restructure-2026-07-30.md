@@ -11,7 +11,7 @@ GitLab object store working.
 
 | CTID/VMID | Name           | IP              | Specs           | Role                                                             |
 | --------- | -------------- | --------------- | --------------- | ---------------------------------------------------------------- |
-| **121**   | `adguard-01`   | `192.168.68.10` | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary)                         |
+| **112**   | `adguard-01`   | `192.168.68.14` | 1c / 512M / 10G | Recursive DNS + filtering (DHCP Primary)                         |
 | **122**   | `dns-01`       | `192.168.68.11` | 1c / 512M / 10G | Technitium authoritative (`lab` / `dev.test`)                    |
 | **123**   | `infisical-01` | `192.168.68.25` | 2c / 4G / 40G   | Infisical + Postgres 16 + Redis (nesting)                        |
 | **124**   | `infra-01`     | `192.168.68.14` | 2c / 2G / 20G   | Jumpbox LXC (SSH + operator pkgs) — **after** VM 110 gone        |
@@ -22,21 +22,21 @@ LXC **119** (Portainer), VM **120** (`ai-01`).
 
 ### IP / DHCP notes
 
-| Before                                      | After                              |
-| ------------------------------------------- | ---------------------------------- |
-| LAN DNS Primary = `.14` (infra VM AdGuard)  | Primary = **`.10`** (`adguard-01`) |
-| Secondary                                   | still `1.1.1.1`                    |
-| Infisical                                   | `.14:8090` → **`.25:8090`**        |
-| Proxy / mail / minio / dockhand / portainer | all → **`.21`**                    |
+| Before                                      | After                                                     |
+| ------------------------------------------- | --------------------------------------------------------- |
+| LAN DNS Primary = `.14` (infra VM AdGuard)  | Primary = **`.14`** (`adguard-01` CT; **`.10` is pve01**) |
+| Secondary                                   | still `1.1.1.1`                                           |
+| Infisical                                   | `.14:8090` → **`.25:8090`**                               |
+| Proxy / mail / minio / dockhand / portainer | all → **`.21`**                                           |
 
-**Router:** TP-Link DHCP Primary DNS → `192.168.68.10` (Secondary `1.1.1.1`).  
-**Mac:** `networksetup -setdnsservers Wi-Fi 192.168.68.10 1.1.1.1`
+**Router:** TP-Link DHCP Primary DNS → `192.168.68.14` (Secondary `1.1.1.1`).  
+**Mac:** `networksetup -setdnsservers Wi-Fi 192.168.68.14 1.1.1.1`
 
 ## Cutover sequence
 
 ### 0. Preconditions
 
-- Mac can `ssh root@192.168.68.13` and `ssh nasr@192.168.68.14`
+- Mac can `ssh root@192.168.68.10` and `ssh nasr@192.168.68.14`
 - Secondary DNS `1.1.1.1` already set (LAN stays up if AdGuard drops)
 - Optional: pin Mac to public DNS while creating DNS CTs:
   `networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1`
@@ -45,7 +45,7 @@ LXC **119** (Portainer), VM **120** (`ai-01`).
 
 ```bash
 # Prefer pct when Terraform API flakes:
-ssh root@192.168.68.13 'bash -s' < ~/homelab/lab-home-k8s/terraform/scripts/pct-create-restructure-lxcs.sh
+ssh root@192.168.68.10 'bash -s' < ~/homelab/lab-home-k8s/terraform/scripts/pct-create-restructure-lxcs.sh
 
 # Or Terraform (after API healthy):
 cd ~/homelab/lab-home-k8s/terraform
@@ -58,15 +58,15 @@ terraform apply -target='proxmox_virtual_environment_container.ct["adguard-01"]'
 
 ```bash
 cd ~/homelab/lab-home-k8s/ansible
-ssh-keyscan -H 192.168.68.10 192.168.68.11 >> ~/.ssh/known_hosts
+ssh-keyscan -H 192.168.68.14 192.168.68.11 >> ~/.ssh/known_hosts
 ansible-playbook playbooks/dns.yml -e @secrets.yml
 
 dig @192.168.68.11 gitlab.lab +short          # Technitium
-dig @192.168.68.10 gitlab.lab +short          # AdGuard → Technitium
-dig @192.168.68.10 example.com +short         # recursion
+dig @192.168.68.14 gitlab.lab +short          # AdGuard → Technitium
+dig @192.168.68.14 example.com +short         # recursion
 
-# Then update router DHCP Primary → .10 and Mac DNS → .10 + 1.1.1.1
-# Stop AdGuard/Technitium on old infra VM only after clients use .10:
+# Then update router DHCP Primary → .14 and Mac DNS → .14 + 1.1.1.1
+# Stop AdGuard/Technitium on old infra VM only after clients use AdGuard CT .14:
 ssh nasr@192.168.68.14 'sudo systemctl stop AdGuardHome dns'
 ```
 
@@ -108,7 +108,7 @@ ansible-playbook playbooks/dockhand-agents.yml
 
 ### 6. Jumpbox LXC; destroy infra VM 110
 
-Only when DNS is on `.10`, apps on `.21`, Infisical on `.25`, AIStor reachable:
+Only when DNS is on `.14`, apps on `.21`, Infisical on `.25`, AIStor reachable:
 
 ```bash
 qm stop 110 && qm destroy 110 --purge 1
@@ -126,8 +126,8 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 
 ## Verification checklist
 
-- [ ] `dig @192.168.68.10 gitlab.lab` → `.15`
-- [ ] `dig @192.168.68.10 pve.lab` → `.13`
+- [ ] `dig @192.168.68.14 gitlab.lab` → `.15`
+- [ ] `dig @192.168.68.14 pve.lab` → `.10`
 - [ ] `http://proxy.lab:81` (NPM on docker-01)
 - [ ] `http://infisical.lab` or `:8090` on `.25` + universal-auth seed
 - [ ] `http://webmail.lab` / `mail.lab`
@@ -147,9 +147,9 @@ ansible-playbook playbooks/infra.yml -e @secrets.yml
 | Stalwart/Bulwark same-origin JMAP                                  | **Live** on docker-01 (CSP-safe JMAP via NPM sub_filter)                                                   |
 | K8s NS taxonomy                                                    | **Live** — purpose NS only; old NS pruned                                                                  |
 | GitLab runner / KEDA / Kyverno / MariaDB CRDs / LibreChat Recreate | In GitOps tree                                                                                             |
-| **Still TBD after cutover**                                        | TP-Link DHCP → `.10`; Infisical UA seed (sibling); AIStor restore from vzdump if needed                    |
+| **Still TBD after cutover**                                        | Confirm TP-Link DHCP → `.14` (not `.10` — that is pve01); Infisical UA seed; AIStor restore if needed      |
 | Cloudflare tunnel / Portainer init                                 | **Live** — origins → `.21`; Portainer admin baked (`--admin-password`); NPM SSL verify off                 |
-| Mac `/etc/resolver/lab`                                            | **Done** — points at AdGuard `.10` (`ansible-lab/scripts/mac-resolver-lab.sh`)                             |
+| Mac `/etc/resolver/lab`                                            | **Done** — points at AdGuard `.14` (`ansible-lab/scripts/mac-resolver-lab.sh`)                             |
 
 Do not fight OpenClaw / Ollama→`llm-01` / gitlab-runner work unless relocating
 containers off infra-01. OpenClaw already on docker-01 is fine; keep NPM host
@@ -164,13 +164,13 @@ k8s consumer refs here; leave Docker Infisical/host moves to the infra agents.
 
 Live guests renumbered so **CT/VM ID matches last octet in the 1xx range**.
 Jumpbox renamed **`infra-01` → `ssh-01`**. AdGuard moved from `.10` → **`.14`**
-(PVE stays `.13`).
+(PVE is `.10`).
 
 | ID      | Name         | IP        |
 | ------- | ------------ | --------- |
 | 111     | dns-01       | `.11`     |
 | 112     | ssh-01       | `.12`     |
-| —       | pve01        | `.13`     |
+| —       | pve01        | `.10`     |
 | 114     | adguard-01   | `.14`     |
 | 115     | gitlab-01    | `.15`     |
 | 116     | runner-01    | `.16`     |

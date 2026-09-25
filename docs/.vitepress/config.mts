@@ -203,7 +203,10 @@ export default defineConfig({
             { text: 'First-time lab runbook', link: '/operations/first-time-lab-runbook' },
             { text: 'Lab refresh runbook', link: '/operations/lab-refresh-runbook' },
             { text: 'Lab refresh issues', link: '/operations/lab-refresh-issues' },
-            { text: 'Lab restructure (2026-07-30)', link: '/operations/lab-restructure-2026-07-30' },
+            {
+              text: 'Lab restructure (2026-07-30)',
+              link: '/operations/lab-restructure-2026-07-30',
+            },
             { text: 'lab-home inventory', link: '/operations/lab-home-inventory' },
             { text: 'Vault', link: '/operations/vault' },
             { text: 'Infisical', link: '/operations/infisical' },

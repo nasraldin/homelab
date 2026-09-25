@@ -67,7 +67,7 @@ FURY via Terraform.
 
 1. Selected **Samsung 990 PRO by model**, not `nvme0`/`nvme1` order
 2. ZFS `rpool`, `ashift=12`, `lz4`, ~8 GB swap
-3. Static `192.168.68.13/22`, FQDN `pve01.lab.nasraldin.com`
+3. Static `192.168.68.10/22`, FQDN `pve01.lab.nasraldin.com`
 4. Fixed DNS trap: Cloudflare wildcard broke `*.lab` — interim `/etc/hosts`
 5. SSH keys from Mac, Terraform API user created
 
@@ -105,7 +105,7 @@ are ✅ core Layer-1. NetBird optional. OPNsense/VLANs archived on
 
 **What we settled on:**
 
-- AdGuard `192.168.68.10` + Technitium `192.168.68.11` on the flat
+- AdGuard `192.168.68.13` + Technitium `192.168.68.11` on the flat
   `192.168.68.0/22` LAN (no VLAN router in the path today).
 - Home DHCP hands IPv4 clients to AdGuard; Deco still has no IPv6 DNS UI, so the
   Mac pins AdGuard when needed.

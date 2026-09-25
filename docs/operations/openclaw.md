@@ -4,17 +4,17 @@ Personal AI agent gateway in namespace **`ai-tools`**, wired to LiteLLM → Olla
 
 Official install path: [Kubernetes (Kustomize)](https://docs.openclaw.ai/install/kubernetes) — **not** the community Helm chart. Ansible install ([docs](https://docs.openclaw.ai/install/ansible)) is for host+Tailscale VMs; this lab uses the K8s manifests instead.
 
-| Item | Value |
-|------|--------|
-| UI | http://openclaw.lab |
-| WebSocket | same-origin `ws://openclaw.lab` (Control UI auto-detects) |
-| Gateway LB | `192.168.68.113:18789` |
-| Namespace | `ai-tools` |
-| Token | `lab-home-k8s/ansible/secrets.yml` → `vault_openclaw_gateway_token` / Secret `openclaw-secrets` |
-| Models | `litellm/gemma4:12b`, `litellm/gemma4:12b-think`, `litellm/qwen3.5:9b` |
-| Image | `ghcr.io/openclaw/openclaw:2026.7.1-2-slim` (lab overlay; see below) |
-| Deploy | GitOps Kustomize `workloads/ai/openclaw/` ← Argo `apps-openclaw` |
-| Parallel compose | docker-01 `/opt/openclaw` via Ansible role `openclaw` |
+| Item             | Value                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| UI               | http://openclaw.lab                                                                             |
+| WebSocket        | same-origin `ws://openclaw.lab` (Control UI auto-detects)                                       |
+| Gateway LB       | `192.168.68.113:18789`                                                                          |
+| Namespace        | `ai-tools`                                                                                      |
+| Token            | `lab-home-k8s/ansible/secrets.yml` → `vault_openclaw_gateway_token` / Secret `openclaw-secrets` |
+| Models           | `litellm/gemma4:12b`, `litellm/gemma4:12b-think`, `litellm/qwen3.5:9b`                          |
+| Image            | `ghcr.io/openclaw/openclaw:2026.7.1-2-slim` (lab overlay; see below)                            |
+| Deploy           | GitOps Kustomize `workloads/ai/openclaw/` ← Argo `apps-openclaw`                                |
+| Parallel compose | docker-01 `/opt/openclaw` via Ansible role `openclaw`                                           |
 
 ## Version pinning (why not always `:latest`)
 

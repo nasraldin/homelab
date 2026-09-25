@@ -230,7 +230,7 @@ mode: '0440'
 Add:
 
 ```text
-192.168.68.13 pve01.lab.nasraldin.com pve01
+192.168.68.10 pve01.lab.nasraldin.com pve01
 ```
 
 using `lineinfile`. Install `/home/nasr/.ssh/config` from the template:

@@ -18,25 +18,25 @@ router admin console.
 
 ## Preconditions
 
-1. Guests up and configured: `adguard-01` (`192.168.68.10`), `dns-01`
+1. Guests up and configured: `adguard-01` (`192.168.68.13`), `dns-01`
    (`192.168.68.11`, Technitium) — after Terraform, run
    `ansible-playbook playbooks/dns.yml` (lab-home-k8s) or ansible-lab equivalent.
    Older docs may say `technitium-01`; same IP `.11`.
 2. Proofs from any LAN host:
 
 ```bash
-dig @192.168.68.11 pve01.lab.nasraldin.com +short   # → 192.168.68.13
-dig @192.168.68.10 pve01.lab.nasraldin.com +short   # → 192.168.68.13
-dig @192.168.68.10 example.com +short               # public names resolve
+dig @192.168.68.11 pve01.lab.nasraldin.com +short   # → 192.168.68.10
+dig @192.168.68.13 pve01.lab.nasraldin.com +short   # → 192.168.68.10
+dig @192.168.68.13 example.com +short               # public names resolve
 ```
 
-3. UIs (LAN only): `http://192.168.68.10:3000` · `http://192.168.68.11:5380`
+3. UIs (LAN only): `http://192.168.68.13:3000` · `http://192.168.68.11:5380`
 4. Record current TP-Link DHCP DNS values for rollback.
 5. Optional IPv6 link-local proof (when testing AdGuard IPv6):
 
 ```bash
-dig @fe80::ff:fe00:10%en0 doubleclick.net +short       # → 0.0.0.0
-dig @fe80::ff:fe00:10%en0 pve01.lab.nasraldin.com +short # → 192.168.68.13
+dig @fe80::ff:fe00:13%en0 doubleclick.net +short       # → 0.0.0.0
+dig @fe80::ff:fe00:13%en0 pve01.lab.nasraldin.com +short # → 192.168.68.10
 ```
 
 ## TP-Link DHCP DNS (locked policy)
@@ -46,7 +46,7 @@ Exact menu labels vary (Deco app / Archer web). Look for **DHCP Server** or
 
 | Field             | Value             | Why                                           |
 | ----------------- | ----------------- | --------------------------------------------- |
-| **Primary DNS**   | `192.168.68.10`   | AdGuard — filtering + lab zone forward        |
+| **Primary DNS**   | `192.168.68.13`   | AdGuard — filtering + lab zone forward        |
 | **Secondary DNS** | `1.1.1.1`         | Public fallback when AdGuard is down          |
 | Technitium `.11`  | **Never** in DHCP | Authoritative only — not a recursive resolver |
 
@@ -64,7 +64,7 @@ resolution for **every** DHCP client. See [lan-dns-resilience.md](lan-dns-resili
 1. Renew leases (reconnect Wi‑Fi, or flush Mac DNS cache, or renew DHCP per device).
 2. Verify from a DHCP client:
    - Internet works (public site loads).
-   - `dig pve01.lab.nasraldin.com +short` → `192.168.68.13` (system DNS).
+   - `dig pve01.lab.nasraldin.com +short` → `192.168.68.10` (system DNS).
    - AdGuard **Query log** shows the client when AdGuard is healthy.
 3. Optional: DHCP reservations for `.10` / `.11` by MAC so addresses stay fixed.
 
@@ -79,13 +79,13 @@ IPv4 DHCP DNS does not override DNS learned via IPv6 router advertisements. If
 
 AdGuard is prepared for IPv6 DNS:
 
-- Terraform pins MAC `02:00:00:00:00:10`
-- Stable link-local: `fe80::ff:fe00:10`
+- Terraform pins MAC `02:00:00:00:00:13`
+- Stable link-local: `fe80::ff:fe00:13`
 - UFW allows TCP/UDP 53 from `fe80::/10`
 
 ### Router options (when the UI exposes them)
 
-1. Primary IPv6 DNS / RDNSS → `fe80::ff:fe00:10`
+1. Primary IPv6 DNS / RDNSS → `fe80::ff:fe00:13`
 2. Or disable IPv6 DNS advertisement on the LAN
 3. Or temporarily disable IPv6 on the LAN
 
@@ -97,11 +97,11 @@ filtering on IPv6 clients.
 Pin the **admin Mac** to AdGuard so system queries ignore ISP IPv6 resolvers:
 
 ```bash
-networksetup -setdnsservers Wi-Fi 192.168.68.10
+networksetup -setdnsservers Wi-Fi 192.168.68.13
 sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 
 scutil --dns | grep nameserver
-dig pve01.lab.nasraldin.com +short      # → 192.168.68.13
+dig pve01.lab.nasraldin.com +short      # → 192.168.68.10
 dig doubleclick.net +short              # → 0.0.0.0
 ```
 
@@ -128,7 +128,7 @@ firmware exposes RDNSS controls or the edge is replaced.
 ## Rollback
 
 Restore previous Primary/Secondary DNS on the TP-Link DHCP page and renew
-leases. AdGuard/Technitium VMs can remain up for manual `dig @192.168.68.10 …`.
+leases. AdGuard/Technitium VMs can remain up for manual `dig @192.168.68.13 …`.
 
 ## After cutover is stable
 

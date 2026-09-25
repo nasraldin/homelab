@@ -11,14 +11,14 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 
 ## Status (2026-09-12)
 
-| Area                                    | State                                                 |
-| --------------------------------------- | ----------------------------------------------------- |
-| Jumpbox / Ollama                        | **Removed** — old CT 112 `ssh-01` and CT 126 `llm-01` |
-| VMIDs                                   | **Packed 111–120** (Infisical `.15`, GitLab `.25`)    |
-| AdGuard                                 | CT **112** @ **`.14`** — DHCP/Mac Primary             |
-| DNS / Infisical / docker / k8s / gitlab | IDs 111–120                                           |
-| Mac `*.lab`                             | `/etc/resolver/lab` → **`.14`**                       |
-| Still TBD                               | TP-Link DHCP Primary → `.14` if still on `.10`        |
+| Area                                    | State                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| Jumpbox / Ollama                        | **Removed** — old CT 112 `ssh-01` and CT 126 `llm-01`                          |
+| VMIDs                                   | **Packed 111–120** (Infisical `.15`, GitLab `.25`)                             |
+| AdGuard                                 | CT **112** @ **`.14`** — DHCP/Mac Primary                                      |
+| DNS / Infisical / docker / k8s / gitlab | IDs 111–120                                                                    |
+| Mac `*.lab`                             | `/etc/resolver/lab` → **`.14`**                                                |
+| DHCP Primary                            | TP-Link → **`.14`** (AdGuard); **`.10` is pve01** — do not point DHCP at `.10` |
 
 ## Guests
 
@@ -27,7 +27,7 @@ Restructure cutover: [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.
 | **111**     | `dns-01`       | `.11`     | 1c / 512M / 10G          | Technitium authoritative (`lab` / `dev.test`)             |
 | **112**     | `adguard-01`   | `.14`     | 1c / 512M / 10G          | Recursive DNS + filtering (DHCP Primary)                  |
 | **113**     | `infisical-01` | `.15`     | 2c / 4G / 40G            | Infisical + Postgres 16 + Redis                           |
-| —           | `pve01`        | `.13`     | host                     | Proxmox                                                   |
+| —           | `pve01`        | `.10`     | host                     | Proxmox                                                   |
 | **114**     | `gitlab-01`    | `.25`     | 4c / 12G                 | GitLab CE Omnibus                                         |
 | **115**     | `runner-01`    | `.16`     | 2c / 4G                  | Static GitLab Runner (host)                               |
 | **116**     | `k8s-cp-01`    | `.17`     | 2c / 6G                  | kubeadm control plane                                     |

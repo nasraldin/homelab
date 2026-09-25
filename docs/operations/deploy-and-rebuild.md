@@ -45,7 +45,7 @@ cd ~/homelab
 ./clone-labs.sh --pull
 
 ssh-add ~/.ssh/pve01
-ssh root@192.168.68.13 hostname
+ssh root@192.168.68.10 hostname
 ```
 
 Local secret files are intentionally gitignored:
@@ -144,7 +144,7 @@ cd ~/homelab/ansible-lab
 # optional once guests answer on :22:
 ./scripts/refresh-ssh-known-hosts.sh --accept-new
 
-ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.10 hostname
+ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.13 hostname
 ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.11 hostname
 ssh -o StrictHostKeyChecking=accept-new nasr@192.168.68.12 hostname
 ```
@@ -221,27 +221,27 @@ The first SSH command opens the Cloudflare Access email-OTP flow. See
 
 ```bash
 dig @192.168.68.11 pve01.lab.nasraldin.com +short
-# 192.168.68.13
+# 192.168.68.10
 
-dig @192.168.68.10 pve01.lab.nasraldin.com +short
-# 192.168.68.13
+dig @192.168.68.13 pve01.lab.nasraldin.com +short
+# 192.168.68.10
 
-dig @192.168.68.10 example.com +short
+dig @192.168.68.13 example.com +short
 # one or more public addresses
 
-dig @192.168.68.10 doubleclick.net +short
+dig @192.168.68.13 doubleclick.net +short
 # 0.0.0.0 (blocked)
 
-dig @fe80::ff:fe00:10%en0 doubleclick.net +short
+dig @fe80::ff:fe00:13%en0 doubleclick.net +short
 # 0.0.0.0 (blocked over IPv6)
 
-curl -I http://192.168.68.10:3000/
+curl -I http://192.168.68.13:3000/
 curl -I http://192.168.68.11:5380/
 ```
 
 UIs are LAN-only:
 
-- AdGuard Home: `http://192.168.68.10:3000`
+- AdGuard Home: `http://192.168.68.13:3000`
 - Technitium DNS: `http://192.168.68.11:5380`
 
 ## 6. Cut DHCP clients over to AdGuard
@@ -251,14 +251,14 @@ Only after all acceptance checks pass, follow
 [lan-dns-resilience.md](lan-dns-resilience.md). Keep the DHCP address pool and
 gateway unchanged. Set:
 
-- **Primary DNS** = `192.168.68.10` (AdGuard)
+- **Primary DNS** = `192.168.68.13` (AdGuard)
 - **Secondary DNS** = `1.1.1.1` (required — LAN stays online if AdGuard is down)
 
 After clients renew their leases:
 
 ```bash
 dig pve01.lab.nasraldin.com +short
-# 192.168.68.13
+# 192.168.68.10
 ```
 
 Confirm client requests appear in the AdGuard query log when AdGuard is healthy.

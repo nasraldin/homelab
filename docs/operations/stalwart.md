@@ -12,25 +12,25 @@ public domains. `.lab` is rejected. Addresses are therefore `*@dev.test`.
 
 ## URLs / DNS
 
-| What | Value |
-|------|--------|
-| Webmail (inbox) | http://webmail.lab (alias http://inbox.lab) |
-| Admin UI | http://mail.lab/admin |
-| JMAP (browser) | same-origin under webmail: `http://webmail.lab/jmap/` |
-| SMTP / IMAP host | `mail.lab` or `mail.dev.test` (`192.168.68.21`) |
-| Zone | `dev.test` (Technitium on `dns-01`) → AdGuard upstream to `.11` |
-| Apex A / MX | docker-01 / `mail.dev.test` |
+| What             | Value                                                           |
+| ---------------- | --------------------------------------------------------------- |
+| Webmail (inbox)  | http://webmail.lab (alias http://inbox.lab)                     |
+| Admin UI         | http://mail.lab/admin                                           |
+| JMAP (browser)   | same-origin under webmail: `http://webmail.lab/jmap/`           |
+| SMTP / IMAP host | `mail.lab` or `mail.dev.test` (`192.168.68.21`)                 |
+| Zone             | `dev.test` (Technitium on `dns-01`) → AdGuard upstream to `.11` |
+| Apex A / MX      | docker-01 / `mail.dev.test`                                     |
 
 Use AdGuard (`192.168.68.14`) as LAN DNS so `dev.test` and `*.lab` resolve.
 
 ## Credentials (from `secrets.yml`)
 
-| Account | Password var |
-|---------|----------------|
-| Recovery (bootstrap only) | `vault_stalwart_recovery_password` |
-| Admin UI `admin@dev.test` | `vault_stalwart_admin_password` |
+| Account                                                | Password var                               |
+| ------------------------------------------------------ | ------------------------------------------ |
+| Recovery (bootstrap only)                              | `vault_stalwart_recovery_password`         |
+| Admin UI `admin@dev.test`                              | `vault_stalwart_admin_password`            |
 | Seed mailboxes `info@` `noreply@` `support@` `notify@` | `vault_stalwart_mailbox_password` (shared) |
-| Bulwark session cookie | `vault_bulwark_session_secret` |
+| Bulwark session cookie                                 | `vault_bulwark_session_secret`             |
 
 Host copy of admin/mailbox metadata: `/opt/stalwart/bootstrap-admin.json`.
 

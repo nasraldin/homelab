@@ -10,10 +10,10 @@ UI: `https://docker.nasraldin.com` (**Cloudflare Access**) · LAN `http://dockha
 Dockhand + **Hawser** agents manage Docker engines on lab hosts. Do **not** expose
 the Docker TCP API on the WAN (or plain `:2375` on the LAN).
 
-| Environment              | How it connects                                         |
-| ------------------------ | ------------------------------------------------------- |
-| `dockhand-local`         | Unix socket on docker-01 (`/var/run/docker.sock`)       |
-| `docker-01`, `infisical-01` | Hawser **Edge** (outbound WebSocket to Dockhand)     |
+| Environment                 | How it connects                                   |
+| --------------------------- | ------------------------------------------------- |
+| `dockhand-local`            | Unix socket on docker-01 (`/var/run/docker.sock`) |
+| `docker-01`, `infisical-01` | Hawser **Edge** (outbound WebSocket to Dockhand)  |
 
 ## Automate environments
 

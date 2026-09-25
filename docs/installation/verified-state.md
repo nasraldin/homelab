@@ -2,7 +2,7 @@
 
 Known-good checks from after the manual install and validation (July 2026). Re-run the same commands after bootstrap or any major host change. Read [journey](journey.md) first if you need context; go to [next steps](next-steps.md) once these checks pass.
 
-**Node:** `pve01.lab.nasraldin.com` · `192.168.68.13/22`
+**Node:** `pve01.lab.nasraldin.com` · `192.168.68.10/22`
 
 ## What this page covers
 
@@ -27,7 +27,7 @@ hostname -f      # pve01.lab.nasraldin.com
 
 ```bash
 ip -4 addr show vmbr0
-# inet 192.168.68.13/22
+# inet 192.168.68.10/22
 
 cat /etc/network/interfaces
 # vmbr0 static, gateway 192.168.68.1, bridge-ports nic0
@@ -45,13 +45,13 @@ cat /etc/network/interfaces
 
 ```bash
 cat /etc/hosts
-# 192.168.68.13 pve01.lab.nasraldin.com pve01
+# 192.168.68.10 pve01.lab.nasraldin.com pve01
 
 getent ahostsv4 pve01.lab.nasraldin.com
-# 192.168.68.13 STREAM ...
+# 192.168.68.10 STREAM ...
 
 ping -4 -c1 pve01.lab.nasraldin.com
-# 192.168.68.13
+# 192.168.68.10
 ```
 
 ---
@@ -60,10 +60,10 @@ ping -4 -c1 pve01.lab.nasraldin.com
 
 ```bash
 grep pve01 /etc/hosts
-# 192.168.68.13 pve01.lab.nasraldin.com pve01
+# 192.168.68.10 pve01.lab.nasraldin.com pve01
 
 ping -c1 pve01.lab.nasraldin.com
-# 192.168.68.13  (NOT the public wildcard)
+# 192.168.68.10  (NOT the public wildcard)
 ```
 
 ---
@@ -130,7 +130,7 @@ pveum user list
 ## SSH (Mac → node)
 
 ```bash
-ssh -i ~/.ssh/pve01 root@192.168.68.13 hostname
+ssh -i ~/.ssh/pve01 root@192.168.68.10 hostname
 # pve01
 
 # Or with config alias:

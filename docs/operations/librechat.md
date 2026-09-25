@@ -2,12 +2,12 @@
 
 Chat UI in namespace **`ai-tools`**, via LiteLLM → Ollama on **llm-01**.
 
-| Item | Value |
-| --- | --- |
-| URL | http://chat.lab (Cilium LB `192.168.68.105:3080`) |
-| GitOps | `lab-home-gitops/apps/librechat` (Helm chart `librechat` 2.0.7 / app `v0.8.7`) |
-| Secrets | Infisical `apps` / `prod` / `/librechat` → K8s `librechat-env` |
-| Registration | **Disabled** (`ALLOW_REGISTRATION=false`) |
+| Item         | Value                                                                          |
+| ------------ | ------------------------------------------------------------------------------ |
+| URL          | http://chat.lab (Cilium LB `192.168.68.105:3080`)                              |
+| GitOps       | `lab-home-gitops/apps/librechat` (Helm chart `librechat` 2.0.7 / app `v0.8.7`) |
+| Secrets      | Infisical `apps` / `prod` / `/librechat` → K8s `librechat-env`                 |
+| Registration | **Disabled** (`ALLOW_REGISTRATION=false`)                                      |
 
 ## Admin user (first install)
 

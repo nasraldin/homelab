@@ -15,12 +15,12 @@ Ansible (`lab-home-k8s` or `ansible-lab`), not one-off `gitlab-rails` or UI clic
 
 ## Addresses (lab-home-k8s)
 
-| Guest | VMID | LAN | Public |
-| ----- | ---- | --- | ------ |
-| `gitlab-01` | 111 | `192.168.68.15` | `https://gitlab.nasraldin.com` |
-| Container Registry | (same) | `:5050` | `https://gregistry.nasraldin.com` |
-| `runner-01` (host) | 112 | `192.168.68.16` | Static Docker executor |
-| Runner (k8s) | — | `gitops` NS | [gitlab-runner-k8s.md](gitlab-runner-k8s.md) |
+| Guest              | VMID   | LAN             | Public                                       |
+| ------------------ | ------ | --------------- | -------------------------------------------- |
+| `gitlab-01`        | 111    | `192.168.68.15` | `https://gitlab.nasraldin.com`               |
+| Container Registry | (same) | `:5050`         | `https://gregistry.nasraldin.com`            |
+| `runner-01` (host) | 112    | `192.168.68.16` | Static Docker executor                       |
+| Runner (k8s)       | —      | `gitops` NS     | [gitlab-runner-k8s.md](gitlab-runner-k8s.md) |
 
 No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a PAT.
 
@@ -29,19 +29,19 @@ No Cloudflare Access on GitLab/gregistry — GitLab login + HTTPS git with a PAT
 `playbooks/gitlab.yml` ends with a reconcile on `gitlab-01` so registration
 order cannot leave wrong tags:
 
-| Concern                        | Enforced value                      | Where                                   |
-| ------------------------------ | ----------------------------------- | --------------------------------------- |
-| Root password                  | `vault_gitlab_root_password`        | `application_settings.rb.j2`            |
-| Open signup                    | **off**                             | `gitlab_signup_enabled: false`          |
-| Default branch                 | `main`                              | ApplicationSettings                     |
-| Auto DevOps                    | **off**                             | ApplicationSettings                     |
-| Web IDE extension host         | `cdn.web-ide.gitlab-static.net`     | `gitlab_web_ide_extension_host_domain`  |
-| Web IDE single-origin fallback | **off**                             | `gitlab_web_ide_single_origin_fallback` |
-| Object store / registry S3     | AIStor on **docker-01** `.21:9000` (lab-home-k8s) | Omnibus `object_store` |
-| Runner mint (`glrt-…`)         | `CreateRunnerService` → token files | `mint_runners.rb.j2` (no Admin UI)      |
-| Runner tags / untagged         | from `host_vars` (`runner-01`)      | `reconcile_runners.rb.j2`               |
-| Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache` | `config.toml` on each runner            |
-| Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                      | Omnibus reconfigure                     |
+| Concern                        | Enforced value                                    | Where                                   |
+| ------------------------------ | ------------------------------------------------- | --------------------------------------- |
+| Root password                  | `vault_gitlab_root_password`                      | `application_settings.rb.j2`            |
+| Open signup                    | **off**                                           | `gitlab_signup_enabled: false`          |
+| Default branch                 | `main`                                            | ApplicationSettings                     |
+| Auto DevOps                    | **off**                                           | ApplicationSettings                     |
+| Web IDE extension host         | `cdn.web-ide.gitlab-static.net`                   | `gitlab_web_ide_extension_host_domain`  |
+| Web IDE single-origin fallback | **off**                                           | `gitlab_web_ide_single_origin_fallback` |
+| Object store / registry S3     | AIStor on **docker-01** `.21:9000` (lab-home-k8s) | Omnibus `object_store`                  |
+| Runner mint (`glrt-…`)         | `CreateRunnerService` → token files               | `mint_runners.rb.j2` (no Admin UI)      |
+| Runner tags / untagged         | from `host_vars` (`runner-01`)                    | `reconcile_runners.rb.j2`               |
+| Runner concurrent + S3 cache   | `host_vars` + AIStor `runner-cache`               | `config.toml` on each runner            |
+| Omnibus URL / registry / HTTP  | `gitlab.rb.j2`                                    | Omnibus reconfigure                     |
 
 Ansible mints instance runners on `gitlab-01` and writes tokens under
 `/etc/gitlab/ansible-runner-tokens/` (mode `0770`, group `git` — mint runs as

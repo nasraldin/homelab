@@ -118,10 +118,10 @@ Mac (Wi‑Fi or Ethernet)
     │
     ├── SSH  →  pve01.lab.nasraldin.com
     ├── API  →  Terraform provider
-    └── UI   →  https://192.168.68.13:8006  or LAN FQDN
+    └── UI   →  https://192.168.68.10:8006  or LAN FQDN
 ```
 
-X1 Pro: **Ethernet to router** (`nic0` → `vmbr0`, static `192.168.68.13/22`).
+X1 Pro: **Ethernet to router** (`nic0` → `vmbr0`, static `192.168.68.10/22`).
 Reserve DHCP for MAC `38:05:25:39:CF:43` on TP-Link.
 
 ### From work / cellular

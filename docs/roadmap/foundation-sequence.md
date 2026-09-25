@@ -32,7 +32,7 @@ optional).
 | 9   | Weekly restore drills                                           | ✅      | First proof done — keep weekly cadence ([runbook](https://github.com/nasraldin/terraform-lab/blob/main/docs/runbooks/backup-restore-drill.md))             |
 | 10  | Bootstrap drift check                                           | ✅      | `bootstrap.sh --check` clean (re-run after host changes)                                                                                                   |
 | 11  | DNS VMs (AdGuard, Technitium)                                   | ✅      | Debian 13 on `data01`; Ansible guest roles; directed dig proofs green                                                                                      |
-| 12  | IPv4 DHCP → AdGuard                                             | ✅      | TP-Link primary DNS = `192.168.68.10`                                                                                                                      |
+| 12  | IPv4 DHCP → AdGuard                                             | ✅      | TP-Link primary DNS = `192.168.68.13`                                                                                                                      |
 | 13  | IPv6 DNS polish (Deco has no RDNSS UI)                          | ✅      | Mac Wi-Fi DNS pinned to AdGuard; see [dns-dhcp-cutover.md](../operations/dns-dhcp-cutover.md)                                                              |
 | 14  | OPNsense VLAN Pilot                                             | ⏸️      | archived 2026-07-23 — restore from `archive/opnsense-vlan-pilot` if needed                                                                                 |
 | 15  | NetBird remote access                                           | ⏳      | optional; Cloudflare Tunnel remains primary remote path                                                                                                    |
@@ -52,8 +52,9 @@ Vault, AIStor, and the core container hosts redesign are **core** Layer-1
 services (outside Kubernetes). NetBird remains optional. Next: optional Terraform
 CI on GitLab, then kubeadm Stage A. See [phases.md](phases.md).
 
-Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.13`,
-AdGuard `.10`, Technitium `.11`, Vault `.18`, vault-seal `.19`, Infisical `.20`, AIStor `.17`, and Cloudflare Tunnel.
+Preserve throughout: TP-Link edge, live `192.168.68.0/22`, `pve01` `.10`,
+AdGuard (`.14` lab-home / `.13` terraform-lab), Technitium `.11`, Vault `.18`,
+vault-seal `.19`, Infisical `.20`, AIStor `.17`, and Cloudflare Tunnel.
 
 When Slot 3 OEM disk is installed:
 

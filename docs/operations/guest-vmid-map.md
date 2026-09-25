@@ -21,7 +21,7 @@ Source of truth (this layout): `terraform-lab/terraform.tfvars` (`vms` / `contai
 
 | VMID | Guest           | LAN   | Startup order | Role                                                         |
 | ---- | --------------- | ----- | ------------- | ------------------------------------------------------------ |
-| 110  | `adguard-01`    | `.10` | 1 (+15 s)     | Recursive DNS / filtering                                    |
+| 110  | `adguard-01`    | `.13` | 1 (+15 s)     | Recursive DNS / filtering                                    |
 | 111  | `technitium-01` | `.11` | 2 (+10 s)     | Authoritative `lab.nasraldin.com`                            |
 | 112  | `infra01`       | `.12` | 3             | Ops / management — [remote access](infra01-remote-access.md) |
 | 113  | `vault-01`      | `.18` | 5             | HashiCorp Vault OSS (Raft, Transit auto-unseal)              |

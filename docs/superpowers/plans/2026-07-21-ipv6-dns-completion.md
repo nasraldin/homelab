@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Keep AdGuard at `192.168.68.10` and VMID `110`.
+- Keep AdGuard at `192.168.68.13` and VMID `110`.
 - Do not expose DNS, SSH, or web administration to arbitrary global IPv6 sources.
 - Never advertise a public secondary DNS resolver.
 - Do not guess, extract, or store the TP-Link owner password.
@@ -84,10 +84,10 @@ network_device {
 Add to the `adguard-01` map:
 
 ```hcl
-mac_address = "02:00:00:00:00:10"
+mac_address = "02:00:00:00:00:13"
 ```
 
-Its deterministic link-local address is `fe80::ff:fe00:10`.
+Its deterministic link-local address is `fe80::ff:fe00:13`.
 
 - [ ] **Step 6: Validate and review the plan**
 
@@ -146,10 +146,10 @@ Append:
 
 - [ ] **Step 3: Document the stable address**
 
-Record `fe80::ff:fe00:10` as the preferred TP-Link IPv6 DNS/RDNSS server and explain that callers must supply an interface scope when testing directly:
+Record `fe80::ff:fe00:13` as the preferred TP-Link IPv6 DNS/RDNSS server and explain that callers must supply an interface scope when testing directly:
 
 ```bash
-dig @fe80::ff:fe00:10%en0 doubleclick.net +short
+dig @fe80::ff:fe00:13%en0 doubleclick.net +short
 ```
 
 - [ ] **Step 4: Validate the role**
@@ -180,7 +180,7 @@ git commit -m "Allow link-local IPv6 clients to use AdGuard DNS."
 **Interfaces:**
 
 - Consumes: reviewed `terraform-lab/tfplan`, `ansible-lab/secrets.yml`
-- Produces: live AdGuard address `fe80::ff:fe00:10` and UFW rules
+- Produces: live AdGuard address `fe80::ff:fe00:13` and UFW rules
 
 - [ ] **Step 1: Apply the reviewed Terraform plan**
 
@@ -195,7 +195,7 @@ Expected: AdGuard remains VMID 110 and returns to `running`.
 - [ ] **Step 2: Wait for SSH and apply Ansible**
 
 ```bash
-until ssh -o BatchMode=yes -o ConnectTimeout=5 nasr@192.168.68.10 true; do sleep 5; done
+until ssh -o BatchMode=yes -o ConnectTimeout=5 nasr@192.168.68.13 true; do sleep 5; done
 cd ~/homelab/ansible-lab
 ansible-playbook playbooks/dns.yml -e @secrets.yml
 ansible-playbook playbooks/dns.yml -e @secrets.yml
@@ -206,21 +206,21 @@ Expected: the second recap reports `changed=0 failed=0` for both hosts.
 - [ ] **Step 3: Verify addresses, firewall, and service**
 
 ```bash
-ssh nasr@192.168.68.10 \
+ssh nasr@192.168.68.13 \
   'ip -6 addr show dev eth0; sudo ufw status; sudo ss -lnutp | grep ":53 "'
 ```
 
-Expected: `fe80::ff:fe00:10`, both link-local DNS rules, and AdGuard listening on port 53.
+Expected: `fe80::ff:fe00:13`, both link-local DNS rules, and AdGuard listening on port 53.
 
 - [ ] **Step 4: Verify filtering over IPv4 and IPv6**
 
 ```bash
-dig @192.168.68.10 doubleclick.net +short
-dig @fe80::ff:fe00:10%en0 doubleclick.net +short
-dig @fe80::ff:fe00:10%en0 pve01.lab.nasraldin.com +short
+dig @192.168.68.13 doubleclick.net +short
+dig @fe80::ff:fe00:13%en0 doubleclick.net +short
+dig @fe80::ff:fe00:13%en0 pve01.lab.nasraldin.com +short
 ```
 
-Expected: the first two return `0.0.0.0`; the last returns `192.168.68.13`.
+Expected: the first two return `0.0.0.0`; the last returns `192.168.68.10`.
 
 ### Task 4: Complete or bound the TP-Link router cutover
 
@@ -240,7 +240,7 @@ Expected: the first two return `0.0.0.0`; the last returns `192.168.68.13`.
 In the TP-Link IPv6 LAN/DHCP DNS page, set Primary IPv6 DNS to:
 
 ```text
-fe80::ff:fe00:10
+fe80::ff:fe00:13
 ```
 
 Leave Secondary IPv6 DNS empty. Save and reconnect the Mac to Wi-Fi.
@@ -260,7 +260,7 @@ dig pve01.lab.nasraldin.com +short
 dig doubleclick.net +short
 ```
 
-Expected: no `2a00:f28:2::2`, no `2a00:f28:2::20`, lab DNS returns `192.168.68.13`, and the advertising domain returns `0.0.0.0`.
+Expected: no `2a00:f28:2::2`, no `2a00:f28:2::20`, lab DNS returns `192.168.68.10`, and the advertising domain returns `0.0.0.0`.
 
 - [ ] **Step 4: Update status accurately**
 

@@ -14,7 +14,7 @@ Purpose namespaces are live in-cluster — see
 
 |                   |                                                                           |
 | ----------------- | ------------------------------------------------------------------------- |
-| **Node**          | `pve01` · `192.168.68.13/22` · Proxmox VE                                 |
+| **Node**          | `pve01` · `192.168.68.10/22` · Proxmox VE                                 |
 | **Inventory**     | [lab-home-inventory.md](operations/lab-home-inventory.md)                 |
 | **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.25`)                                |
 | **DNS (target)**  | DHCP Primary → AdGuard `.10`; Technitium on `dns-01` `.11`                |

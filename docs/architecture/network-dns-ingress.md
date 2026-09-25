@@ -16,8 +16,9 @@ pilot was proven then archived (2026-07-23) to keep this stage simple.
 
 - Flat LAN `192.168.68.0/22`, bridge `vmbr0`, gateway `192.168.68.1`
 - TP-Link remains the edge router and DHCP gateway
-- `pve01` remains `192.168.68.13`; AdGuard on **`adguard-01`** `.10`;
-  Technitium on **`dns-01`** `.11` (lab-home-k8s; older docs may say `technitium-01`)
+- `pve01` is `192.168.68.10`; AdGuard is **`.14`** on lab-home-k8s (CT `adguard-01`)
+  or **`.13`** on terraform-lab (VM `adguard-01`); Technitium **`.11`** (`dns-01` /
+  `technitium-01`)
 - Remote Proxmox UI and `infra01` SSH: Cloudflare Tunnel + Access (no WAN ports)
 - Mac admin path: Wi-Fi on the live LAN (no Ethernet requirement)
 
@@ -32,24 +33,23 @@ practice (typically with Kubernetes).
 
 ## DNS (decided)
 
-| Layer                  | Tool                                  | Role                                                                                                  | Status |
-| ---------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------ |
-| Filtering              | **AdGuard Home**                      | LAN resolver — ads, trackers, forward lab zone                                                        | ✅     |
-| Authoritative internal | **Technitium DNS**                    | `lab.nasraldin.com` zone only                                                                         | ✅     |
-| Public                 | **Cloudflare**                        | Public names + Tunnel                                                                                 | ✅     |
-| In-cluster             | **ExternalDNS**                       | K8s → DNS records                                                                                     | ⏳     |
-| Router DHCP DNS        | **TP-Link → .10 + Secondary 1.1.1.1** | Primary AdGuard; public fallback required — [lan-dns-resilience](../operations/lan-dns-resilience.md) | ✅     |
+| Layer                  | Tool                                      | Role                                                                                                                                      | Status |
+| ---------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Filtering              | **AdGuard Home**                          | LAN resolver — ads, trackers, forward lab zone                                                                                            | ✅     |
+| Authoritative internal | **Technitium DNS**                        | `lab.nasraldin.com` zone only                                                                                                             | ✅     |
+| Public                 | **Cloudflare**                            | Public names + Tunnel                                                                                                                     | ✅     |
+| In-cluster             | **ExternalDNS**                           | K8s → DNS records                                                                                                                         | ⏳     |
+| Router DHCP DNS        | **TP-Link → AdGuard + Secondary 1.1.1.1** | Primary = AdGuard (`.14` lab-home / `.13` terraform-lab); **never** pve `.10` — [lan-dns-resilience](../operations/lan-dns-resilience.md) | ✅     |
 
 **Not Pi-hole** — AdGuard chosen for UI and modern DNS privacy features.
 
 **Topology:** Clients → AdGuard (`192.168.68.14`) → forward `lab` / `lab.nasraldin.com` to Technitium (`192.168.68.11`); everything else → Cloudflare `1.1.1.1`. DHCP Secondary `1.1.1.1` keeps the LAN online when AdGuard is unreachable. No jumpbox — SSH directly to guests.
 
-| Host           | IP / VMID       | Notes                                                    |
-| -------------- | --------------- | -------------------------------------------------------- |
-| adguard-01     | `.10` / **110** | UI `:3000`; startup order 1; IPv6 DNS `fe80::ff:fe00:10` |
-| technitium-01  | `.11` / **111** | UI `:5380`; startup order 2; authoritative only          |
-| infra01        | `.12` / **112** | Operator VM; Access SSH at `infra.nasraldin.com`         |
-| pve01 (seed A) | `.13`           | In Technitium zone; Tunnel connector                     |
+| Host          | IP / VMID                            | Notes                                                  |
+| ------------- | ------------------------------------ | ------------------------------------------------------ |
+| adguard-01    | `.14` lab-home / `.13` terraform-lab | UI `:3000`; DHCP Primary; never collide with pve `.10` |
+| technitium-01 | `.11`                                | UI `:5380`; authoritative only                         |
+| pve01         | `.10`                                | Hypervisor; Technitium zone + Tunnel connector         |
 
 **Interim:** `/etc/hosts` on Mac + node for break-glass until [DHCP cutover](../operations/dns-dhcp-cutover.md) is verified, then remove lab duplicates DNS owns.
 

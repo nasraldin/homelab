@@ -83,7 +83,7 @@ GitLab Omnibus + Docker runner is the next deployment; kubeadm follows.
 | AdGuard Home        | ✅     | Filtering and child-safety policy is Ansible  |
 | Technitium DNS      | ✅     | Authoritative `lab.nasraldin.com`             |
 | Current DNS VMs     | ✅     | AdGuard `.10`; Technitium `.11` on live `/22` |
-| IPv4 DHCP → AdGuard | ✅     | TP-Link primary DNS = `192.168.68.10`         |
+| IPv4 DHCP → AdGuard | ✅     | TP-Link primary DNS = `192.168.68.13`         |
 | TP-Link IPv6 RDNSS  | ⏸️     | Deco UI has no IPv6 DNS controls              |
 | Mac DNS pin         | ✅     | Wi-Fi DNS = AdGuard (bypasses ISP IPv6 RA)    |
 | OPNsense VLAN Pilot | ⏸️     | archived; live LAN stays flat                 |

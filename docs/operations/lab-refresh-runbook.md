@@ -6,7 +6,7 @@
 > [lab-home-inventory.md](lab-home-inventory.md),
 > [lab-restructure-2026-07-30.md](lab-restructure-2026-07-30.md), and
 > `lab-home-k8s/docs/runbook/e2e-reset-checklist.md` instead.
- (factory-reset → Terraform → Ansible)
+> (factory-reset → Terraform → Ansible)
 
 Single checklist for a **full lab rebuild** on an existing Proxmox node (`pve01`)
 after the **core container hosts** redesign (VMIDs **110–123** + CT **200**).
@@ -40,7 +40,7 @@ cloudflare-tunnel   public hostnames (gitlab/sonar/kibana/docker)
 ### A. Prepare (Mac)
 
 - [ ] `./clone-labs.sh --pull` (or pull each lab repo)
-- [ ] `ssh-add ~/.ssh/pve01` — `ssh root@192.168.68.13 hostname` works
+- [ ] `ssh-add ~/.ssh/pve01` — `ssh root@192.168.68.10 hostname` works
 - [ ] Off-LAN: use [infra01-remote-access.md](infra01-remote-access.md) — do not assume LAN IPs from the internet
 - [ ] Secrets present: `proxmox-bootstrap/config.env`, `terraform-lab/credentials.auto.tfvars`, `ansible-lab/secrets.yml` (all redesign keys — see `secrets.example.yml`)
 - [ ] Pin Mac DNS to public resolvers before wiping DNS VMs:  
@@ -127,9 +127,9 @@ Passwords live in `~/homelab/ansible-lab/secrets.yml` (gitignored) unless noted.
 
 | Service                 | URL                               | Username                    | Password / how to get it                           | Tick |
 | ----------------------- | --------------------------------- | --------------------------- | -------------------------------------------------- | ---- |
-| **Proxmox UI (LAN)**    | `https://192.168.68.13:8006`      | `root` (`pam`)              | Host root (password manager)                       | [ ]  |
+| **Proxmox UI (LAN)**    | `https://192.168.68.10:8006`      | `root` (`pam`)              | Host root (password manager)                       | [ ]  |
 | **Proxmox UI (remote)** | `https://homelab.nasraldin.com`   | same                        | Access OTP → Proxmox                               | [ ]  |
-| **AdGuard Home**        | `http://192.168.68.10:3000`       | `admin`                     | `vault_adguard_admin_password`                     | [ ]  |
+| **AdGuard Home**        | `http://192.168.68.13:3000`       | `admin`                     | `vault_adguard_admin_password`                     | [ ]  |
 | **Technitium DNS**      | `http://192.168.68.11:5380`       | `admin`                     | `vault_technitium_admin_password`                  | [ ]  |
 | **Vault primary UI**    | `http://192.168.68.18:8200`       | _(token)_                   | `/root/vault-init.json` `root_token` on `vault-01` | [ ]  |
 | **Vault seal helper**   | `http://192.168.68.19:8200`       | —                           | UI disabled; Shamir keys on seal                   | [ ]  |
@@ -175,7 +175,7 @@ python3 -c 'import yaml; print(yaml.safe_load(open("secrets.yml"))["vault_gitlab
 | `runner-01` `.15`       | GitLab → **Admin → Runners** (green); fleeting scaffold until API wired |
 | `podman-01` `.23`       | `curl -fsS http://192.168.68.23/` (Caddy)                               |
 | `elastic-01` `.27:9200` | LAN-only; not Tunnel-public                                             |
-| `pve01` `.13`           | `ssh root@192.168.68.13`                                                |
+| `pve01` `.10`           | `ssh root@192.168.68.10`                                                |
 
 ---
 
@@ -187,7 +187,7 @@ python3 -c 'import yaml; print(yaml.safe_load(open("secrets.yml"))["vault_gitlab
 cd ~/homelab
 ./clone-labs.sh --pull
 ssh-add ~/.ssh/pve01
-ssh root@192.168.68.13 'hostname; pveversion | head -1'
+ssh root@192.168.68.10 'hostname; pveversion | head -1'
 ```
 
 ### 2. DNS safety before wipe
@@ -221,7 +221,7 @@ terraform plan -out=tfplan
 terraform apply tfplan
 rm -f tfplan
 
-ssh root@192.168.68.13 'qm list; pct list'
+ssh root@192.168.68.10 'qm list; pct list'
 ```
 
 **Expected:** Names/IPs match the table in [first-time-lab-runbook.md](first-time-lab-runbook.md) § B.  
@@ -274,9 +274,9 @@ Known Ansible first-boot traps: [REF-014…019](lab-refresh-issues.md) (GitLab L
 
 ```bash
 # DNS
-dig @192.168.68.11 pve01.lab.nasraldin.com +short   # → 192.168.68.13
-dig @192.168.68.10 pve01.lab.nasraldin.com +short
-dig @192.168.68.10 doubleclick.net +short           # → 0.0.0.0 when blocked
+dig @192.168.68.11 pve01.lab.nasraldin.com +short   # → 192.168.68.10
+dig @192.168.68.13 pve01.lab.nasraldin.com +short
+dig @192.168.68.13 doubleclick.net +short           # → 0.0.0.0 when blocked
 
 # SSH to every guest (last octets)
 for ip in 10 11 12 14 15 17 18 19 21 22 23 24 25 26 27; do
