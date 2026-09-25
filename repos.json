@@ -12,5 +12,6 @@
   "lab-home-k8s": "nasraldin/lab-home-k8s",
   "lab-home-gitops": "nasraldin/lab-home-gitops",
   "pipeline-templates": "nasraldin/pipeline-templates",
-  "dev-homelab": "nasraldin/dev-homelab"
+  "dev-homelab": "nasraldin/dev-homelab",
+  "lab-home-pve01": "nasraldin/lab-home-pve01"
 }

@@ -46,3 +46,4 @@ homelab-docs/
 **/*.min.js
 **/*.min.css
 **/package-lock.json
+lab-home-pve01/
