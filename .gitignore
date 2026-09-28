@@ -16,6 +16,8 @@ lab-home-pve01/
 lab-home-gitops/
 dev-homelab/
 pipeline-templates/
+homelab-cluster-infra/
+vault/
 
 # Local installers / large blobs (never commit)
 homelab-binaries/
