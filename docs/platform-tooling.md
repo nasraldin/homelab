@@ -45,14 +45,14 @@ Side path (not Layer 3):
             (packages, users, Docker, GitLab Runner on a VM, …)
 ```
 
-| Layer | Tool                                                  | Owns                                                              | Does **not** own                            |
-| ----- | ----------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------- |
-| 0     | `proxmox-bootstrap/`                                  | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload | VMs, pools, k8s apps                        |
-| 1a    | `terraform-lab/`                                      | ZFS pools, non-k8s VMs/LXC, shared images                         | k8s node VMs, Helm charts                   |
-| 1b    | `k8s-lab/terraform`                                   | HAProxy + 3 CP + 3 worker VMs (own state)                         | Non-k8s guests, day-2 Helm                  |
-| 2     | `k8s-lab` Ansible + scripts                           | containerd, kubeadm HA, Cilium once, Argo once, etcd backup       | Day-2 platform charts                       |
-| 3     | Argo CD + `homelab-gitops`                            | Everything _in_ the cluster after bootstrap                       | Creating Proxmox VMs                        |
-| side  | Ansible (`ansible-lab/`)                              | Non-k8s guest config                                              | k8s manifests / Helm                        |
+| Layer | Tool                        | Owns                                                              | Does **not** own           |
+| ----- | --------------------------- | ----------------------------------------------------------------- | -------------------------- |
+| 0     | `proxmox-bootstrap/`        | Fresh Proxmox host: repos, SSH, ZFS tuning, API token, ISO upload | VMs, pools, k8s apps       |
+| 1a    | `terraform-lab/`            | ZFS pools, non-k8s VMs/LXC, shared images                         | k8s node VMs, Helm charts  |
+| 1b    | `k8s-lab/terraform`         | HAProxy + 3 CP + 3 worker VMs (own state)                         | Non-k8s guests, day-2 Helm |
+| 2     | `k8s-lab` Ansible + scripts | containerd, kubeadm HA, Cilium once, Argo once, etcd backup       | Day-2 platform charts      |
+| 3     | Argo CD + `homelab-gitops`  | Everything _in_ the cluster after bootstrap                       | Creating Proxmox VMs       |
+| side  | Ansible (`ansible-lab/`)    | Non-k8s guest config                                              | k8s manifests / Helm       |
 
 Guiding rule: **don’t manually configure anything the layer above can own.**
 A full rebuild is:
@@ -85,36 +85,36 @@ That pattern does not scale and is not how platform teams operate day-2.
 
 ### Day-2 operations
 
-| Task                             | Tool                                                                                           |
-| -------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Add a kubeadm node / resize k8s VM | `k8s-lab` Terraform (`terraform.tfvars` + apply)                                           |
-| Add a non-k8s VM / disk            | `terraform-lab` (`terraform.tfvars` + apply)                                               |
-| Change a Deployment / Helm value | Git commit → Argo CD sync                                                                      |
-| Install packages on a GitLab VM  | Ansible                                                                                        |
-| Install qemu-guest-agent in a VM | cloud-init (new) or Ansible (existing) — [guest-os](guest-os/#qemu-guest-agent)                |
-| Attach Radeon 890M to an AI VM   | Terraform `hostpci` after host IOMMU — [gpu-passthrough](architecture/gpu-passthrough.md)      |
-| Expose a service publicly        | Cloudflare Tunnel + Access (GitOps for apps later); Proxmox UI only at `homelab.nasraldin.com` |
-| Browse the live cluster          | `kubectl` / **k9s** (UI only — not provisioning)                                               |
+| Task                               | Tool                                                                                           |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Add a kubeadm node / resize k8s VM | `k8s-lab` Terraform (`terraform.tfvars` + apply)                                               |
+| Add a non-k8s VM / disk            | `terraform-lab` (`terraform.tfvars` + apply)                                                   |
+| Change a Deployment / Helm value   | Git commit → Argo CD sync                                                                      |
+| Install packages on a GitLab VM    | Ansible                                                                                        |
+| Install qemu-guest-agent in a VM   | cloud-init (new) or Ansible (existing) — [guest-os](guest-os/#qemu-guest-agent)                |
+| Attach Radeon 890M to an AI VM     | Terraform `hostpci` after host IOMMU — [gpu-passthrough](architecture/gpu-passthrough.md)      |
+| Expose a service publicly          | Cloudflare Tunnel + Access (GitOps for apps later); Proxmox UI only at `homelab.nasraldin.com` |
+| Browse the live cluster            | `kubectl` / **k9s** (UI only — not provisioning)                                               |
 
 **k9s** is a terminal UI for inspecting clusters. It is **not** part of
 provisioning and does not replace Terraform or Argo CD.
 
 ## Decision table (“where do I put this?”)
 
-| I want to…                                     | Put it in…                                                     |
-| ---------------------------------------------- | -------------------------------------------------------------- |
-| Create / wipe ZFS `data01`, resource pools     | `terraform-lab/`                                               |
-| Create an Ubuntu VM or LXC                     | `terraform-lab/terraform.tfvars` (`vms` / `containers`)        |
-| Create a kubeadm cluster                       | `k8s-lab` (Terraform + Ansible + scripts) + `homelab-gitops`   |
-| Upload a local `.iso` with no public URL       | `proxmox-bootstrap/mac/upload-isos.sh`                         |
-| Download Ubuntu cloud image from the internet  | `terraform-lab/` (`cloud_images`)                              |
-| Harden Proxmox host / SSH / APT                | `proxmox-bootstrap/`                                           |
-| Configure AdGuard / GitLab _VM_ packages       | Ansible                                                        |
-| Install qemu-guest-agent in guests             | cloud-init / Ansible — **not** a Proxmox VMID script           |
-| Pass GPU into one AI VM                        | Terraform + [gpu-passthrough](architecture/gpu-passthrough.md) |
-| Install cert-manager, Gateway routes, Grafana  | **Argo CD** via `homelab-gitops` — Cilium Gateway API          |
-| Deploy my application                          | **Argo CD** (Git)                                              |
-| One-off debug on a pod                         | `kubectl` / k9s (then fix it in Git)                           |
+| I want to…                                    | Put it in…                                                     |
+| --------------------------------------------- | -------------------------------------------------------------- |
+| Create / wipe ZFS `data01`, resource pools    | `terraform-lab/`                                               |
+| Create an Ubuntu VM or LXC                    | `terraform-lab/terraform.tfvars` (`vms` / `containers`)        |
+| Create a kubeadm cluster                      | `k8s-lab` (Terraform + Ansible + scripts) + `homelab-gitops`   |
+| Upload a local `.iso` with no public URL      | `proxmox-bootstrap/mac/upload-isos.sh`                         |
+| Download Ubuntu cloud image from the internet | `terraform-lab/` (`cloud_images`)                              |
+| Harden Proxmox host / SSH / APT               | `proxmox-bootstrap/`                                           |
+| Configure AdGuard / GitLab _VM_ packages      | Ansible                                                        |
+| Install qemu-guest-agent in guests            | cloud-init / Ansible — **not** a Proxmox VMID script           |
+| Pass GPU into one AI VM                       | Terraform + [gpu-passthrough](architecture/gpu-passthrough.md) |
+| Install cert-manager, Gateway routes, Grafana | **Argo CD** via `homelab-gitops` — Cilium Gateway API          |
+| Deploy my application                         | **Argo CD** (Git)                                              |
+| One-off debug on a pod                        | `kubectl` / k9s (then fix it in Git)                           |
 
 ## Anti-patterns (do not do)
 

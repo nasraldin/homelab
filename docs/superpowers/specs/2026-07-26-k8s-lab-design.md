@@ -17,15 +17,15 @@
 
 ## Decisions (locked)
 
-| Topic | Choice |
-| ----- | ------ |
-| VM ownership | **`k8s-lab/terraform`** owns HAProxy + 3 CP + 3 workers (own state). `terraform-lab` stays non-k8s. |
-| Ingress / mesh | Cilium Gateway API + LB IPAM + L2; Istio mesh only |
-| Talos | Primary path = kubeadm on Debian. Talos = **docs-only** future optional path |
-| Observability | **In-cluster** Prometheus + Grafana + Loki + Tempo via Argo; `monitoring-01` stays for non-k8s |
-| GitOps | Bootstrap in `k8s-lab`; apps in separate **`homelab-gitops`** |
-| Sizing | Balanced (option 1); resize later via Terraform |
-| Approach | Layered bootstrap: TF → Ansible → Cilium+Argo scripts → GitOps |
+| Topic          | Choice                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| VM ownership   | **`k8s-lab/terraform`** owns HAProxy + 3 CP + 3 workers (own state). `terraform-lab` stays non-k8s. |
+| Ingress / mesh | Cilium Gateway API + LB IPAM + L2; Istio mesh only                                                  |
+| Talos          | Primary path = kubeadm on Debian. Talos = **docs-only** future optional path                        |
+| Observability  | **In-cluster** Prometheus + Grafana + Loki + Tempo via Argo; `monitoring-01` stays for non-k8s      |
+| GitOps         | Bootstrap in `k8s-lab`; apps in separate **`homelab-gitops`**                                       |
+| Sizing         | Balanced (option 1); resize later via Terraform                                                     |
+| Approach       | Layered bootstrap: TF → Ansible → Cilium+Argo scripts → GitOps                                      |
 
 ## Architecture
 
@@ -55,22 +55,22 @@ kubectl / kubelet / kubeadm
 
 ### North-south vs east-west
 
-| Traffic | Owner |
-| ------- | ----- |
+| Traffic                           | Owner                                               |
+| --------------------------------- | --------------------------------------------------- |
 | Public / LAN HTTP(S) into cluster | **Cilium Gateway API** + LB IPAM + L2 Announcements |
-| Pod-to-pod policy / mTLS | **Istio** |
-| Non-k8s guest metrics/logs | Existing `monitoring-01` (unchanged) |
+| Pod-to-pod policy / mTLS          | **Istio**                                           |
+| Non-k8s guest metrics/logs        | Existing `monitoring-01` (unchanged)                |
 
 ## Inventory (sizing 1 — resizable)
 
 Suggested LAN addresses avoid existing `.10–.27` guests. Final values live in `k8s-lab` tfvars / group_vars.
 
-| VMID band | Guest | Example IP | vCPU / RAM / disk | Role |
-| --------- | ----- | ---------- | ----------------- | ---- |
-| 3xx | `haproxy-01` | `192.168.68.40` | 1 / 1 GB / 20 GB | API LB |
-| 3xx | `k8s-cp-01..03` | `.41–.43` | 2 / 4 GB / 40 GB each | Control plane + stacked etcd |
-| 3xx | `k8s-w-01..03` | `.44–.46` | 4 / 8 GB / 60 GB OS + ~50 GB data each | Workloads + Longhorn |
-| — | Cilium LB pool | `192.168.68.100–119` | — | LoadBalancer / Gateway VIP range |
+| VMID band | Guest           | Example IP           | vCPU / RAM / disk                      | Role                             |
+| --------- | --------------- | -------------------- | -------------------------------------- | -------------------------------- |
+| 3xx       | `haproxy-01`    | `192.168.68.40`      | 1 / 1 GB / 20 GB                       | API LB                           |
+| 3xx       | `k8s-cp-01..03` | `.41–.43`            | 2 / 4 GB / 40 GB each                  | Control plane + stacked etcd     |
+| 3xx       | `k8s-w-01..03`  | `.44–.46`            | 4 / 8 GB / 60 GB OS + ~50 GB data each | Workloads + Longhorn             |
+| —         | Cilium LB pool  | `192.168.68.100–119` | —                                      | LoadBalancer / Gateway VIP range |
 
 - Pod CIDR: `10.244.0.0/16`
 - Service CIDR: `10.96.0.0/12`
@@ -80,18 +80,18 @@ Suggested LAN addresses avoid existing `.10–.27` guests. Final values live in 
 
 ## Target versions
 
-| Component | Target |
-| --------- | ------ |
-| Kubernetes | **1.36.x** latest patch (`pkgs.k8s.io`) |
-| Guest OS | Debian 12 or 13 cloud image |
-| Runtime | **containerd** |
-| CNI / Gateway | Cilium (current stable Helm chart) |
-| Mesh | Istio (current stable) |
-| GitOps | Argo CD |
-| Policy | Kyverno |
-| Certs | cert-manager |
-| Storage | Longhorn |
-| Observability | kube-prometheus-stack + Loki + Tempo |
+| Component     | Target                                  |
+| ------------- | --------------------------------------- |
+| Kubernetes    | **1.36.x** latest patch (`pkgs.k8s.io`) |
+| Guest OS      | Debian 12 or 13 cloud image             |
+| Runtime       | **containerd**                          |
+| CNI / Gateway | Cilium (current stable Helm chart)      |
+| Mesh          | Istio (current stable)                  |
+| GitOps        | Argo CD                                 |
+| Policy        | Kyverno                                 |
+| Certs         | cert-manager                            |
+| Storage       | Longhorn                                |
+| Observability | kube-prometheus-stack + Loki + Tempo    |
 
 Pin versions in Ansible `group_vars` and GitOps values; bump deliberately. Do **not** use deprecated Kubernetes apt mirrors.
 
@@ -138,32 +138,32 @@ homelab-gitops/
 
 ## Bootstrap order
 
-1. **Terraform** — create 7 VMs  
-2. **Ansible** — OS, containerd, kube packages, HAProxy, kubeadm init/join, labels, etcd backup cron  
-3. **Script** — Cilium with CNI + LoadBalancer IPAM + L2 Announcements + Gateway API  
-4. **Script** — Argo CD once; register `homelab-gitops`  
-5. **Argo sync** — cert-manager → Kyverno → Longhorn → Istio → observability → sample apps  
+1. **Terraform** — create 7 VMs
+2. **Ansible** — OS, containerd, kube packages, HAProxy, kubeadm init/join, labels, etcd backup cron
+3. **Script** — Cilium with CNI + LoadBalancer IPAM + L2 Announcements + Gateway API
+4. **Script** — Argo CD once; register `homelab-gitops`
+5. **Argo sync** — cert-manager → Kyverno → Longhorn → Istio → observability → sample apps
 
 Manual / Ansible must **not** Helm-install day-2 platform charts after Argo is live (no dual source of truth).
 
 ## Day-2 operations (documented in `k8s-lab/docs/`)
 
-| Topic | Practice |
-| ----- | -------- |
-| HA API | Drain/stop one CP; kubectl via HAProxy still works |
-| Zero-downtime CP upgrade | `kubeadm upgrade` one node at a time behind LB |
-| etcd backup / restore | Cron snapshot (+ optional copy to AIStor); restore drill |
-| Scheduling | Labels/taints + affinity sample apps in GitOps |
-| Vertical resize | Terraform bump → apply |
-| Policy / GitOps | Kyverno + Argo; no manual kubectl for permanent config |
-| Talos | Architecture comparison only until a future optional cluster |
+| Topic                    | Practice                                                     |
+| ------------------------ | ------------------------------------------------------------ |
+| HA API                   | Drain/stop one CP; kubectl via HAProxy still works           |
+| Zero-downtime CP upgrade | `kubeadm upgrade` one node at a time behind LB               |
+| etcd backup / restore    | Cron snapshot (+ optional copy to AIStor); restore drill     |
+| Scheduling               | Labels/taints + affinity sample apps in GitOps               |
+| Vertical resize          | Terraform bump → apply                                       |
+| Policy / GitOps          | Kyverno + Argo; no manual kubectl for permanent config       |
+| Talos                    | Architecture comparison only until a future optional cluster |
 
 ## Out of scope (v1)
 
-- Provisioning a Talos cluster  
-- Moving non-k8s VMs out of `terraform-lab`  
-- Ansible/Helm for long-lived platform apps after Argo exists  
-- Replacing `monitoring-01` for non-k8s guests  
+- Provisioning a Talos cluster
+- Moving non-k8s VMs out of `terraform-lab`
+- Ansible/Helm for long-lived platform apps after Argo exists
+- Replacing `monitoring-01` for non-k8s guests
 
 ## Success criteria
 
