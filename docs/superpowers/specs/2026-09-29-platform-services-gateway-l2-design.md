@@ -36,22 +36,22 @@ Keep a small Cilium LB IPAM pool for future dedicated LB Services. Most hostname
 
 LAN CIDR: `192.168.68.0/22` · Gateway: `192.168.68.1` (TP-Link)
 
-| Range / IP | Role |
-|------------|------|
-| `.1` | Router / gateway |
-| `.10`–`.13` | Proxmox, Infisical, GitLab, runner |
-| `.21`–`.27` | Existing app VMs |
-| `.30` | Talos API VIP — **never** in LB pool |
-| `.31`–`.37` | Talos nodes (cp01–03, worker01–04) |
-| **`.40`–`.49`** | **Cilium LB IPAM only** (10 addresses) |
-| `.50`–`192.168.71.250` | DHCP |
+| Range / IP             | Role                                   |
+| ---------------------- | -------------------------------------- |
+| `.1`                   | Router / gateway                       |
+| `.10`–`.13`            | Proxmox, Infisical, GitLab, runner     |
+| `.21`–`.27`            | Existing app VMs                       |
+| `.30`                  | Talos API VIP — **never** in LB pool   |
+| `.31`–`.37`            | Talos nodes (cp01–03, worker01–04)     |
+| **`.40`–`.49`**        | **Cilium LB IPAM only** (10 addresses) |
+| `.50`–`192.168.71.250` | DHCP                                   |
 
 ### Pool usage
 
-| IP | Reservation |
-|----|-------------|
-| **`192.168.68.40`** | **Shared Envoy Gateway** (explicit `loadBalancerIP` / IPAM request) |
-| `.41`–`.49` | Spare dedicated LB Services (rare; most apps use HTTPRoute on `.40`) |
+| IP                  | Reservation                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| **`192.168.68.40`** | **Shared Envoy Gateway** (explicit `loadBalancerIP` / IPAM request)  |
+| `.41`–`.49`         | Spare dedicated LB Services (rare; most apps use HTTPRoute on `.40`) |
 
 ### Companion documentation (required)
 
@@ -77,13 +77,13 @@ Preserve existing Talos/KubePrism settings:
 
 **Add:**
 
-| Setting | Value | Why |
-|---------|-------|-----|
-| `l2announcements.enabled` | `true` | ARP for LB IPs (**beta** upstream — ship; document) |
-| `defaultLBServiceIPAM` | `none` | Only Services that opt into Cilium IPAM/class get addresses |
-| `k8sClientRateLimit.qps` | `10` | Sized for ≤10 LB services; default renew 5s → base ≈ 2 QPS; headroom for other API use |
-| `k8sClientRateLimit.burst` | `20` | Burst above QPS for lease/election spikes |
-| L2 lease timings | **defaults** | Do not tune initially |
+| Setting                    | Value        | Why                                                                                    |
+| -------------------------- | ------------ | -------------------------------------------------------------------------------------- |
+| `l2announcements.enabled`  | `true`       | ARP for LB IPs (**beta** upstream — ship; document)                                    |
+| `defaultLBServiceIPAM`     | `none`       | Only Services that opt into Cilium IPAM/class get addresses                            |
+| `k8sClientRateLimit.qps`   | `10`         | Sized for ≤10 LB services; default renew 5s → base ≈ 2 QPS; headroom for other API use |
+| `k8sClientRateLimit.burst` | `20`         | Burst above QPS for lease/election spikes                                              |
+| L2 lease timings           | **defaults** | Do not tune initially                                                                  |
 
 Do **not** set Helm `devices` unless verify fails — live agents already use **`ens18`** (virtio_net) as the kube-proxy-replacement / direct-routing device.
 
@@ -102,7 +102,7 @@ Do **not** set Helm `devices` unless verify fails — live agents already use **
 - Node selector (dynamic labels, **not** node names):
   - `node-role.kubernetes.io/control-plane` DoesNotExist
   - `workload` NotIn `["stateful"]`  
-  → candidates: worker01–03 (`apps`, `apps`, `platform`); worker04 (`stateful`) excluded
+    → candidates: worker01–03 (`apps`, `apps`, `platform`); worker04 (`stateful`) excluded
 - Interfaces: `["^ens[0-9]+$"]` (confirmed live: `ens18`)
 
 **Service ownership:**
@@ -117,27 +117,27 @@ Combined with `defaultLBServiceIPAM: none`, Services without the Cilium class do
 
 ### Envoy Gateway
 
-| Item | Choice |
-|------|--------|
-| Chart | `oci://docker.io/envoyproxy/gateway-helm` **v1.9.1** (or latest **v1.9.x** patch at implement time) |
-| CRDs | Install **first** via pinned `oci://docker.io/envoyproxy/gateway-crds-helm` **same version**, enabling Gateway API + Envoy Gateway CRDs explicitly |
-| Main chart | Install with **`crds.enabled=false`** so CRDs stay owned by the CRD chart |
-| Namespace | `envoy-gateway-system` |
-| Gateway API | Version bundled with the pin (**v1.6.1** for v1.9) |
-| K8s compatibility | Official matrix for **v1.9**: **1.33–1.36**. Cluster is **1.37** — document as outside tested matrix; proceed for homelab unless blockers appear |
-| `GatewayClass` | Shared; controller `gateway.envoyproxy.io/gatewayclass-controller` |
-| `Gateway` | Shared internal LAN Gateway; HTTP `:80` for smoke (TLS later) |
-| Data-plane LB | Class `io.cilium/l2-announcer`, ETP Cluster, IP **`.40`** |
+| Item              | Choice                                                                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chart             | `oci://docker.io/envoyproxy/gateway-helm` **v1.9.1** (or latest **v1.9.x** patch at implement time)                                                |
+| CRDs              | Install **first** via pinned `oci://docker.io/envoyproxy/gateway-crds-helm` **same version**, enabling Gateway API + Envoy Gateway CRDs explicitly |
+| Main chart        | Install with **`crds.enabled=false`** so CRDs stay owned by the CRD chart                                                                          |
+| Namespace         | `envoy-gateway-system`                                                                                                                             |
+| Gateway API       | Version bundled with the pin (**v1.6.1** for v1.9)                                                                                                 |
+| K8s compatibility | Official matrix for **v1.9**: **1.33–1.36**. Cluster is **1.37** — document as outside tested matrix; proceed for homelab unless blockers appear   |
+| `GatewayClass`    | Shared; controller `gateway.envoyproxy.io/gatewayclass-controller`                                                                                 |
+| `Gateway`         | Shared internal LAN Gateway; HTTP `:80` for smoke (TLS later)                                                                                      |
+| Data-plane LB     | Class `io.cilium/l2-announcer`, ETP Cluster, IP **`.40`**                                                                                          |
 
 ### Ownership
 
-| Object | Owner |
-|--------|-------|
-| Cilium Helm values + LB pool + L2 policy | `homelab-platform-services` |
-| Envoy Gateway Helm + CRD chart | `homelab-platform-services` |
-| `GatewayClass`, shared `Gateway` | `homelab-platform-services` |
-| App `HTTPRoute` / `GRPCRoute` | Application repos (later) |
-| Temporary `gateway-test` HTTPRoute | This milestone only (ephemeral) |
+| Object                                   | Owner                           |
+| ---------------------------------------- | ------------------------------- |
+| Cilium Helm values + LB pool + L2 policy | `homelab-platform-services`     |
+| Envoy Gateway Helm + CRD chart           | `homelab-platform-services`     |
+| `GatewayClass`, shared `Gateway`         | `homelab-platform-services`     |
+| App `HTTPRoute` / `GRPCRoute`            | Application repos (later)       |
+| Temporary `gateway-test` HTTPRoute       | This milestone only (ephemeral) |
 
 ### Test topology
 
@@ -201,15 +201,15 @@ validate → render/diff → manual deploy → verify
 
 **Hard order (enforce in jobs / needs):**
 
-1. **Cilium upgrade** — values with L2 + `defaultLBServiceIPAM=none` + rate limits; preserve Talos settings  
-2. Apply `CiliumLoadBalancerIPPool` + `CiliumL2AnnouncementPolicy`  
-3. **`cilium-l2-verify`** — Cilium healthy; pool Ready; L2 policy Accepted; devices include `ens18`; no MetalLB  
-4. Install **gateway-crds-helm** (pinned)  
-5. Install **gateway-helm** with `crds.enabled=false`  
-6. Apply GatewayClass + Gateway  
-7. **`envoy-gateway-verify`** — controller Ready; GatewayClass Accepted; Gateway Programmed; Service has **`192.168.68.40`**; `loadBalancerClass` correct; ETP Cluster  
-8. Apply `gateway-test` + HTTPRoute  
-9. LAN curl / ARP checks (document workstation steps; automate what CI can from runner LAN)  
+1. **Cilium upgrade** — values with L2 + `defaultLBServiceIPAM=none` + rate limits; preserve Talos settings
+2. Apply `CiliumLoadBalancerIPPool` + `CiliumL2AnnouncementPolicy`
+3. **`cilium-l2-verify`** — Cilium healthy; pool Ready; L2 policy Accepted; devices include `ens18`; no MetalLB
+4. Install **gateway-crds-helm** (pinned)
+5. Install **gateway-helm** with `crds.enabled=false`
+6. Apply GatewayClass + Gateway
+7. **`envoy-gateway-verify`** — controller Ready; GatewayClass Accepted; Gateway Programmed; Service has **`192.168.68.40`**; `loadBalancerClass` correct; ETP Cluster
+8. Apply `gateway-test` + HTTPRoute
+9. LAN curl / ARP checks (document workstation steps; automate what CI can from runner LAN)
 10. Re-run existing Cilium connectivity verify (must still pass)
 
 Envoy deploy **must not** run until Cilium L2/LB verify passes.
@@ -230,40 +230,40 @@ Chosen **qps=10 / burst=20** provides headroom without copying large-cluster exa
 
 ## Success criteria
 
-1. Cilium remains fully healthy (existing connectivity tests pass).  
-2. L2 Announcements enabled (beta documented).  
-3. LB IPAM pool `.40–.49` healthy; non-overlapping with DHCP/static map.  
-4. Envoy Gateway controller healthy in `envoy-gateway-system`.  
-5. `GatewayClass` Accepted.  
-6. `Gateway` Programmed/Ready.  
-7. Envoy LB Service has **`192.168.68.40`**, class `io.cilium/l2-announcer`, ETP Cluster.  
-8. `.40` reachable from another LAN host.  
-9. ARP/L2 leadership can move among worker01–03 (failover smoke).  
-10. Temporary HTTPRoute Accepted; backends resolved.  
-11. `curl http://test.home.internal` succeeds via `.40`.  
-12. No MetalLB, HAProxy, Ingress, router DNAT, or public exposure.  
-13. `defaultLBServiceIPAM=none` — non-classed LoadBalancers do not steal pool IPs.  
+1. Cilium remains fully healthy (existing connectivity tests pass).
+2. L2 Announcements enabled (beta documented).
+3. LB IPAM pool `.40–.49` healthy; non-overlapping with DHCP/static map.
+4. Envoy Gateway controller healthy in `envoy-gateway-system`.
+5. `GatewayClass` Accepted.
+6. `Gateway` Programmed/Ready.
+7. Envoy LB Service has **`192.168.68.40`**, class `io.cilium/l2-announcer`, ETP Cluster.
+8. `.40` reachable from another LAN host.
+9. ARP/L2 leadership can move among worker01–03 (failover smoke).
+10. Temporary HTTPRoute Accepted; backends resolved.
+11. `curl http://test.home.internal` succeeds via `.40`.
+12. No MetalLB, HAProxy, Ingress, router DNAT, or public exposure.
+13. `defaultLBServiceIPAM=none` — non-classed LoadBalancers do not steal pool IPs.
 14. Foundation docs no longer advertise `.100–.119` as the LB pool.
 
 ---
 
 ## Risks & notes
 
-| Risk | Mitigation |
-|------|------------|
-| L2 Announcements are **beta** | Document; verify ARP + failover; rollback = disable L2 + remove pool/policy |
+| Risk                                  | Mitigation                                                                                          |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| L2 Announcements are **beta**         | Document; verify ARP + failover; rollback = disable L2 + remove pool/policy                         |
 | EG v1.9 not matrix-tested on K8s 1.37 | Document; pin patch; watch controller logs; fall back to v1.9.x or wait for matrix update if broken |
-| `externalTrafficPolicy: Local` | Forbidden on L2-announced Services in this design |
-| Wrong NIC regex | Confirmed `ens18`; use `^ens[0-9]+$`; re-check after NIC changes |
-| Duplicate IP if DHCP/docs drift | Companion `lab-home-pve01` doc update in same milestone |
+| `externalTrafficPolicy: Local`        | Forbidden on L2-announced Services in this design                                                   |
+| Wrong NIC regex                       | Confirmed `ens18`; use `^ens[0-9]+$`; re-check after NIC changes                                    |
+| Duplicate IP if DHCP/docs drift       | Companion `lab-home-pve01` doc update in same milestone                                             |
 
 ---
 
 ## Implementation sequencing (when planning)
 
-1. Spec approved → write implementation plan (`writing-plans`)  
-2. Companion network.md update in `lab-home-pve01`  
-3. Cilium values + CRs + verify gate  
-4. Envoy CRDs → Helm → Gateway objects + verify  
-5. `gateway-test` + LAN curl  
+1. Spec approved → write implementation plan (`writing-plans`)
+2. Companion network.md update in `lab-home-pve01`
+3. Cilium values + CRs + verify gate
+4. Envoy CRDs → Helm → Gateway objects + verify
+5. `gateway-test` + LAN curl
 6. Tear down test ns optionally; leave shared platform objects

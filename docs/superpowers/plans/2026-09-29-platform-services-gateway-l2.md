@@ -29,38 +29,40 @@
 
 ## File map
 
-| Path | Responsibility |
-|------|----------------|
-| `lab-home-pve01/docs/architecture/network.md` | Correct LB + DHCP inventory |
-| `platform/cilium/values.yaml` | L2 enable, rate limits, `defaultLBServiceIPAM` |
-| `platform/cilium/lb-ip-pool.yaml` | `CiliumLoadBalancerIPPool` `.40–.49` |
-| `platform/cilium/l2-announcement-policy.yaml` | L2 policy + selectors |
-| `scripts/cilium-deploy.sh` | Also apply pool + L2 policy after Helm |
-| `scripts/cilium-l2-verify.sh` | Gate before Envoy |
-| `versions.env` | EG + CRD pins |
-| `platform/envoy-gateway/values.yaml` | Main chart; `crds.enabled=false` |
-| `platform/envoy-gateway/envoyproxy.yaml` | Data-plane LB Service shape + `.40` |
-| `platform/envoy-gateway/gatewayclass.yaml` | Shared class → EnvoyProxy |
-| `platform/envoy-gateway/gateway.yaml` | Shared LAN Gateway HTTP:80 |
-| `platform/envoy-gateway/test/*` | Ephemeral `gateway-test` app + HTTPRoute |
-| `scripts/envoy-gateway-deploy.sh` | CRDs → Helm → apply CRs |
-| `scripts/envoy-gateway-verify.sh` | Controller + Gateway + `.40` |
-| `scripts/gateway-test-apply.sh` / `gateway-test-verify.sh` / `gateway-test-teardown.sh` | Smoke lifecycle |
-| `docs/runbook-gateway-l2.md` | Operator runbook |
-| `docs/dependency-cluster-infra.md` | Point at L2/LB prerequisites |
-| `docs/namespaces.md` | `envoy-gateway-system`, `gateway-test` |
-| `README.md` | Milestone status |
-| `.gitlab-ci.yml` | Ordered render/deploy/verify jobs |
+| Path                                                                                    | Responsibility                                 |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `lab-home-pve01/docs/architecture/network.md`                                           | Correct LB + DHCP inventory                    |
+| `platform/cilium/values.yaml`                                                           | L2 enable, rate limits, `defaultLBServiceIPAM` |
+| `platform/cilium/lb-ip-pool.yaml`                                                       | `CiliumLoadBalancerIPPool` `.40–.49`           |
+| `platform/cilium/l2-announcement-policy.yaml`                                           | L2 policy + selectors                          |
+| `scripts/cilium-deploy.sh`                                                              | Also apply pool + L2 policy after Helm         |
+| `scripts/cilium-l2-verify.sh`                                                           | Gate before Envoy                              |
+| `versions.env`                                                                          | EG + CRD pins                                  |
+| `platform/envoy-gateway/values.yaml`                                                    | Main chart; `crds.enabled=false`               |
+| `platform/envoy-gateway/envoyproxy.yaml`                                                | Data-plane LB Service shape + `.40`            |
+| `platform/envoy-gateway/gatewayclass.yaml`                                              | Shared class → EnvoyProxy                      |
+| `platform/envoy-gateway/gateway.yaml`                                                   | Shared LAN Gateway HTTP:80                     |
+| `platform/envoy-gateway/test/*`                                                         | Ephemeral `gateway-test` app + HTTPRoute       |
+| `scripts/envoy-gateway-deploy.sh`                                                       | CRDs → Helm → apply CRs                        |
+| `scripts/envoy-gateway-verify.sh`                                                       | Controller + Gateway + `.40`                   |
+| `scripts/gateway-test-apply.sh` / `gateway-test-verify.sh` / `gateway-test-teardown.sh` | Smoke lifecycle                                |
+| `docs/runbook-gateway-l2.md`                                                            | Operator runbook                               |
+| `docs/dependency-cluster-infra.md`                                                      | Point at L2/LB prerequisites                   |
+| `docs/namespaces.md`                                                                    | `envoy-gateway-system`, `gateway-test`         |
+| `README.md`                                                                             | Milestone status                               |
+| `.gitlab-ci.yml`                                                                        | Ordered render/deploy/verify jobs              |
 
 ---
 
 ### Task 1: Fix foundation LAN inventory docs
 
 **Files:**
+
 - Modify: `lab-home-pve01/docs/architecture/network.md`
 - Modify (if still present): any inventory table that lists `.100–.119` as LB pool
 
 **Interfaces:**
+
 - Produces: Documented truth — LB `.40–.49`, DHCP `.50`–`192.168.71.250`
 - Consumes: Approved design IP map
 
@@ -69,11 +71,11 @@
 Replace the “Reserved for later” / LB row so it matches:
 
 ```markdown
-| Range | Use |
-| ----- | --- |
-| `.14`–`.29`, `.38`–`.39` | Static guests / future infra (avoid DHCP) |
-| `.40`–`.49` | **Kubernetes LoadBalancer (Cilium LB IPAM only)** — `.40` reserved for Envoy Gateway |
-| `.50`–`192.168.71.250` | TP-Link DHCP |
+| Range                    | Use                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| `.14`–`.29`, `.38`–`.39` | Static guests / future infra (avoid DHCP)                                            |
+| `.40`–`.49`              | **Kubernetes LoadBalancer (Cilium LB IPAM only)** — `.40` reserved for Envoy Gateway |
+| `.50`–`192.168.71.250`   | TP-Link DHCP                                                                         |
 ```
 
 Remove any claim that `.100–.119` is the Kubernetes LB pool.
@@ -103,10 +105,12 @@ EOF
 ### Task 2: Cilium Helm values for L2 + IPAM defaults
 
 **Files:**
+
 - Modify: `homelab-platform-services/platform/cilium/values.yaml`
 - Modify: `homelab-platform-services/scripts/cilium-deploy.sh` (only if needed for comments; apply CRs in Task 3)
 
 **Interfaces:**
+
 - Produces: Helm values enabling L2, `defaultLBServiceIPAM=none`, client rate limits
 - Consumes: Existing Talos Cilium values (must remain)
 
@@ -156,11 +160,13 @@ git commit -m "feat(cilium): enable L2 announcements and defaultLBServiceIPAM=no
 ### Task 3: Cilium LB IP pool + L2 announcement policy
 
 **Files:**
+
 - Create: `platform/cilium/lb-ip-pool.yaml`
 - Create: `platform/cilium/l2-announcement-policy.yaml`
 - Modify: `scripts/cilium-deploy.sh`
 
 **Interfaces:**
+
 - Produces: Pool `.40–.49` selecting Services with label `homelab.nasraldin.com/cilium-lb: "true"`; L2 policy announcing those LB IPs from non-stateful workers on `ens*`
 - Consumes: Task 2 Helm L2 enabled
 
@@ -175,10 +181,10 @@ spec:
   # Only Services that opt in (and use Cilium LB class) may consume this pool.
   serviceSelector:
     matchLabels:
-      homelab.nasraldin.com/cilium-lb: "true"
+      homelab.nasraldin.com/cilium-lb: 'true'
   blocks:
-    - start: "192.168.68.40"
-      stop: "192.168.68.49"
+    - start: '192.168.68.40'
+      stop: '192.168.68.49'
 ```
 
 - [ ] **Step 2: Create `platform/cilium/l2-announcement-policy.yaml`**
@@ -193,7 +199,7 @@ spec:
   externalIPs: false
   serviceSelector:
     matchLabels:
-      homelab.nasraldin.com/l2-announce: "true"
+      homelab.nasraldin.com/l2-announce: 'true'
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane
@@ -203,7 +209,7 @@ spec:
         values:
           - stateful
   interfaces:
-    - "^ens[0-9]+$"
+    - '^ens[0-9]+$'
 ```
 
 - [ ] **Step 3: Update `scripts/cilium-deploy.sh` to apply CRs after Helm**
@@ -242,11 +248,13 @@ git commit -m "feat(cilium): add LB IP pool .40-.49 and L2 announcement policy"
 ### Task 4: Cilium L2 verify gate script + CI job
 
 **Files:**
+
 - Create: `scripts/cilium-l2-verify.sh`
 - Modify: `.gitlab-ci.yml`
 - Modify: `docs/runbook-cilium.md` (link to L2 verify)
 
 **Interfaces:**
+
 - Produces: Exit 0 only when L2/LB ready for Envoy; CI job `cilium:verify-l2` that Envoy deploy `needs`
 - Consumes: Task 3 resources
 
@@ -323,7 +331,7 @@ cilium:verify-l2:
   image: alpine:3.21
   needs: [cilium:deploy]
   cache:
-    key: "${TOOL_CACHE_PREFIX}"
+    key: '${TOOL_CACHE_PREFIX}'
     paths: [.ci-tools/]
   before_script:
     - *helm_kube_tools
@@ -347,11 +355,13 @@ git commit -m "feat(cilium): add L2/LB verify gate before Envoy"
 ### Task 5: Pin Envoy Gateway + CRD chart versions
 
 **Files:**
+
 - Modify: `versions.env`
 - Create: `platform/envoy-gateway/README.md`
 - Create: `platform/envoy-gateway/values.yaml`
 
 **Interfaces:**
+
 - Produces: Version pins + main-chart values with `crds.enabled=false`
 - Consumes: None
 
@@ -390,11 +400,13 @@ git commit -m "feat(envoy-gateway): pin v1.9.1 charts with CRDs managed separate
 ### Task 6: EnvoyProxy + GatewayClass + Gateway manifests
 
 **Files:**
+
 - Create: `platform/envoy-gateway/envoyproxy.yaml`
 - Create: `platform/envoy-gateway/gatewayclass.yaml`
 - Create: `platform/envoy-gateway/gateway.yaml`
 
 **Interfaces:**
+
 - Produces: Data-plane Service as LoadBalancer class Cilium L2, ETP Cluster, IP `.40`, labels for pool/L2 selectors
 - Consumes: Task 3 pool/policy label contract (`homelab.nasraldin.com/cilium-lb`, `homelab.nasraldin.com/l2-announce`)
 
@@ -416,12 +428,12 @@ spec:
         externalTrafficPolicy: Cluster
         loadBalancerClass: io.cilium/l2-announcer
         # Version-aware IP pin for Cilium 1.18 LB IPAM:
-        loadBalancerIP: "192.168.68.40"
+        loadBalancerIP: '192.168.68.40'
         annotations:
-          lbipam.cilium.io/ips: "192.168.68.40"
+          lbipam.cilium.io/ips: '192.168.68.40'
         labels:
-          homelab.nasraldin.com/cilium-lb: "true"
-          homelab.nasraldin.com/l2-announce: "true"
+          homelab.nasraldin.com/cilium-lb: 'true'
+          homelab.nasraldin.com/l2-announce: 'true'
 ```
 
 - [ ] **Step 2: Create `platform/envoy-gateway/gatewayclass.yaml`**
@@ -471,12 +483,14 @@ git commit -m "feat(envoy-gateway): EnvoyProxy LB .40 + shared GatewayClass/Gate
 ### Task 7: Envoy deploy + verify scripts
 
 **Files:**
+
 - Create: `scripts/envoy-gateway-deploy.sh`
 - Create: `scripts/envoy-gateway-render.sh`
 - Create: `scripts/envoy-gateway-verify.sh`
 - Modify: `.gitlab-ci.yml`
 
 **Interfaces:**
+
 - Produces: Ordered install CRDs → Helm → apply CRs; verify `.40` assigned
 - Consumes: Tasks 4–6; calls `cilium-l2-verify.sh` at start of deploy
 
@@ -558,6 +572,7 @@ git commit -m "feat(envoy-gateway): CRD-first Helm deploy and verify for VIP .40
 ### Task 8: Temporary `gateway-test` app + HTTPRoute
 
 **Files:**
+
 - Create: `platform/envoy-gateway/test/namespace.yaml`
 - Create: `platform/envoy-gateway/test/deployment.yaml`
 - Create: `platform/envoy-gateway/test/service.yaml`
@@ -567,6 +582,7 @@ git commit -m "feat(envoy-gateway): CRD-first Helm deploy and verify for VIP .40
 - Create: `scripts/gateway-test-teardown.sh`
 
 **Interfaces:**
+
 - Produces: `HTTPRoute` host `test.home.internal` → shared Gateway
 - Consumes: Task 7 Gateway Ready + `.40`
 
@@ -627,6 +643,7 @@ git commit -m "feat(envoy-gateway): ephemeral gateway-test HTTPRoute for LAN smo
 ### Task 9: Docs + README + dependency notes + final verify
 
 **Files:**
+
 - Create: `docs/runbook-gateway-l2.md`
 - Modify: `docs/dependency-cluster-infra.md`
 - Modify: `docs/namespaces.md`
@@ -634,6 +651,7 @@ git commit -m "feat(envoy-gateway): ephemeral gateway-test HTTPRoute for LAN smo
 - Modify: `docs/runbook-cilium.md` (L2 beta note + verify gate)
 
 **Interfaces:**
+
 - Produces: Operator-facing runbook matching success criteria
 - Consumes: All prior tasks
 
@@ -672,22 +690,22 @@ git commit -m "docs: Gateway L2 + Envoy runbook and milestone status"
 
 ## Self-review (plan vs spec)
 
-| Spec requirement | Task |
-|------------------|------|
-| Pool `.40–.49`, DHCP `.50+`, not VIP `.30` | 1, 3 |
-| Fix foundation `.100–.119` docs | 1 |
-| L2 beta + kube-proxy replacement preserved | 2, 4 |
-| `defaultLBServiceIPAM=none` | 2 |
-| Explicit `loadBalancerClass` + labels | 3, 6 |
-| L2 nodes ≠ stateful; interfaces `ens*` | 3 |
-| qps=10/burst=20; default leases | 2 |
-| EG CRD chart then main `crds.enabled=false` | 5, 7 |
-| Pin `.40` version-aware (`lbipam.cilium.io/ips` + `loadBalancerIP`) | 6 |
-| ETP Cluster (not Local) | 6 |
-| K8s 1.37 / EG v1.9 matrix risk documented | 5, 9 |
-| CI order L2 verify before Envoy | 4, 7 |
-| `gateway-test` + curl | 8 |
-| No MetalLB/Ingress/public | 4, 7, 9 |
-| Keep shared platform objects; tear down test | 8, 9 |
+| Spec requirement                                                    | Task    |
+| ------------------------------------------------------------------- | ------- |
+| Pool `.40–.49`, DHCP `.50+`, not VIP `.30`                          | 1, 3    |
+| Fix foundation `.100–.119` docs                                     | 1       |
+| L2 beta + kube-proxy replacement preserved                          | 2, 4    |
+| `defaultLBServiceIPAM=none`                                         | 2       |
+| Explicit `loadBalancerClass` + labels                               | 3, 6    |
+| L2 nodes ≠ stateful; interfaces `ens*`                              | 3       |
+| qps=10/burst=20; default leases                                     | 2       |
+| EG CRD chart then main `crds.enabled=false`                         | 5, 7    |
+| Pin `.40` version-aware (`lbipam.cilium.io/ips` + `loadBalancerIP`) | 6       |
+| ETP Cluster (not Local)                                             | 6       |
+| K8s 1.37 / EG v1.9 matrix risk documented                           | 5, 9    |
+| CI order L2 verify before Envoy                                     | 4, 7    |
+| `gateway-test` + curl                                               | 8       |
+| No MetalLB/Ingress/public                                           | 4, 7, 9 |
+| Keep shared platform objects; tear down test                        | 8, 9    |
 
 No TBD placeholders remain for implementers; if Cilium pool Ready condition name differs slightly by CRD version, Task 4 already allows yaml/block fallback checks.

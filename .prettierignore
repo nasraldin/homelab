@@ -1,9 +1,13 @@
 # Dependencies / caches
 node_modules/
 **/.git/
+**/.ansible/
 **/node_modules/
 .superpowers/
 .impeccable/
+.worktrees/
+.history/
+.vscode/
 
 # Nested sibling repositories — each owns its formatter
 ansible-lab/
@@ -15,6 +19,16 @@ proxmox-bootstrap/
 terraform-lab/
 homebrew/
 homelab-docs/
+dev-homelab/
+homelab-cluster-infra/
+homelab-gitops/
+homelab-platform-services/
+k8s-lab/
+lab-home-gitops/
+lab-home-k8s/
+lab-home-pve01/
+pipeline-templates/
+vault/
 
 # Terraform
 **/.terraform/

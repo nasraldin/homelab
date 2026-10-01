@@ -19,7 +19,8 @@ LABS := ansible-lab camunda-lab cloudflare-tunnel docker-lab \
 
 # Shell scripts across labs (exclude git / terraform providers)
 SH_FILES := $(shell find $(LABS) -type f \( -name '*.sh' \) \
-	! -path '*/.git/*' ! -path '*/.terraform/*' ! -path '*/node_modules/*' 2>/dev/null)
+	! -path '*/.git/*' ! -path '*/.ansible/*' ! -path '*/.terraform/*' \
+	! -path '*/node_modules/*' 2>/dev/null)
 
 help:
 	@echo "Homelab workspace"

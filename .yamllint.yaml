@@ -6,6 +6,7 @@ extends: default
 ignore: |
   **/.git/
   **/.terraform/
+  **/.ansible/
   **/node_modules/
   **/vendor/
   **/iso/
