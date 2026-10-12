@@ -73,11 +73,11 @@ bounded 3Gi container allocation for other clients.
   revision `bf36e7db0ff75adeffe6057201d42336cff17cdd`, rebased on current dev.
 - [Templates GitLab MR1](https://gitlab.nasraldin.com/homelab/pipeline-templates/-/merge_requests/1).
 - [Platform runtime MR66](https://gitlab.nasraldin.com/homelab/homelab-platform-services/-/merge_requests/66),
-  revision `3ba7629`, rebased on main `2cd85a5` in isolated
+  revision `789cefa`, rebased on main `835e0af` in isolated
   `/Users/nasr/.codex/tmp/ajrly-ci-migration/platform-runtime`.
   The user's active platform checkout and unrelated OpenClaw/artifact work were preserved.
 - [Vault MR22](https://gitlab.nasraldin.com/homelab/vault/-/merge_requests/22), revision767362a.
-- [Infrastructure MR16](https://gitlab.nasraldin.com/homelab/homelab-cluster-infra/-/merge_requests/16), revision `e1bf8e4`.
+- [Infrastructure MR16](https://gitlab.nasraldin.com/homelab/homelab-cluster-infra/-/merge_requests/16), revision `ab8a687`.
 - [Deployments MR7](https://gitlab.nasraldin.com/homelab/ajrly-k8s-deployments/-/merge_requests/7), revision964972e.
 - [Legacy web-api PR22](https://github.com/ajrly/web-api/pull/22), revision2bac56a.
 
@@ -101,8 +101,8 @@ was not pushed to the archived remote. Lab-home-pve01 required no tracked change
   removal; its orphan pod was removed and the manager replaced.
 - 22 template tests, 22 reconciliation/cleanup tests, and eight runner resource
   tests pass. Template pipeline 410 passed all 45 validation/lint jobs. Latest
-  platform, Vault, and deployment pipelines passed. Infrastructure validation
-  is pending investigation of the Talos Image Factory TLS timeout.
+  platform, Vault, and deployment pipelines passed. Infrastructure pipeline 429 passed all eight checks after isolating config
+  validation from external Image Factory registration.
 - All 36 live PostgreSQL integration tests pass after correcting the concurrency
   contract assertion and closing two test pools. Security patch regression tests
   pass. Rust dependency updates compile with the locked Cargo dependencies.
@@ -138,6 +138,10 @@ The Proxmox host rebooted during validation; all eight nodes and the API VIP
 recovered, managers resumed, and terminal job pods cleaned up before pipeline412.
 The final helper reservation (47.5Mi observed peak, 64Mi request with 512Mi
 limit) is deployed. Capacity pipeline 417 passed 21/21 with the final configuration;
-all job pods subsequently cleaned up. Runtime pipeline 419 passed 18/18 after
+all job pods subsequently cleaned up. Runtime pipeline 427 passed 19/19 after
 rebasing onto the updated main branch. Infrastructure pipeline 421 initially
-hit a transient TLS handshake timeout at Talos Image Factory; the retry reproduced the timeout and a dedicated runner network probe is running.
+hit a transient TLS handshake timeout at Talos Image Factory; the retry reproduced the timeout. A network probe then verified runner DNS, TLS
+and schematic creation after the user confirmed internet recovery. CI config
+validation now uses Talhelper offline schematic generation; deployment retains
+online registration. Pipeline 429 passed all eight checks, including generation of all eight Talos
+node configs. All migration MR head pipelines now report success.
