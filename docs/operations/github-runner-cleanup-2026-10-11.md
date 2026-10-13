@@ -11,7 +11,8 @@ The user approved deletion of both obsolete ARC App definitions; GitHub shows
 both deletions queued and the definitions absent from their settings lists.
 Unrelated Apps remain intact.
 
-Ajrly GitHub Actions is disabled, registered self-hosted runners are zero, and
+Ajrly GitHub Actions now runs only the hosted dispatch bridge; registered
+self-hosted runners are zero, and
 obsolete runs were canceled. The runner-smoke repository is archived with Actions
 disabled; its dedicated Sonar project and analysis-token references were removed.
 Six ARC GitLab variables, two Infisical folders, and ignored local ARC credentials
@@ -84,7 +85,7 @@ bounded 3Gi container allocation for other clients.
 The unnecessary GitHub templates PR1 was closed and our unmerged GitHub branch
 was removed; the GitLab templates MR is the sole review destination.
 
-No review requests were merged. The archived smoke repository's local cleanup
+All seven review requests were merged with explicit approval on October 12. The archived smoke repository's local cleanup
 was not pushed to the archived remote. Lab-home-pve01 required no tracked changes.
 
 ## Acceptance evidence and remaining work
@@ -124,8 +125,10 @@ was not pushed to the archived remote. Lab-home-pve01 required no tracked change
   were upgraded to fixed versions.
 
 Core pull-request CI acceptance is complete: pipeline 412 passed 19/19, GitHub
-received success for the exact head, and terminal job pods were removed. GitHub Actions stays disabled
-until the bridge reaches the source default branch. Remote cache credentials and
+received success for the exact head, and terminal job pods were removed. GitHub Actions is enabled after the bridge reached `dev` at merge commit
+`68f687f515bbab63649200831722e5297c00f534`. Hosted dispatch run
+38282501608 passed and started real GitLab pipeline 435; it passed all 18 jobs. GitHub reports success for the exact merged commit,
+and all job pods and temporary registry secrets were cleaned up. Remote cache credentials and
 trusted publication acceptance remain incomplete. Rootless BuildKit cannot start
 with current Talos user namespace restrictions; image publication is explicitly
 gated off. No privileged workaround was introduced and unremediated security findings remain visible.
@@ -145,3 +148,27 @@ and schematic creation after the user confirmed internet recovery. CI config
 validation now uses Talhelper offline schematic generation; deployment retains
 online registration. Pipeline 429 passed all eight checks, including generation of all eight Talos
 node configs. All migration MR head pipelines now report success.
+
+## Approved integration and activation
+
+All seven reviews are merged. Source PR167 merged into dev at
+`68f687f515bbab63649200831722e5297c00f534`; legacy PR22 merged into dev at
+`8c1f51041664215bf999e35ee93634bfeafc5430`. GitLab merge commits are templates
+`593865e`, Vault `a83580f`, runtime `819a3ee`, infrastructure `0a600f6`, and
+deployments `be1a907`.
+
+GitHub Actions is enabled and self-hosted runner count remains zero.
+[Hosted dispatch run38282501608](https://github.com/nasraldin/ajrly-platform/actions/runs/38282501608)
+passed and started [GitLab pipeline435](https://gitlab.nasraldin.com/homelab/ajrly-platform-ci/-/pipelines/435)
+for the exact merged source commit. The reconciler posted the final successful GitHub commit status. Pipeline435
+passed18/18 and all job pods cleaned up. Its complete job traces contain zero
+Unschedulable messages. A trace audit found one worker job in earlier pipeline412
+waited about25 seconds for memory during turnover; that run preceded the final
+64Mi helper reservation. Passing alone was insufficient to rule out that wait.
+
+Post-merge validation: templates pipeline430 passed45/45, Vault pipeline431
+passed both automatic checks, runtime pipeline432 passed19 validation checks,
+infrastructure pipeline434 passed8 checks, deployments pipeline433 passed6
+checks, and legacy GitHub checks passed. Infrastructure/runtime/deployment
+pipelines retain their intentional manual deployment gates; no deployment
+gates were played to manufacture a success status. Image publication stays gated.
