@@ -1,6 +1,8 @@
 # Registry, CI cache, and scheduling performance design
 
-Status: proposed for review. Date: October 13, 2026.
+Status: approved by the user on October 14, 2026. Design date: October 13, 2026.
+
+Implementation plan: [coordination and four work packages](/Users/nasr/homelab/docs/superpowers/plans/2026-10-14-ci-cache-performance.md).
 
 ## Outcome and scope
 
