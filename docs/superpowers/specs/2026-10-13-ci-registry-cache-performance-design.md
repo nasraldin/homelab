@@ -12,7 +12,7 @@ The work covers homelab-platform-services, homelab-cluster-infra, lab-home-pve01
 
 - All seven migration reviews are merged. GitHub hosted dispatch run38282501608 passed and created GitLab pipeline435 for GitHub dev commit `68f687f515bbab63649200831722e5297c00f534`.
 - Pipeline435 passed18/18 in1526 seconds. GitHub received success; terminal pods and temporary registry secrets cleaned up. Its completed traces contain no `Unschedulable` messages.
-- Earlier passing pipeline412 had one worker job unscheduled for approximately25 seconds during turnover, before the final64Mi helper reservation. Passing results alone do not establish healthy startup behavior. The exact pod name supplied by the user has not yet been matched to a historical job.
+- Earlier passing pipeline412 had one worker job unscheduled for approximately25 seconds during turnover, before the final64Mi helper reservation. Passing results alone do not establish healthy startup behavior. The exact quoted pod `runner-wuw5djncv-project-7-concurrent-0-6vh2bydx` belongs to marketing job6555 in pipeline403. It was unscheduled for approximately30 seconds before placement on worker05, then ran successfully; that run also predates the final resource profile.
 - Heavy-job queue times in435 reached675 seconds. API was the critical path at1526 seconds; API Jest took605.7 seconds,483 suites passed, one skipped. Package tasks took968 seconds; Admin789 seconds.
 - API trace reported191 cache misses, four local hits, and remote caching disabled. Kubernetes runner configuration has no distributed cache; job-local pnpm/Turbo stores disappear with pods. Every Node job repeats apt setup and a public pnpm executable download.
 - Harbor has approximately98GiB filesystem capacity and84MiB used. All74 distinct current live Pod image references point upstream. The node-local `if-not-present` pull policy already avoids redownloading existing layers; registry mirroring addresses cold pulls and upstream availability.
@@ -74,7 +74,7 @@ Rootless BuildKit is currently gated because Talos disables user namespaces. Do 
 
 ## 5. Scheduling and resource utilization
 
-Trace job queue, pod admission, image pull, initialization, script, cache transfer and cleanup separately. Record exact pod UID, current per-node reservations, init/sidecar maxima, overhead and terminating pods. Match the user's quoted pod to its historical pipeline if accessible.
+Trace job queue, pod admission, image pull, initialization, script, cache transfer and cleanup separately. Record exact pod UID, current per-node reservations, init/sidecar maxima, overhead and terminating pods. Retain the identified pipeline403/job6555 trace as the quoted-pod regression reference.
 
 Fix invalid runner defaults: the build pool currently defaults to a1920Mi request and1Gi limit unless templates override it. Every supported profile must have request <= limit. Replace hardcoded single-node baseline tests with live/effective scheduling budget checks and profile-envelope tests.
 
