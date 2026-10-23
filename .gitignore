@@ -18,6 +18,11 @@ dev-homelab/
 pipeline-templates/
 homelab-cluster-infra/
 vault/
+ajrly-k8s-deployments/
+ajrly-web-api/
+github-runner-smoke/
+homelab-platform-services/
+platform-services-safe-patches/
 
 # Local installers / large blobs (never commit)
 homelab-binaries/
@@ -28,6 +33,9 @@ homelab-binaries/
 
 # Agent / local scratch at workspace root
 .superpowers/
+.playwright-mcp/
+mr-allocator.json
+mr-shared-budget.json
 
 # Docs site (generated)
 site/
