@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python unittest, Skopeo, Harbor API, Helm, Talos, Docker, GitLab CI.
 
-**Spec:** [2026-10-13-ci-registry-cache-performance-design.md](/Users/nasr/homelab/docs/superpowers/specs/2026-10-13-ci-registry-cache-performance-design.md), approved October 14, 2026. Read the coordination plan `2026-10-14-ci-cache-performance.md` before execution.
+**Spec:** [2026-10-13-ci-registry-cache-performance-design.md](../specs/2026-10-13-ci-registry-cache-performance-design.md), approved October 14, 2026. Read the coordination plan `2026-10-14-ci-cache-performance.md` before execution.
 
 ## Global Constraints
 

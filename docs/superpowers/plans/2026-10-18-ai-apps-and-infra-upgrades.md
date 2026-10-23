@@ -99,4 +99,3 @@
 - [ ] Verify backup/recovery and rollback limits, including persistent database, Redis, Hermes, Dify, Paperclip, and Autensa state.
 - [ ] Confirm all test records/resources were removed and existing n8n/OpenClaw remain healthy.
 - [ ] Report any step that remains unverified or blocked by missing external credentials.
-

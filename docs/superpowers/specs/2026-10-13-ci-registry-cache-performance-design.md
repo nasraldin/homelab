@@ -2,7 +2,7 @@
 
 Status: approved by the user on October 14, 2026. Design date: October 13, 2026.
 
-Implementation plan: [coordination and four work packages](/Users/nasr/homelab/docs/superpowers/plans/2026-10-14-ci-cache-performance.md).
+Implementation plan: [coordination and four work packages](../plans/2026-10-14-ci-cache-performance.md).
 
 ## Outcome and scope
 

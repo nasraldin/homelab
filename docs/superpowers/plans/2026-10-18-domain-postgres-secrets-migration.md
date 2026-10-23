@@ -5,6 +5,7 @@ User authorizes delegated implementation, live changes and verification, then fi
 Target: public services under ajrly.app; .lab continues locally; private traffic uses service DNS; PostgreSQL resources under postgres; secrets grouped by responsibility; Hermes browser UI and AI integrations functional; Autensa protected by email Access.
 
 ## Task ledger
+
 - [x] Confirm cluster access and node health: eight nodes Ready.
 - [x] Launch agy database worker (ajrly-k8s-deployments only).
 - [x] Launch opencode AI diagnostics worker (read-only).
@@ -23,4 +24,5 @@ Target: public services under ajrly.app; .lab continues locally; private traffic
 - [ ] Commit/push final code and open MRs; verify applicable pipelines.
 
 ## Release gates
+
 Never delete source databases/PVCs or old secret paths during migration. Keep authenticated services protected throughout; no bypass policies. No credential values in reports, Git, logs or chat. Do not rewrite identity annotations, image registry addresses or TLS backend SNI through blind domain replacement. Database namespace changes require actual restore/data validation, not manifest renaming. Completion requires live evidence and MR/pipeline links; report unverified steps honestly.

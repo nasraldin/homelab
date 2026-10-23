@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python, Bash, OCI/Skopeo, Helm/Kubernetes, Talos, GitLab Runner/S3, Node26.12.0, pnpm12.10.1, Turbo2.11.7, BuildKit.
 
-**Spec:** [2026-10-13-ci-registry-cache-performance-design.md](/Users/nasr/homelab/docs/superpowers/specs/2026-10-13-ci-registry-cache-performance-design.md), approved October 14, 2026. Read the coordination plan `2026-10-14-ci-cache-performance.md` before execution.
+**Spec:** [2026-10-13-ci-registry-cache-performance-design.md](../specs/2026-10-13-ci-registry-cache-performance-design.md), approved October 14, 2026. Read the coordination plan `2026-10-14-ci-cache-performance.md` before execution.
 
 ## Global Constraints
 
@@ -60,7 +60,7 @@ Each task produced small commits and owning-repository reviews. Merged runtime M
 
 - [x] Canary tool image/private npm on one controlled job, then representative concurrency. Roll back consumers to their previous digest/endpoint if the canary fails.
 - [x] Enable cache reads before trusted writes; verify corruption/miss recomputation and key invalidation before wider use.
-- [ ] Run full MR and default-branch CI, two warm repetitions and a source-only edit; collect the report defined by Scheduling task3 ([2026-10-18-final-review-performance.md](/Users/nasr/homelab/docs/superpowers/reports/2026-10-18-final-review-performance.md)).
+- [ ] Run full MR and default-branch CI, two warm repetitions and a source-only edit; collect the report defined by Scheduling task3 ([2026-10-18-final-review-performance.md](../reports/2026-10-18-final-review-performance.md)).
 - [ ] Publish all review links and measured results, including any unmet performance target or still-gated publication capability. Remove only task-owned disposable test resources after capturing evidence ([RESULT.md](file:///Users/nasr/.codex/tmp/ajrly-ci-migration/review-performance-final/RESULT.md)).
 
 ## Execution handoff

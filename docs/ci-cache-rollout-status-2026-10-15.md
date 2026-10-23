@@ -3,9 +3,11 @@
 This report distinguishes live deployment, feature-branch implementation, measurements, and unfinished acceptance. The contract is NOT complete.
 
 ## Latest scope
+
 GitHub remains source owner; GitLab owns CI and reusable templates. Mirror pipeline dependencies only. Exclude PostgreSQL and Argo CD from mirror catalog. No cluster/system image mirror rollout. One current stable version per tool, exact digest pins, no floating latest defaults. Node shared template must be templates/common/node.yml with .node_base, current Node26, all includes/docs/preflight fixtures renamed without node24 aliases. Latest release verification does not prove registry-tag availability or build compatibility.
 
 ## Completed and verified
+
 - Original GitHub ARC-to-GitLab migration reviews previously merged and validated. New cache/local-access reviews remain drafts/unmerged.
 - Live namespace gitlab-runners: four managers, configured maximum20 jobs (8 heavy,12 checks). Current readback: managers/authority Running, two maintenance jobs Completed, no Pending job pods. This idle sample does not prove scheduling under full load.
 - Private Harbor mirror imported117 catalog entries/104 distinct digests before scope correction; this was overbroad. Quota64Gi within existing100Gi PVC. No larger VM/volume. Cleanup not performed yet.
@@ -17,10 +19,12 @@ GitHub remains source owner; GitLab owns CI and reusable templates. Mirror pipel
 - Mac local CA trust and portless routes installed/tested. Local chat.lab proxy targets existing LibreChat; npm/Turbo fixed; OpenClaw local BasicAuth enforced. Authenticated sessions/OAuth for every application not exhaustively tested.
 
 ## Measured CI
+
 Pipeline517:19/19 success, whole2176s. API1756.548569s plus416.639623s queue, missed1144s target. pnpm restore122.175s,1939reused0download. API Jest798.237s; coverage closure948.543s. Heavy graph15jobs competes for8 heavy slots while12 checkslots handle4jobs; no runner reconfiguration applied.
 Pipeline522: API-only workers2, same source/template/tools pins and2CPU/4Gi limit. Success1011.672873s, queue0.652049s. API483 suites/4537tests passed with existing1suite/3DBconditional skips; API Jest380.19s, coverage closure436.919s, restore107.105s,1939reused0download. Below single-job target, but isolated load differs from517; not all improvement attributable to worker count. Turbo tasks0cached. Full two-warm/source-edit acceptance remains unfinished.
 
 ## Unfinished work
+
 1. Rename shared Node template and every include/extends/docs/preflight ID/fixture; latest26.12.0 release identified, registry pins and compatible execution required.
 2. Upgrade legacy web-api Node24, custom tools Debian base strategy, monorepo/tool pins consistently; rebuild tools, regenerate identity-bound canonical cache if runtime changes, revalidate source installs/builds/native modules. Debian base already installs Node26; cannot replace it by textual version substitution.
 3. Verify latest stable Alpine/Python/securitytool/BuildKit releases AND published image manifests. Single version per tool across owning pipeline repos. Remove ArgoCD reusable entry/consumers and PostgreSQL mirror entry; do not delete application PostgreSQL Dockerfile/functionality.
@@ -33,6 +37,7 @@ Pipeline522: API-only workers2, same source/template/tools pins and2CPU/4Gi limi
 10. Task-owned resource cleanup/final docs and heartbeat pause only after verified completion.
 
 ## Review links
+
 - Templates MR2: https://gitlab.nasraldin.com/homelab/pipeline-templates/-/merge_requests/2
 - Runtime MR70: https://gitlab.nasraldin.com/homelab/homelab-platform-services/-/merge_requests/70
 - Local access MR71: https://gitlab.nasraldin.com/homelab/homelab-platform-services/-/merge_requests/71
@@ -41,4 +46,5 @@ Pipeline522: API-only workers2, same source/template/tools pins and2CPU/4Gi limi
 - Foundation PR16: https://github.com/nasraldin/lab-home-pve01/pull/16
 
 ## Execution limitations
+
 Cursor/Copilot quota exhausted; native source agent later also reported usage limit. No purchase/spend-limit change authorized or performed. Completed CLI exits were inspected rather than accepted as end-to-end proof. Current active image inventory/consolidation tasks own isolated files. No default merges performed for this new rollout.
