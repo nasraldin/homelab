@@ -18,7 +18,7 @@ Read the coordination plan constraints. Copy concurrency2; all platforms/digests
 
 Rendered operators, implicit Docker Hub names, multi-platform index mismatch, bootstrap dependency loops, and leaking authentication files are pinned by the tasks below.
 
-### Task1: Catalog and sync command
+### Task 1: Catalog and sync command
 
 **Files:** platform create `scripts/lib/image_catalog.py`, `scripts/image-mirror.py`, `scripts/test_image_mirror.py`, `platform/artifacts/images.lock.json`; modify `scripts/artifacts-verify.py`, `docs/runbook-artifacts.md`.
 **Interfaces:** `ImageRef(registry:str, repository:str, tag:str|None, digest:str|None)`; `parse_ref(value:str)->ImageRef`; `collect_refs(inputs:list[Path], live:dict)->list[dict]`; `plan_sync(entries:list[dict], target:RegistryClient, free_bytes:int)->list[dict]`. Lock schema1 entries: `source`, `digest`, `target`, `platforms`, `occurrences`, `bootstrap`, `rollback`; report has copied/skipped/failed digests and bytes. CLI `inventory|plan|sync|verify|refresh --catalog FILE --auth-file FILE --concurrency 2 --report FILE`.
@@ -28,7 +28,7 @@ Rendered operators, implicit Docker Hub names, multi-platform index mismatch, bo
 - [ ] Implement the interfaces/CLI with structured argv and bounded `skopeo copy --all --preserve-digests`; expose RegistryClient inspect/copy/list methods for fakes. Use live JSON plus rendered Kubernetes YAML and structured CI/Dockerfile extraction; unresolved dynamic refs are reported with locations rather than silently omitted.
 - [ ] Run unit tests, repo lint and dry inventory against live/rendered input. Verify every distinct reference has an occurrence and current digest; no credentials in report. Commit only listed paths: `feat(images): add verified Harbor sync catalog`.
 
-### Task2: Scoped registry/cache identities and retention
+### Task 2: Scoped registry/cache identities and retention
 
 **Files:** platform modify `scripts/artifacts-configure.py`, `scripts/artifacts-secrets.py`, `platform/artifacts/harbor-values.yaml`; create `scripts/test_image_mirror_credentials.py`. Vault modify `schema/projects/homelab.yaml`, `scripts/onboard_artifacts.py`; create `scripts/test_artifact_cache_credentials.py`.
 **Interfaces:** catalog targets from task1; reconciler outputs separate mirror-writer and pull-only identities, explicit current/rollback retention markers, never a secret-bearing report.
@@ -38,7 +38,7 @@ Rendered operators, implicit Docker Hub names, multi-platform index mismatch, bo
 - [ ] Reconcile ordinary private mirror projects/robots/retention using existing API helpers; store credentials in Vault/Infisical by role. Preflight catalog byte estimate/project quotas against actual registry free space, not only PVC size.
 - [ ] Run tests/schema validation; controlled live copy/read denial/retention checks use disposable repos. Commit each owning repo: `feat(artifacts): provision scoped mirror identities`.
 
-### Task3: Image client and recovery rollout
+### Task 3: Image client and recovery rollout
 
 **Files:** platform `platform/artifacts/`, `platform/gitlab-runners/{values,checks-values}.yaml`, `scripts/artifacts-verify.py`; infra `talos/patches/common.yaml`, create `talos/patches/registry-mirrors.yaml`, `scripts/registry-mirror-verify.py`; foundation `ansible/roles/docker_host/{defaults,tasks}/main.yml`; deploy image-bearing Helm values/manifests and operational scripts enumerated by task1; templates `ajrly/{common,security,tests,images}/*.yml`.
 **Interfaces:** consume verified target/digest mappings and pull identities; produce `image-clients.json` with each client, endpoint, CA/auth delivery and fallback classification.
@@ -48,7 +48,7 @@ Rendered operators, implicit Docker Hub names, multi-platform index mismatch, bo
 - [ ] Canary one app node/workload; test namespace, manager/helper, VM Docker and BuildKit-base pulls. Simulate upstream denial only in disposable test paths. Test bootstrap recovery with Harbor unavailable without rebooting the whole cluster.
 - [ ] Run render/lint/verify in each repo, publish per-repo reviews, and commit `feat(images): route approved pulls through Harbor`. Retain prior image refs/digests for rollback.
 
-### Task4: Pinned CI tool image
+### Task 4: Pinned CI tool image
 
 **Files:** platform create `platform/ci-tools/Dockerfile.node`, `platform/ci-tools/versions.json`, `scripts/ci-tools-build.sh`, `scripts/test_ci_tools.py`; modify `.gitlab-ci.yml`. Templates later consume its published digest.
 **Interfaces:** versions.json pins Node/pnpm/tool checksums; maintenance build emits `ci-tools-proof.json` with source revision, image digest, platform and exact tool versions.

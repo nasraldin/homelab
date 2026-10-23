@@ -18,7 +18,7 @@ Read coordination constraints. npm concurrency4 then benchmark8; archives <=2GiB
 
 Registry precedence/tarball bypass, archive traversal/corruption, stale cache-key inputs, forged writer requests and early restore before GitHub checkout have tests below.
 
-### Task1: Private npm acceptance and runner S3 backend
+### Task 1: Private npm acceptance and runner S3 backend
 
 **Files:** platform `platform/artifacts/verdaccio-values.yaml`, `platform/gitlab-runners/{values,checks-values}.yaml`, `scripts/gitlab-runners-verify.sh`; create `scripts/npm-cache-probe.py`, `scripts/test_cache_config.py`, `scripts/cache-storage-configure.py`; foundation `ansible/roles/gitlab_runner/{defaults,tasks}/main.yml`, `files/fix_runner_cache.py`; Vault `schema/projects/homelab.yaml`, `scripts/onboard_ajrly_gitlab_ci.py`, create `scripts/onboard_ci_cache.py`, `scripts/test_ci_cache_credentials.py`; templates `ajrly/common/node.yml`.
 **Interfaces:** `CacheEndpoints(npm_url:str,s3_url:str,turbo_url:str,ca_bundle:Path)`; `probe_npm(profile:dict, concurrency:int)->dict` returns hosts/bytes/latency/peak RSS/restarts; storage reconcile returns bucket policies/lifecycle/quota report with secret values omitted.
@@ -28,7 +28,7 @@ Registry precedence/tarball bypass, archive traversal/corruption, stale cache-ke
 - [ ] Run single cold/warm npm closure loads at4 and8 connections, then representative parallel loads. Capture actual tarball hosts and upstream bytes, memory/CPU and metadata plugin overhead. Keep current Verdaccio footprint until measured need is established; change middleware only after a test reproduces its cost.
 - [ ] Configure infrastructure S3 cache and consumer private-registry/tool-image settings after acceptance. Canary TLS/auth/read-denial and offline warmed installs. Commit each repo `feat(cache): configure scoped private dependency services`.
 
-### Task2: Canonical dependency archive producer and safe restore
+### Task 2: Canonical dependency archive producer and safe restore
 
 **Files:** templates create `ajrly/scripts/dependency_cache.py`, `ajrly/tests/test_dependency_cache.py`, modify `ajrly/common/node.yml`; platform create `scripts/dependency-cache-warm.py`, `scripts/test_dependency_cache_warm.py`, modify `.gitlab-ci.yml`; source modify `scripts/pnpm-install-scoped.mjs` only for prefer-offline/integrity/store compatibility if needed, `docs/REMOTE_CACHE.md`; Vault use task1 read/writer credentials.
 **Interfaces:** `dependency_key(root:Path,scope:str,toolchain:dict)->str` hashes canonical schema/platform/libc/Node/pnpm plus lockfile/workspace/patch inputs; `restore_store(root:Path,key:str,reader:S3Reader)->RestoreResult` has hit/miss/rejected/bytes/duration; `publish_store(root:Path,key:str,writer:S3Writer)->dict` runs only in protected maintenance orchestration. Manifest schema1: key, toolchain, scope, created_at, archive_sha256, compressed_bytes, expanded_bytes. Archive paths are relative to `.pnpm-store/` only.
@@ -38,7 +38,7 @@ Registry precedence/tarball bypass, archive traversal/corruption, stale cache-ke
 - [ ] Wire restore after `.ajrly_source` verification and before scoped install; preserve frozen lockfile/native hook behavior and integrity validation. Emit hit/miss/bytes/duration summaries without signed URLs or secrets. Misses are normal cold recomputation through Verdaccio.
 - [ ] Test real small closure cold/warm, source-only edit and each invalidation input. If full-store budget is exceeded use scope archives, never silently lift size/quota. Commit `feat(cache): restore verified dependency stores after checkout` and pin tested templates/source coordinator together.
 
-### Task3: Trusted task-cache authorization and reuse
+### Task 3: Trusted task-cache authorization and reuse
 
 **Files:** platform create `scripts/ci-cache-authority.py`, `scripts/test_ci_cache_authority.py`, `platform/turbo-cache-forge/ci-authority.yaml`; modify service/network policy/render/deploy/verify scripts. Vault extend scoped cache onboarding. Templates `ajrly/common/node.yml`, `ajrly/checks/monorepo.yml`, `ajrly/tests/monorepo.yml`; source `turbo.json`, `scripts/__tests__/turbo-cache.test.mjs`, `docs/REMOTE_CACHE.md`.
 **Interfaces:** `authorize_writer(job_token:str)->Grant` derives GitLab job/project/pipeline identity server-side, verifies project7, configured immutable coordinator/template revisions and current GitHub default-branch source SHA, and returns a short-lived team-scoped grant. Unsupported scoped token issuance uses a server-side Turbo API proxy; it never returns its root/upstream writer credential. Allowed GET/HEAD for read grants, artifact PUT only for verified write grants; no cache administration.

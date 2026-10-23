@@ -18,7 +18,7 @@ Read coordination constraints. App workers01/02/05 only for ordinary CI; maximum
 
 Init-sidecar maxima, terminating-pod reservations, archive transfer RSS/disk, queued versus unscheduled jobs, and mixed-version rollout are explicitly tested.
 
-### Task1: Effective reservations and valid profiles
+### Task 1: Effective reservations and valid profiles
 
 **Files:** platform create `scripts/lib/ci_capacity.py`, `scripts/ci-capacity.py`, `scripts/test_ci_capacity.py`; modify `scripts/test_gitlab_runners.py`, `platform/gitlab-runners/{values,checks-values,quota}.yaml`, `scripts/gitlab-runners-verify.sh`; templates `ajrly/common/resources.yml` when measurements require it.
 **Interfaces:** `effective_request(pod:dict,resource:str)->Decimal`; `node_budget(nodes:list,pods:list)->list[dict]`; `evaluate_mix(profiles:list,budgets:list,margin:dict)->dict` reports fits/missing CPU/memory/disk/placement and includes init sidecars/overhead/terminating reservations. CLI emits JSON without secret env data.
@@ -28,7 +28,7 @@ Init-sidecar maxima, terminating-pod reservations, archive transfer RSS/disk, qu
 - [ ] Capture idle and burst actual reservations/usage, CPU throttling, peak RSS and temporary disk/cache transfer footprint. Choose turnover margin >= the measured largest simultaneous retained-pod envelope; if the mix cannot fit, reduce admitted concurrency within10–20 rather than falsify requests.
 - [ ] Run render/tests/live verify and a mix reflecting real app/check/integration envelopes, not only sleeping synthetic pods. Commit `fix(ci): validate effective runner resource envelopes`.
 
-### Task2: Startup, turnover and cleanup tracing
+### Task 2: Startup, turnover and cleanup tracing
 
 **Files:** platform create `scripts/ci-job-timings.py`, `scripts/test_ci_job_timings.py`; modify `scripts/ajrly-ci-cleanup.py`, `scripts/test_ajrly_ci_cleanup.py` only if a reproduced cleanup defect requires it; templates add nonsecret cache timing summaries.
 **Interfaces:** timing report joins project/pipeline/job/pod UID and queue/admission/image-init/script/cache/cleanup durations; `classify_wait(events:list)->dict` separates normal init Pending from FailedScheduling/Unschedulable and obsolete historical profiles.
@@ -38,7 +38,7 @@ Init-sidecar maxima, terminating-pod reservations, archive transfer RSS/disk, qu
 - [ ] Run at least two mixed turnover waves including integration services, success/failure/timeout/cancel and one manager interruption. Record zero sustained memory FailedScheduling, zero OOM/eviction/quota errors, terminal job/temporary-secret cleanup and unchanged other namespaces.
 - [ ] Commit `test(ci): track queue startup and cleanup performance`; lifecycle fixes get their own evidence-backed commit if required.
 
-### Task3: Full cold/warm acceptance and optional API sharding
+### Task 3: Full cold/warm acceptance and optional API sharding
 
 **Files:** platform create `scripts/ci-cache-benchmark.py`, `scripts/test_ci_cache_benchmark.py`, `docs/runbook-ci-performance.md`; parent create `docs/operations/ci-cache-performance-2026-10-14.md`. Source/template API test configuration changes are conditional on measured bottleneck after caching.
 **Interfaces:** benchmark report has exact GitHub/coordinator/template/image revisions, complete job/gate counts, cold/warm wall and CPU times, cache hits/bytes/transfer cost, upstream hosts, service RSS, queue/startup/cleanup percentiles and storage before/after.

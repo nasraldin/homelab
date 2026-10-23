@@ -6,7 +6,7 @@
 
 **Architecture:** Four independently testable work packages ship in dependency order. Existing Harbor, Verdaccio, AIStor and Turbo Cache Forge provide the storage and services; source remains on GitHub and templates under GitLab ajrly/.
 
-**Tech Stack:** Python, Bash, OCI/Skopeo, Helm/Kubernetes, Talos, GitLab Runner/S3, Node26.11.1, pnpm12.10.1, Turbo2.11.7, BuildKit.
+**Tech Stack:** Python, Bash, OCI/Skopeo, Helm/Kubernetes, Talos, GitLab Runner/S3, Node26.12.0, pnpm12.10.1, Turbo2.11.7, BuildKit.
 
 **Spec:** [2026-10-13-ci-registry-cache-performance-design.md](/Users/nasr/homelab/docs/superpowers/specs/2026-10-13-ci-registry-cache-performance-design.md), approved October 14, 2026. Read the coordination plan `2026-10-14-ci-cache-performance.md` before execution.
 
@@ -44,24 +44,24 @@
 | deploy | /Users/nasr/homelab/ajrly-k8s-deployments | main |
 | legacy | /Users/nasr/homelab/ajrly-web-api | dev |
 
-- [ ] Read applicable AGENTS.md and the worktree skill; fetch current base refs, inventory dirty files, and create/reuse isolated `codex/ci-cache-*` worktrees. Do not reset existing checkouts. Inspect current versions; preserve deliberately updated pins if newer than the recorded baseline.
-- [ ] Record baseline current source SHA, source pipeline, all job durations/queue times, request envelopes, upstream byte counts, artifact-service memory and storage budgets. Historical435 is a reference, not proof of the current tree.
+- [x] Read applicable AGENTS.md and the worktree skill; fetch current base refs, inventory dirty files, and create/reuse isolated `codex/ci-cache-*` worktrees. Do not reset existing checkouts. Inspect current versions; preserve deliberately updated pins if newer than the recorded baseline.
+- [x] Record baseline current source SHA, source pipeline, all job durations/queue times, request envelopes, upstream byte counts, artifact-service memory and storage budgets. Historical 435 is a reference, not proof of the current tree.
 
 ## Delivery order
 
-1. [Image supply](2026-10-14-ci-image-supply.md): catalog/sync, scoped credentials/retention, client/recovery rollout, pinned tool image. This can ship independently.
-2. [Dependency and task caches](2026-10-14-ci-dependency-task-cache.md): registry load acceptance, distributed infrastructure cache, post-checkout Ajrly store restore, trusted task-cache writer. Requires Image task4 for the final tool-image cutover.
-3. [Docker build caching](2026-10-14-ci-docker-cache.md): Dockerfile/context fixes can start after Image catalog interfaces; live BuildKit validation waits for its rootless canary and verified private npm.
-4. [Scheduling and acceptance](2026-10-14-ci-scheduling-acceptance.md): diagnostics/default-profile fix can start immediately after plan approval; final mixed-load and performance checks wait for the other packages.
+1. [Image supply](2026-10-14-ci-image-supply.md): catalog/sync, scoped credentials/retention, client/recovery rollout, pinned tool image. Shipped and verified.
+2. [Dependency and task caches](2026-10-14-ci-dependency-task-cache.md): registry load acceptance, distributed infrastructure cache, post-checkout Ajrly store restore, trusted task-cache writer. Shipped, MR71/MR73/MR74 merged and commissioned live.
+3. [Docker build caching](2026-10-14-ci-docker-cache.md): Dockerfile/context fixes are integrated. Rootless BuildKit isolation failed its canary and was rolled back; publication remains deliberately gated under the approved design.
+4. [Scheduling and acceptance](2026-10-14-ci-scheduling-acceptance.md): diagnostics/default-profile fix, full cold baseline (pipeline 645), trusted warm-up (pipeline 648), warm runs (pipelines 649, 651), and tracked source-edit validation (pipeline 655).
 
-Each task produces a small commit and an owning-repository review. Run required repo validation on that exact head. Update source/coordinator pins only after the corresponding template commit is tested and reachable in GitLab. Attach created reviews. Do not merge new reviews or bypass manual deployment gates without applicable authorization; the previous merge approval covered the completed migration reviews.
+Each task produced small commits and owning-repository reviews. Merged runtime MR71, MR73, and MR74 with exact-head passing pipelines (637, 642, 646). Manual publication/deployment gates remain intact.
 
 ## Rollout and result
 
-- [ ] Canary tool image/private npm on one controlled job, then representative concurrency. Roll back consumers to their previous digest/endpoint if the canary fails.
-- [ ] Enable cache reads before trusted writes; verify corruption/miss recomputation and key invalidation before wider use.
-- [ ] Run full MR and default-branch CI, two warm repetitions and a source-only edit; collect the report defined by Scheduling task3.
-- [ ] Publish all review links and measured results, including any unmet performance target or still-gated publication capability. Remove only task-owned disposable test resources after capturing evidence.
+- [x] Canary tool image/private npm on one controlled job, then representative concurrency. Roll back consumers to their previous digest/endpoint if the canary fails.
+- [x] Enable cache reads before trusted writes; verify corruption/miss recomputation and key invalidation before wider use.
+- [ ] Run full MR and default-branch CI, two warm repetitions and a source-only edit; collect the report defined by Scheduling task3 ([2026-10-18-final-review-performance.md](/Users/nasr/homelab/docs/superpowers/reports/2026-10-18-final-review-performance.md)).
+- [ ] Publish all review links and measured results, including any unmet performance target or still-gated publication capability. Remove only task-owned disposable test resources after capturing evidence ([RESULT.md](file:///Users/nasr/.codex/tmp/ajrly-ci-migration/review-performance-final/RESULT.md)).
 
 ## Execution handoff
 

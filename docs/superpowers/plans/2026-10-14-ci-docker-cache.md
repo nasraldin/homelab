@@ -18,7 +18,7 @@ Read coordination constraints. Keep Admin module layout and approved hooks; no a
 
 PDF-worker hooks, Admin externalized-module paths, omitted Astro content, missing production Dockerfiles and mistaken cache-mount export assumptions have checks below.
 
-### Task1: Source/context and dependency layers
+### Task 1: Source/context and dependency layers
 
 **Files:** source all18 tracked `*Dockerfile*`, `.dockerignore`, create `scripts/ci/test-docker-build-contract.py`; legacy `Dockerfile`, `Dockerfile.development`, `.dockerignore`; source may create `apps/web/dashboard/Dockerfile` if its production target is supported; templates image target list must agree.
 **Interfaces:** each image target declares Dockerfile/context/platform/health command in the image catalog; dependency fetch inputs are frozen lock/workspace/patches/toolchain; installation includes actual lifecycle-hook source inputs.
@@ -28,7 +28,7 @@ PDF-worker hooks, Admin externalized-module paths, omitted Astro content, missin
 - [ ] Verify each target cold build, source-only and dependency-change build, health command and secret/layer inspection. Record layer CACHED status, fetched bytes and image sizes. Compare output content to baseline, not just exit status.
 - [ ] Run repo required checks, commit owning repos `fix(docker): preserve reusable dependency layers and build content`, and publish reviews.
 
-### Task2: Registry layer cache and safe build credentials
+### Task 2: Registry layer cache and safe build credentials
 
 **Files:** source `scripts/ci/build-image.sh`, create `scripts/ci/test-build-image-cache.py`; templates `ajrly/images/harbor.yml`; platform Harbor cache retention/provisioning from Image task2; Vault cache/pull/npm secret onboarding.
 **Interfaces:** cache ref `harbor.ajrly.com/<cache-project>/<app>-<platform>-<libc>:trusted`; readonly imports for ordinary builds; export mode=max only with Cache task3-authorized writer. Build metadata records source/digest/cache ref/hits, omitting credentials.
@@ -38,7 +38,7 @@ PDF-worker hooks, Admin externalized-module paths, omitted Astro content, missin
 - [ ] Cold then warm build on a fresh builder, source-only and lockfile edits, token-free layer inspection and pull/run health tests. A fresh builder must demonstrate actual registry imports rather than hidden local state.
 - [ ] Commit `feat(images): reuse scoped registry BuildKit layers`; publication remains gated until task3 passes.
 
-### Task3: Rootless builder canary
+### Task 3: Rootless builder canary
 
 **Files:** infra create `talos/patches/ci-rootless-canary.yaml`, modify only worker05 patch selection in `talos/talconfig.yaml`; platform create `platform/gitlab-runners/buildkit-canary.yaml`, `scripts/buildkit-canary-verify.py`, `scripts/test_buildkit_canary.py`; templates `ajrly/images/harbor.yml` after proof.
 **Interfaces:** canary report has node/version/sysctls/UID maps/snapshotter/seccomp/sandbox/peak requests and isolation results; readiness flag becomes true only with all required checks.
