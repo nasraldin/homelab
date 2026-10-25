@@ -1,17 +1,11 @@
 {
-  "ansible-lab": "nasraldin/ansible-lab",
-  "terraform-lab": "nasraldin/terraform-lab",
   "proxmox-bootstrap": "nasraldin/proxmox-bootstrap",
+  "lab-home-pve01": "nasraldin/lab-home-pve01",
   "cloudflare-tunnel": "nasraldin/cloudflare-tunnel",
-  "opshub": "nasraldin/opshub",
-  "docker-lab": "nasraldin/docker-lab",
-  "camunda-lab": "nasraldin/camunda-lab",
   "homebrew/homebrew-tools": "nasraldin/homebrew-tools",
-  "k8s-lab": "nasraldin/k8s-lab",
-  "homelab-gitops": "nasraldin/homelab-gitops",
-  "lab-home-k8s": "nasraldin/lab-home-k8s",
-  "lab-home-gitops": "nasraldin/lab-home-gitops",
-  "pipeline-templates": "nasraldin/pipeline-templates",
-  "dev-homelab": "nasraldin/dev-homelab",
-  "lab-home-pve01": "nasraldin/lab-home-pve01"
+  "vault": "https://gitlab.ajrly.app/homelab/vault.git",
+  "homelab-cluster-infra": "https://gitlab.ajrly.app/homelab/homelab-cluster-infra.git",
+  "homelab-platform-services": "https://gitlab.ajrly.app/homelab/homelab-platform-services.git",
+  "pipeline-templates": "https://gitlab.ajrly.app/homelab/pipeline-templates.git",
+  "ajrly-k8s-deployments": "https://gitlab.ajrly.app/homelab/ajrly-k8s-deployments.git"
 }

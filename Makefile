@@ -14,8 +14,8 @@
 	docs-install docs-serve docs-build
 
 ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
-LABS := ansible-lab camunda-lab cloudflare-tunnel docker-lab \
-	proxmox-bootstrap terraform-lab
+LABS := cloudflare-tunnel lab-home-pve01 proxmox-bootstrap \
+	homelab-cluster-infra homelab-platform-services pipeline-templates vault
 
 # Shell scripts across labs (exclude git / terraform providers)
 SH_FILES := $(shell find $(LABS) -type f \( -name '*.sh' \) \

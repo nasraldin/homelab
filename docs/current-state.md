@@ -1,97 +1,73 @@
 # Where things stand today
 
-Status board for the live lab. Build narrative: [build-story.md](build-story.md).
-Work order: [foundation sequence](roadmap/foundation-sequence.md).
+Status board for the live lab (updated 2026-10-25). Build narrative:
+[build-story.md](build-story.md). Pages under `docs/` that still describe
+kubeadm, k3s, Argo CD or `lab-home-k8s` are historical.
 
 ## In one paragraph
 
-**Dev Homelab** on `pve01` is the **`lab-home-k8s`** topology (kubeadm + GitOps),
-not the older terraform-lab multi-VM map. **2026-07-30 cutover is live**: DNS
-LXCs `.11`/`.14`, Infisical `.15`, docker-01 apps. **`ssh-01`** (CT 112) and
-**`llm-01`** (CT 126) **removed 2026-09-12**; **`ai-01` (VM 120) destroyed**.
-Purpose namespaces are live in-cluster — see
-[`lab-home-gitops/docs/namespace-taxonomy.md`](https://github.com/nasraldin/lab-home-gitops/blob/main/docs/namespace-taxonomy.md).
+One Proxmox host (`pve01`) runs the foundation guests (Infisical, GitLab, a
+Docker CI runner) and a **Talos Linux Kubernetes cluster: one control plane and
+five workers**. Everything is delivered by GitLab CI pipelines from the repos
+below; there is no Argo CD. Public access goes through a Cloudflare Tunnel to
+Envoy Gateway; the canonical domain is `ajrly.app`.
 
-|                   |                                                                           |
-| ----------------- | ------------------------------------------------------------------------- |
-| **Node**          | `pve01` · `192.168.68.10/22` · Proxmox VE                                 |
-| **Inventory**     | [lab-home-inventory.md](operations/lab-home-inventory.md)                 |
-| **Public GitLab** | `https://gitlab.nasraldin.com` (LAN `.25`)                                |
-| **DNS (target)**  | DHCP Primary → AdGuard `.10`; Technitium on `dns-01` `.11`                |
-| **Restructure**   | [lab-restructure-2026-07-30.md](operations/lab-restructure-2026-07-30.md) |
+## Host
 
-## What this page covers
+|           |                                                                      |
+| --------- | -------------------------------------------------------------------- |
+| Node      | `pve01` · `192.168.68.10` · Proxmox VE 9.2                           |
+| CPU / RAM | Ryzen AI 9 HX 470 (12C/24T) · 92 GiB, no swap — memory is the limit  |
+| `rpool`   | Samsung 990 PRO 2 TB — Proxmox OS, Talos control plane (`local-zfs`) |
+| `data01`  | Kingston FURY 4 TB — worker disks and CSI volumes                    |
+| ZFS ARC   | capped at 8 GiB by `lab-home-pve01` `proxmox-memory.yml`             |
 
-- Hardware / storage
-- What is done vs staged vs on hold
-- Next tasks
-- Locked decisions
+## Guests
 
----
+| VMID    | Name              | Size      | Role                                            |
+| ------- | ----------------- | --------- | ----------------------------------------------- |
+| 111     | infisical-01      | LXC 2c/4G | Infisical (secrets)                             |
+| 112     | gitlab-01         | 4c/12G    | GitLab CE (`gitlab.ajrly.app`)                  |
+| 113     | runner-01         | 2c/4G     | Docker runner for infra jobs (outside k8s)      |
+| 301     | talos-cp01        | 4c/6G     | Control plane + etcd (single member), VIP `.30` |
+| 304–305 | talos-worker01–02 | 4c/8G     | `workload=apps`                                 |
+| 306     | talos-worker03    | 4c/14G    | `workload=platform`                             |
+| 307     | talos-worker04    | 4c/12G    | `workload=stateful`                             |
+| 308     | talos-worker05    | 8c/16G    | `workload=apps` (CI capacity)                   |
 
-## Hardware (installed)
+Why one control plane, and how etcd is backed up:
+`homelab-cluster-infra/README.md` and `docs/runbook.md`.
 
-| Slot | Disk                        | Role                    | Status                  |
-| ---- | --------------------------- | ----------------------- | ----------------------- |
-| 1    | Samsung 990 PRO 2 TB        | `rpool` — Proxmox OS    | Done                    |
-| 2    | Kingston FURY Renegade 4 TB | `data01` — guest disks  | Done                    |
-| 3    | OEM 2 TB                    | `aux01` — backups / ISO | On hold — not installed |
+## Repositories (active)
 
-Details: [hardware and storage](architecture/hardware-and-storage.md).
+| Repo                        | Host   | Owns                                                                                     |
+| --------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| `proxmox-bootstrap`         | GitHub | Proxmox host bootstrap                                                                   |
+| `lab-home-pve01`            | GitHub | Foundation guests (Terraform + Ansible)                                                  |
+| `vault`                     | GitLab | GitLab CI variables + Infisical reconciliation                                           |
+| `homelab-cluster-infra`     | GitLab | Talos VMs, machine config, upgrades, etcd backups                                        |
+| `homelab-platform-services` | GitLab | Cilium, gateway, certs, storage, observability, Harbor, CI runners, shared data services |
+| `ajrly-k8s-deployments`     | GitLab | Ajrly application databases and workloads                                                |
+| `pipeline-templates`        | GitLab | Shared GitLab CI templates                                                               |
+| `cloudflare-tunnel`         | GitHub | Proxmox-side tunnel config (read by `vault`)                                             |
 
----
+Retired repos live in `archive/` (gitignored) for history only. Clone the
+active set with `./clone-labs.sh` (reads `repos.json`).
 
-## What is done / staged
+## Open items
 
-| Area                     | State                                                                                    |
-| ------------------------ | ---------------------------------------------------------------------------------------- |
-| Proxmox foundation       | Done (`rpool`, `data01`, bootstrap, Tunnel patterns)                                     |
-| lab-home-k8s guests      | **Restructure live** 2026-07-30 (DNS/Infisical/docker); jumpbox + llm removed 2026-09-12 |
-| DNS LXCs `.11`/`.14`     | **Live** (Technitium + AdGuard); TP-Link DHCP → `.14` still TBD                          |
-| Infisical `.15`          | **Live** on `infisical-01`; InfisicalSecret `hostAPI` → `.15:8090`; UA seed still TBD    |
-| docker-01 as app host    | **Live** — NPM, Stalwart, AIStor, Dockhand, Portainer                                    |
-| Ollama / jumpbox         | **Removed** — CT 126 `llm-01` and CT 112 `ssh-01` destroyed                              |
-| GitOps namespaces        | **Live** purpose NS (`ai-tools`, …, `argocd`); empty legacy NS may linger                |
-| Platform fixes           | LibreChat/Infisical `.Value`, OpenClaw boot+overlay, runner hostAliases/KEDA — in GitOps |
-| Infisical universal-auth | Secret in `security`; finish seed if InfisicalSecret sync still flaky                    |
-
-Alternate **terraform-lab** inventory remains documented under
-[guest-vmid-map.md](operations/guest-vmid-map.md) but is **not** the live home map.
-
----
-
-## On hold
-
-| Task             | Why                                              |
-| ---------------- | ------------------------------------------------ |
-| Storage `aux01`  | OEM NVMe not in chassis                          |
-| OPNsense / VLANs | Flat LAN for now (`archive/opnsense-vlan-pilot`) |
-
----
-
-## What comes next
-
-1. TP-Link DHCP Primary → AdGuard `.10` (if still TBD)
-2. Prune empty legacy k8s namespaces; confirm Argo apps Healthy
-3. Cloudflare tunnel re-apply if public origins drift
-4. Optional: Renovate for pinned image bumps (none today)
-
----
+- Off-host backups: etcd snapshots and CNPG/Barman backups stay on this host.
+- Alert routing: Alertmanager has no receiver yet.
+- Cloudflare Access on admin UIs (Grafana, Harbor, SonarQube, MinIO console).
+- Finish the `ajrly.com` / `nasraldin.com` → `ajrly.app` migration leftovers.
 
 ## Locked decisions
 
-| Topic       | Choice                                                  |
-| ----------- | ------------------------------------------------------- |
-| Hypervisor  | Proxmox VE 9.x on ZFS                                   |
-| Guest disks | Only on `data01`                                        |
-| Kubernetes  | kubeadm on Debian VMs (`lab-home-k8s`)                  |
-| GitOps      | Argo CD + `lab-home-gitops`                             |
-| GitLab      | Dedicated VM — not in k8s                               |
-| Ollama      | **Removed** — no dedicated GPU/LLM guest                |
-| App secrets | Infisical LXC; Vault optional/parallel for infra crypto |
-| Namespaces  | Purpose-grouped — not one NS per app                    |
-
-## Related
-
-- [service-placement.md](architecture/service-placement.md)
-- [lab-home-k8s/README.md](https://github.com/nasraldin/lab-home-k8s/blob/main/README.md)
+| Topic      | Choice                                                            |
+| ---------- | ----------------------------------------------------------------- |
+| Hypervisor | Proxmox VE 9.x on ZFS, single host                                |
+| Kubernetes | Talos Linux, 1 control plane (never 2), Cilium without kube-proxy |
+| Delivery   | GitLab CI pipelines; manual Play gates for mutations              |
+| GitLab     | Dedicated VM — not in Kubernetes                                  |
+| Secrets    | Infisical source of truth; GitLab variables reconciled by `vault` |
+| Namespaces | Purpose-grouped — not one namespace per app                       |
