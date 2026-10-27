@@ -1,28 +1,17 @@
-# Nested lab repos — each has its own git remote; do not track as files here
-ansible-lab/
-opshub/
-camunda-lab/
-cloudflare-tunnel/
-docker-lab/
-# Retired docs clone kept locally for archive/history only
-homelab-docs/
-proxmox-bootstrap/
-homebrew/
-terraform-lab/
-k8s-lab/
-homelab-gitops/
-lab-home-k8s/
-lab-home-pve01/
-lab-home-gitops/
-dev-homelab/
-pipeline-templates/
-homelab-cluster-infra/
-vault/
+# Nested repos — each has its own git remote; never track them here.
+# Active (see repos.json):
 ajrly-k8s-deployments/
 ajrly-web-api/
-github-runner-smoke/
+cloudflare-tunnel/
+homelab-cluster-infra/
 homelab-platform-services/
-platform-services-safe-patches/
+lab-home-pve01/
+pipeline-templates/
+proxmox-bootstrap/
+vault/
+homebrew/
+# Retired repos, kept locally for history only
+archive/
 
 # Local installers / large blobs (never commit)
 homelab-binaries/
