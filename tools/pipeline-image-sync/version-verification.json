@@ -1,0 +1,28 @@
+[
+  {
+    "image": "docker.io/alpine/helm:4.3.0",
+    "env": [],
+    "tool_version": "56d4e9d"
+  },
+  {
+    "image": "docker.io/snyk/snyk:node",
+    "env": [
+      "NODE_VERSION=26.11.1"
+    ],
+    "tool_version": "v1.1308.1"
+  },
+  {
+    "image": "docker.io/pipelinecomponents/ansible-lint:0.79.54",
+    "env": [
+      "PYTHON_VERSION=3.14.8"
+    ],
+    "tool_version": null
+  },
+  {
+    "image": "docker.io/pipelinecomponents/yamllint:0.35.27",
+    "env": [
+      "PYTHON_VERSION=3.14.8"
+    ],
+    "tool_version": null
+  }
+]
