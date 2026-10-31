@@ -49,3 +49,7 @@ dashboard/
 # Local operator credential cheat sheet (never commit)
 CREDENTIALS.md
 *CREDENTIALS*.local.md
+
+# Generated tool output
+__pycache__/
+tools/pipeline-image-sync/dry-run.txt

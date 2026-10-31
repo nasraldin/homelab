@@ -1,0 +1,27 @@
+[
+  {
+    "component": "helm",
+    "exit_code": 0,
+    "version": "v4.3.0+gbec5b06",
+    "error_tail": "",
+    "note": "Correct Helm invocation: helm version --short; initial --version flag invalid."
+  },
+  {
+    "component": "snyk",
+    "exit_code": 0,
+    "version": "1.1308.1",
+    "error_tail": ""
+  },
+  {
+    "component": "ansible-lint",
+    "exit_code": 0,
+    "version": "ansible-lint 26.9.0 using ansible-core:2.21.5 ansible-compat:26.9.0 ruamel-yaml:0.19.1",
+    "error_tail": ""
+  },
+  {
+    "component": "yamllint",
+    "exit_code": 0,
+    "version": "yamllint 1.38.0",
+    "error_tail": ""
+  }
+]
